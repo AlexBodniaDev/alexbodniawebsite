@@ -1,0 +1,65 @@
+{
+  "personal": {
+    "name": "Alex",
+    "title": "UX/UI Designer & Developer",
+    "subtitle": "Creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
+    "quote": "When you think something is impossible my work is to take off the 'im' and make your idea possible.",
+    "about": "Hello there, I'm Alex, creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
+    "contact": "Feel free to share your ideas with me and we'll see how idea turns into result.",
+    "email": "alex@example.com",
+    "github": "https://github.com/alex",
+    "linkedin": "https://linkedin.com/in/alex"
+  },
+  "experience": [
+    {
+      "period": "2022-2024",
+      "title": "Internship",
+      "description": "Gained hands-on experience in UX/UI design and frontend development"
+    },
+    {
+      "period": "2018-2022",
+      "title": "Voronin Design Studio",
+      "description": "Worked on various design projects and developed creative solutions"
+    },
+    {
+      "period": "2016-2018",
+      "title": "High school",
+      "description": "Foundation in design principles and early programming"
+    }
+  ],
+  "tools": ["Figma", "Photoshop", "Illustrator", "Adobe XD", "Sketch", "InVision", "Principle", "After Effects"],
+  "projects": [
+    {
+      "id": "tennis-courts-3d",
+      "title": "Tennis Courts 3D",
+      "description": "Interactive 3D visualization of tennis court designs with realistic lighting and materials",
+      "image": "/placeholder.svg?height=400&width=600",
+      "tags": ["3D Design", "WebGL", "Interactive"],
+      "year": "2024"
+    },
+    {
+      "id": "dnipro-redesign",
+      "title": "Dnipro.net Redesign",
+      "description": "Complete redesign of the Dnipro.net website with improved UX and modern interface",
+      "image": "/placeholder.svg?height=400&width=600",
+      "tags": ["Web Design", "UX/UI", "Responsive"],
+      "year": "2023"
+    },
+    {
+      "id": "ketotox-package",
+      "title": "Ketotox Plus Medical Package",
+      "description": "Medical packaging design with focus on clarity and user safety",
+      "image": "/placeholder.svg?height=400&width=600",
+      "tags": ["Package Design", "Medical", "Branding"],
+      "year": "2023"
+    },
+    {
+      "id": "mobile-app",
+      "title": "Responsive Mobile App",
+      "description": "Cross-platform mobile application with intuitive user interface",
+      "image": "/placeholder.svg?height=400&width=600",
+      "tags": ["Mobile Design", "App Design", "UX"],
+      "year": "2022"
+    }
+  ]
+}
