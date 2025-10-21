@@ -7,7 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    unoptimized: true, // потрібне для static export
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,12 +15,12 @@ const nextConfig = {
       },
     ],
   },
-  ...(process.env.NODE_ENV === 'production' && process.env.GITHUB_PAGES && {
-    output: 'export',
-    basePath: '/portfolio',
-    assetPrefix: '/portfolio/',
-    trailingSlash: true,
-  }),
-}
 
-export default nextConfig
+  // ✅ Головне для GitHub Pages:
+  output: 'export',                 // Вмикаємо статичний експорт
+  basePath: '/alexbodniawebsite',   // Ім'я репозиторію
+  assetPrefix: '/alexbodniawebsite/',// Префікс для всіх ресурсів
+  trailingSlash: true,               // Додаємо / в кінці шляхів
+};
+
+export default nextConfig;

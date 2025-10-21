@@ -44,25 +44,23 @@ export function HeroSection() {
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
           <div className="mb-6 animate-in fade-in slide-in-from-bottom-4 duration-800 delay-300">
             <span className="inline-block px-4 py-2 rounded-full bg-muted/50 text-muted-foreground text-sm font-mono tracking-wider uppercase">
-              Creative Designer & Developer
+              UX/UI Designer & React Developer
             </span>
           </div>
 
           <h1 className="text-display font-serif leading-none text-balance mb-8 text-foreground animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400">
-            Crafting digital
+            Together we transform
             <br />
-            <span className="italic font-light text-primary">experiences</span> that
+            <span className="italic font-light text-primary">your vision</span> into
             <br />
             <span className="relative">
-              inspire
+              excellent product.
               <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 to-accent/60 rounded-full animate-in slide-in-from-left duration-800 delay-1200" />
             </span>
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-4 duration-800 delay-600">
-            Award-winning designer with 4+ years of expertise in creating
-            <br className="hidden md:block" />
-            exceptional user experiences and innovative digital solutions.
+             My role is to help solve problems and create exceptional user experiences and innovative digital solutions.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-in fade-in slide-in-from-bottom-4 duration-800 delay-800">
@@ -81,7 +79,7 @@ export function HeroSection() {
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
               className="px-8 py-4 border-2 border-border rounded-2xl hover:bg-accent hover:border-accent-foreground/20 transition-all duration-500 font-medium hover:scale-105 active:scale-95"
             >
-              Get In Touch
+              Contacts
             </button>
           </div>
         </div>

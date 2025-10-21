@@ -26,22 +26,22 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Alex — Creative Designer & Developer",
+  title: "Alex — UX/UI Designer & Developer",
   description:
-    "Award-winning UX/UI designer and developer crafting exceptional digital experiences with 4+ years of expertise.",
+    "UX/UI designer and developer that can take the 'im' part of the word impossible and make your vision become possible.",
   keywords: ["UX Designer", "UI Designer", "Creative Developer", "Digital Design", "Portfolio"],
   authors: [{ name: "Alex", url: "https://alex-portfolio.vercel.app" }],
-  creator: "Alex",
+  creator: "AlexBodnia",
   openGraph: {
     title: "Alex — Creative Designer & Developer",
-    description: "Award-winning UX/UI designer and developer crafting exceptional digital experiences.",
+    description: "UX/UI designer and developer crafting exceptional digital experiences.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Alex — Creative Designer & Developer",
-    description: "Award-winning UX/UI designer and developer crafting exceptional digital experiences.",
+    description: "UX/UI designer and developer crafting exceptional digital experiences.",
   },
   robots: {
     index: true,

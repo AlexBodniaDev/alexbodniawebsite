@@ -25,27 +25,26 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   const projectDetails = {
     "tennis-courts-3d": {
       overview:
-        "An interactive 3D visualization platform for tennis court designs, featuring realistic lighting, materials, and user interaction capabilities.",
+        "An interactive 3D visualization platform for tennis court designs, featuring realistic lighting, materials and user interaction capabilities.",
       challenge:
         "Creating a performant 3D experience that works across different devices while maintaining visual fidelity and smooth interactions.",
       solution:
-        "Implemented using Three.js and WebGL optimizations, with progressive loading and adaptive quality settings based on device capabilities.",
+        "Implemented using Blender, with progressive loading and adaptive quality settings based on device capabilities.",
       process: [
         "Research and concept development",
         "3D modeling and texturing",
-        "WebGL implementation",
         "Performance optimization",
-        "User testing and refinement",
+        "Visualization from scratch",
       ],
-      technologies: ["Three.js", "WebGL", "React", "TypeScript", "Blender"],
-      images: ["/3d-tennis-court-wireframe.jpg", "/3d-tennis-court-rendered.jpg", "/3d-tennis-court-interface.jpg"],
+      technologies: ["Figma", "Adobe Photoshop", "Blender",],
+      images: ["/alexbodniawebsite/entrance-view.png", "/alexbodniawebsite/all-courts-view.png", "/alexbodniawebsite/second-entrance-view.png", "/alexbodniawebsite/1-court-view.png", "/alexbodniawebsite/3-court-view.png", "/alexbodniawebsite/inventoty-boot-view.png",],
     },
     "dnipro-redesign": {
       overview:
-        "Complete redesign of the Dnipro.net website focusing on improved user experience, modern interface design, and enhanced accessibility.",
+        "Complete redesign of the Dnipro.net website focusing on improved user experience, modern interface design and enhanced accessibility.",
       challenge: "Modernizing an outdated website while maintaining brand identity and improving conversion rates.",
       solution:
-        "Implemented a mobile-first approach with clean typography, improved navigation, and streamlined user flows.",
+        "Implemented a desktop view approach with clean typography, improved navigation and streamlined user flows.",
       process: [
         "User research and analysis",
         "Information architecture",
@@ -53,25 +52,24 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         "Visual design system",
         "Development and testing",
       ],
-      technologies: ["Figma", "React", "Next.js", "Tailwind CSS", "Framer Motion"],
-      images: ["/website-redesign-mockup.png", "/mobile-responsive-design.png", "/design-system-components.png"],
+      technologies: ["Figma", "Adobe Photoshop"],
+      images: ["/alexbodniawebsite/main-hero-section-dnepronet.jpg", "/alexbodniawebsite/internet-dnepronet.jpg", "/alexbodniawebsite/tv-dnepro-net.jpg", "/alexbodniawebsite/map-faq-dnepronet.jpg", "/alexbodniawebsite/footer-dnepronet.jpg", "/alexbodniawebsite/about-dnepronet.jpg"],
     },
     "ketotox-package": {
       overview:
-        "Medical packaging design for Ketotox Plus, focusing on clarity, safety, and regulatory compliance while maintaining visual appeal.",
+        "Medical packaging design for Ketotox Plus, focusing on clarity, safety and regulatory compliance while maintaining visual appeal.",
       challenge:
         "Balancing regulatory requirements with attractive design that builds trust and communicates product benefits clearly.",
       solution:
-        "Created a clean, medical-grade design system with clear hierarchy, safety information, and brand consistency.",
+        "Created a clean, medical-grade design system with clear hierarchy, safety information and brand consistency.",
       process: [
         "Regulatory research",
         "Brand analysis",
         "Concept development",
         "Packaging prototypes",
-        "Production coordination",
       ],
-      technologies: ["Adobe Illustrator", "Photoshop", "InDesign", "3D Rendering"],
-      images: ["/medical-package-design.jpg", "/package-mockup-3d.jpg", "/package-label-design.jpg"],
+      technologies: ["Adobe Illustrator", "Adobe Photoshop", "Figma"],
+      images: ["/alexbodniawebsite/mockup-one-keto.jpg", "/alexbodniawebsite/mockup-second-keto.png", "/alexbodniawebsite/mockup-third-keto.jpg", "/alexbodniawebsite/illustrations.jpg"],
     },
     "mobile-app": {
       overview:
@@ -84,10 +82,9 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         "Wireframing and prototyping",
         "UI design system",
         "Development and testing",
-        "App store optimization",
       ],
-      technologies: ["React Native", "Expo", "TypeScript", "Figma", "Firebase"],
-      images: ["/mobile-app-interface.png", "/mobile-app-screens.png", "/mobile-app-prototype.png"],
+      technologies: ["Adobe Photoshop", "Figma"],
+      images: ["/alexbodniawebsite/welcome-screen-dsrk.jpg", "/alexbodniawebsite/task-screen.jpg", "/alexbodniawebsite/register-screen.jpg", "/alexbodniawebsite/pick-time-popup.jpg", "/alexbodniawebsite/pick-date-popup-green.jpg", "/alexbodniawebsite/main-screen-lightgreen.jpg"],
     },
   }
 

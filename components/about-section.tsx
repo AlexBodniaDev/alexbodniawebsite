@@ -7,7 +7,7 @@ export function AboutSection() {
   const [activeImage, setActiveImage] = useState(0)
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  const profileImages = ["/professional-ux-designer-headshot.jpg", "/casual-portrait-of-creative-designer.jpg", "/designer-at-desk.png"]
+  const profileImages = ["/alexbodniawebsite/photo-of-me-one.jpg", "/alexbodniawebsite/photo-of-me-second.jpg", "/alexbodniawebsite/photo-of-me-third.jpg"]
 
   const scrollTools = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -20,18 +20,18 @@ export function AboutSection() {
   }
 
   const toolsWithIcons = [
-    { name: "Figma", icon: "/figma-logo.jpg" },
-    { name: "Adobe XD", icon: "/adobe-xd-logo-icon.jpg" },
-    { name: "Sketch", icon: "/sketch-app-logo-icon.jpg" },
-    { name: "React", icon: "/react-logo-icon.jpg" },
-    { name: "Next.js", icon: "/next-js-logo-icon.jpg" },
-    { name: "TypeScript", icon: "/tech/typescript.png" },
-    { name: "Tailwind CSS", icon: "/tailwind-css-logo-icon.jpg" },
-    { name: "Framer", icon: "/framer-logo-icon.jpg" },
-    { name: "Webflow", icon: "/webflow-logo-icon.jpg" },
-    { name: "Photoshop", icon: "/adobe-photoshop-logo-icon.jpg" },
-    { name: "Illustrator", icon: "/adobe-illustrator-logo-icon.jpg" },
-    { name: "After Effects", icon: "/adobe-after-effects-logo-icon.jpg" },
+    { name: "Figma", icon: "/alexbodniawebsite/figma-logo.jpg" },
+    { name: "Adobe XD", icon: "/alexbodniawebsite/adobe-xd-logo-icon.jpg" },
+    { name: "Sketch", icon: "/alexbodniawebsite/sketch-app-logo-icon.jpg" },
+    { name: "React", icon: "/alexbodniawebsite/react-logo-icon.jpg" },
+    { name: "Next.js", icon: "/alexbodniawebsite/next-js-logo-icon.jpg" },
+    { name: "TypeScript", icon: "/alexbodniawebsite/tech/typescript.png" },
+    { name: "Tailwind CSS", icon: "/alexbodniawebsite/tailwind-css-logo-icon.jpg" },
+    { name: "Framer", icon: "/alexbodniawebsite/framer-logo-icon.jpg" },
+    { name: "Webflow", icon: "/alexbodniawebsite/webflow-logo-icon.jpg" },
+    { name: "Photoshop", icon: "/alexbodniawebsite/adobe-photoshop-logo-icon.jpg" },
+    { name: "Illustrator", icon: "/alexbodniawebsite/adobe-illustrator-logo-icon.jpg" },
+    { name: "After Effects", icon: "/alexbodniawebsite/adobe-after-effects-logo-icon.jpg" },
   ]
 
   return (
@@ -40,7 +40,7 @@ export function AboutSection() {
         <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-600">
           <h2 className="text-3xl md:text-4xl font-light mb-4">About Me</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Get to know the person behind the designs and the journey that shaped my creative approach.
+            A little showcase who I am and what i do.
           </p>
         </div>
 
@@ -89,17 +89,20 @@ export function AboutSection() {
           {/* Experience Timeline */}
           <div className="mb-20 animate-in fade-in slide-in-from-bottom-4 duration-600">
             <h3 className="text-2xl font-light mb-12 text-center">Experience</h3>
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-border" />
+            <div className="relative max-w-4xl mx-auto">
+              {/* Timeline line - hidden on mobile */}
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-border" />
 
               {data.experience.map((exp, index) => (
                 <div
                   key={index}
-                  className={`relative flex items-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-600 ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+                  className={`relative flex items-center mb-8 animate-in fade-in slide-in-from-bottom-4 duration-600 ${
+                    index % 2 === 0 ? "md:flex-row flex-col" : "md:flex-row-reverse flex-col"
+                  }`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className={`w-1/2 ${index % 2 === 0 ? "pr-8 text-right" : "pl-8"}`}>
+                  {/* Mobile: full width, Desktop: half width with alternating sides */}
+                  <div className={`w-full md:w-1/2 ${index % 2 === 0 ? "md:pr-8 md:text-right" : "md:pl-8"}`}>
                     <div className="bg-card border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                       <span className="text-sm font-mono text-muted-foreground">{exp.period}</span>
                       <h4 className="text-lg font-medium mt-2 mb-3">{exp.title}</h4>
@@ -107,8 +110,8 @@ export function AboutSection() {
                     </div>
                   </div>
 
-                  {/* Timeline dot */}
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background z-10" />
+                  {/* Timeline dot - positioned differently on mobile */}
+                  <div className="md:absolute md:left-1/2 md:transform md:-translate-x-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background z-10 md:top-1/2 md:-translate-y-1/2 mt-4 md:mt-0" />
                 </div>
               ))}
             </div>
@@ -137,16 +140,16 @@ export function AboutSection() {
                 ))}
               </div>
 
-              {/* Scroll buttons */}
+              {/* Scroll buttons - hidden on mobile where native scrolling is better */}
               <button
                 onClick={() => scrollTools("left")}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-background border border-border rounded-full p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
+                className="hidden md:flex absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-background border border-border rounded-full p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
               >
                 ←
               </button>
               <button
                 onClick={() => scrollTools("right")}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-background border border-border rounded-full p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
+                className="hidden md:flex absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-background border border-border rounded-full p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
               >
                 →
               </button>

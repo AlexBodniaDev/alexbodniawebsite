@@ -4,40 +4,39 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Beautiful pink and green color scheme inspired by top-tier portfolios */
-  --background: oklch(0.97 0.02 15); /* Soft warm white with pink undertone */
-  --foreground: oklch(0.25 0.03 140); /* Deep forest green for text */
-  --card: oklch(0.98 0.015 20); /* Slightly warmer card background */
-  --card-foreground: oklch(0.25 0.03 140);
-  --popover: oklch(0.98 0.015 20);
-  --popover-foreground: oklch(0.25 0.03 140);
-  --primary: oklch(0.35 0.08 140); /* Rich forest green for primary actions */
-  --primary-foreground: oklch(0.98 0.015 20);
-  --secondary: oklch(0.92 0.03 15); /* Soft pink for secondary elements */
-  --secondary-foreground: oklch(0.25 0.03 140);
-  --muted: oklch(0.94 0.025 15); /* Muted pink background */
-  --muted-foreground: oklch(0.45 0.02 140); /* Muted green text */
-  --accent: oklch(0.88 0.04 15); /* Accent pink */
-  --accent-foreground: oklch(0.25 0.03 140);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.98 0.015 20);
-  --border: oklch(0.9 0.02 15); /* Soft pink border */
-  --input: oklch(0.9 0.02 15);
-  --ring: oklch(0.35 0.08 140); /* Green focus ring */
-  --chart-1: oklch(0.35 0.08 140); /* Forest green */
-  --chart-2: oklch(0.88 0.04 15); /* Accent pink */
-  --chart-3: oklch(0.65 0.06 25); /* Warm coral */
-  --chart-4: oklch(0.45 0.05 160); /* Teal accent */
-  --chart-5: oklch(0.75 0.03 50); /* Golden accent */
+  --background: oklch(0.98 0.01 250); /* Soft cool white for a clean canvas */
+  --foreground: oklch(0.24 0.04 250); /* Deep slate for highly readable text */
+  --card: oklch(0.97 0.015 250);       /* Light neutral card background */
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.97 0.015 250);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.55 0.14 210);     /* Vibrant teal for key actions */
+  --primary-foreground: oklch(0.98 0.01 250);
+  --secondary: oklch(0.90 0.05 280);   /* Soft lavender for secondary UI */
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.93 0.02 250);       /* Gentle neutral gray for subtle areas */
+  --muted-foreground: oklch(0.45 0.02 250); /* Muted slate text */
+  --accent: oklch(0.70 0.12 220);      /* Fresh aqua accent */
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.58 0.20 27);  /* Modern but noticeable red */
+  --destructive-foreground: oklch(0.98 0.01 250);
+  --border: oklch(0.88 0.015 250);     /* Light cool border */
+  --input: var(--border);
+  --ring: oklch(0.55 0.14 210);        /* Teal focus ring */
+  --chart-1: oklch(0.55 0.14 210);     /* Teal for primary charts */
+  --chart-2: oklch(0.70 0.12 220);     /* Aqua accent */
+  --chart-3: oklch(0.65 0.07 40);      /* Warm amber for contrast */
+  --chart-4: oklch(0.45 0.08 180);     /* Muted emerald */
+  --chart-5: oklch(0.75 0.05 320);     /* Soft magenta highlight */
   --radius: 0.75rem;
-  --sidebar: oklch(0.98 0.015 20);
-  --sidebar-foreground: oklch(0.25 0.03 140);
-  --sidebar-primary: oklch(0.35 0.08 140);
-  --sidebar-primary-foreground: oklch(0.98 0.015 20);
-  --sidebar-accent: oklch(0.88 0.04 15);
-  --sidebar-accent-foreground: oklch(0.25 0.03 140);
-  --sidebar-border: oklch(0.9 0.02 15);
-  --sidebar-ring: oklch(0.35 0.08 140);
+  --sidebar: oklch(0.97 0.015 250);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: oklch(0.98 0.01 250);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--primary);
 }
 
 .dark {

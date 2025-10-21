@@ -47,54 +47,8 @@ export function ContactSection() {
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-xl font-medium mb-6">Send a Message</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Input
-                    type="text"
-                    name="name"
-                    placeholder="Your Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full"
-                  />
-                </div>
-                <div>
-                  <Input
-                    type="email"
-                    name="email"
-                    placeholder="Your Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full"
-                  />
-                </div>
-                <div>
-                  <Textarea
-                    name="message"
-                    placeholder="Tell me about your project..."
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={6}
-                    className="w-full resize-none"
-                  />
-                </div>
-                <Button type="submit" size="lg" className="w-full">
-                  Send Message
-                </Button>
-              </form>
-            </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-16">
+
 
             {/* Contact Info */}
             <motion.div
@@ -107,8 +61,7 @@ export function ContactSection() {
               <div>
                 <h3 className="text-xl font-medium mb-6">Get In Touch</h3>
                 <p className="text-muted-foreground leading-relaxed mb-8">
-                  I'm always interested in hearing about new projects and opportunities. Whether you have a question or
-                  just want to say hi, I'll try my best to get back to you!
+                  I'm always interested in hepling my client get what they want!
                 </p>
               </div>
 
@@ -165,7 +118,7 @@ export function ContactSection() {
           viewport={{ once: true }}
           className="mt-20 pt-8 border-t border-border text-center"
         >
-          <p className="text-muted-foreground text-sm">© 2025 Alex. Designed and built with passion.</p>
+          <p className="text-muted-foreground text-sm">© 2025 All rights reserved. Designed and built with passion by Alex Bodnia.</p>
         </motion.footer>
       </div>
     </section>

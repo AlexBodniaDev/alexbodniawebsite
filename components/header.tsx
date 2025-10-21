@@ -41,7 +41,7 @@ export function Header() {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            Alex
+            Alex Bodnia
           </motion.div>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -69,10 +69,10 @@ export function Header() {
             <ThemeToggle />
             <Button
               size="sm"
-              className="hidden sm:flex items-center gap-2"
+              className="flex items-center gap-2"
               onClick={() => {
                 // In a real app, this would download the actual CV
-                window.open("/cv.pdf", "_blank")
+                window.open("./cv.pdf", "_blank")
               }}
             >
               <Download className="h-4 w-4" />
