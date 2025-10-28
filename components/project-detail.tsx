@@ -13,6 +13,10 @@ interface Project {
   image: string
   tags: string[]
   year: string
+  // NOTE: These properties are redundant in this specific file, as the data 
+  // is pulled from projectDetails, but we keep them for interface correctness
+  liveUrl?: string 
+  githubUrl?: string
 }
 
 interface ProjectDetailProps {
@@ -23,6 +27,9 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   const router = useRouter()
 
   const projectDetails = {
+    // NOTE: The data here IS the source of truth for the links in this file
+    // for now. In a real app, you'd load ALL this data from an external source.
+
     "tennis-courts-3d": {
       overview:
         "An interactive 3D visualization platform for tennis court designs, featuring realistic lighting, materials and user interaction capabilities.",
@@ -38,6 +45,8 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Figma", "Adobe Photoshop", "Blender",],
       images: ["/alexbodniawebsite/entrance-view.png", "/alexbodniawebsite/all-courts-view.png", "/alexbodniawebsite/second-entrance-view.png", "/alexbodniawebsite/1-court-view.png", "/alexbodniawebsite/3-court-view.png", "/alexbodniawebsite/inventoty-boot-view.png",],
+      liveUrl: undefined, 
+      githubUrl: undefined,
     },
     "dnipro-redesign": {
       overview:
@@ -54,6 +63,8 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Figma", "Adobe Photoshop"],
       images: ["/alexbodniawebsite/main-hero-section-dnepronet.jpg", "/alexbodniawebsite/internet-dnepronet.jpg", "/alexbodniawebsite/tv-dnepro-net.jpg", "/alexbodniawebsite/map-faq-dnepronet.jpg", "/alexbodniawebsite/footer-dnepronet.jpg", "/alexbodniawebsite/about-dnepronet.jpg"],
+      liveUrl: undefined, 
+      githubUrl: undefined,
     },
     "ketotox-package": {
       overview:
@@ -70,6 +81,8 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Adobe Illustrator", "Adobe Photoshop", "Figma"],
       images: ["/alexbodniawebsite/mockup-one-keto.jpg", "/alexbodniawebsite/mockup-second-keto.png", "/alexbodniawebsite/mockup-third-keto.jpg", "/alexbodniawebsite/illustrations.jpg"],
+      liveUrl: undefined, 
+      githubUrl: undefined,
     },
     "mobile-app": {
       overview:
@@ -85,9 +98,13 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Adobe Photoshop", "Figma"],
       images: ["/alexbodniawebsite/welcome-screen-dsrk.jpg", "/alexbodniawebsite/task-screen.jpg", "/alexbodniawebsite/register-screen.jpg", "/alexbodniawebsite/pick-time-popup.jpg", "/alexbodniawebsite/pick-date-popup-green.jpg", "/alexbodniawebsite/main-screen-lightgreen.jpg"],
+      // Links defined here
+      liveUrl: "https://alexbodniadev.github.io/ToDoApp", 
+      githubUrl: "https://github.com/AlexBodniaDev/ToDoApp/tree/main",
     },
   }
 
+  // The 'details' object is the one that contains the links you set above.
   const details = projectDetails[project.id as keyof typeof projectDetails]
 
   return (
@@ -118,16 +135,29 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                   ))}
                 </div>
 
+                {/* ✅ FIX APPLIED HERE: We check and use the 'details' object for links */}
                 <div className="flex gap-4">
-                  <Button>
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View Live
-                  </Button>
-                  <Button variant="outline">
-                    <Github className="h-4 w-4 mr-2" />
-                    Source Code
-                  </Button>
+                  {/* Live Demo Button */}
+                  {details.liveUrl && (
+                    <Link href={details.liveUrl} target="_blank" rel="noopener noreferrer">
+                      <Button>
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View Live
+                      </Button>
+                    </Link>
+                  )}
+
+                  {/* Source Code Button */}
+                  {details.githubUrl && (
+                    <Link href={details.githubUrl} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline">
+                        <Github className="h-4 w-4 mr-2" />
+                        Source Code
+                      </Button>
+                    </Link>
+                  )}
                 </div>
+                {/* ---------------------------------------------------------------- */}
               </div>
 
               <div className="relative">
@@ -142,7 +172,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
         </div>
       </section>
 
-      {/* Project Details */}
+      {/* --- Project Details Section (Rest of the code remains the same) --- */}
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
