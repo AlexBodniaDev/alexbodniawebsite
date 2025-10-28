@@ -49,13 +49,3 @@ A modern, responsive portfolio website built with Next.js 14, TypeScript, and Ta
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
-
-## Contact
-
-For questions or support, reach out via:
-- Email: alex@example.com
-- GitHub: [@alex](https://github.com/alex)
-- LinkedIn: [Alex](https://linkedin.com/in/alex)
-\`\`\`
-
-```json file="" isHidden
