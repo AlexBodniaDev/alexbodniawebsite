@@ -54,12 +54,28 @@
       "year": "2023"
     },
     {
-      "id": "mobile-app",
+      "id": "mobile-app-todo",
       "title": "Responsive Mobile App",
       "description": "Cross-platform mobile application with intuitive user interface",
       "image": "/alexbodniawebsite/Logo-2.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "ToDo App"],
       "year": "2022"
+    },
+    {
+      "id": "mobile-app-cyclesense",
+      "title": "CycleSense period tracker app",
+      "description": "Cross-platform mobile application with intuitive user interface",
+      "image": "/alexbodniawebsite/cyclesenselogo.png",
+      "tags": ["Mobile Design", "Mobile App Design", "Period tracker App", "Woman health"],
+      "year": "2025"
+    },
+    {
+      "id": "mobile-app-cryptoxapp",
+      "title": "Modern minimalistic trading app - 'CryptoX'",
+      "description": "Cross-platform mobile application with intuitive user interface",
+      "image": "/alexbodniawebsite/cryptoxlogo.png",
+      "tags": ["Mobile Design", "Mobile App Design", "Trading App", "Crypto App"],
+      "year": "2025"
     }
   ]
 }

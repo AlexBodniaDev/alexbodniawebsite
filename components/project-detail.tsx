@@ -84,7 +84,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       liveUrl: undefined, 
       githubUrl: undefined,
     },
-    "mobile-app": {
+    "mobile-app-todo": {
       overview:
         "Cross-platform mobile application with intuitive user interface, focusing on seamless user experience and performance.",
       challenge:
@@ -102,6 +102,44 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       liveUrl: "https://alexbodniadev.github.io/ToDoApp", 
       githubUrl: "https://github.com/AlexBodniaDev/ToDoApp/tree/main",
     },
+
+    "mobile-app-cyclesense": {
+      overview:
+        "Cross-platform mobile application with intuitive user interface, focusing on female health and perion tracking system.",
+      challenge:
+        "Create an app for women where they can manage and see their cycle and manage their health habits.",
+      solution: "Developed using React Native with platform-specific optimizations and a comprehensive design system.",
+      process: [
+        "User journey mapping",
+        "Wireframing and prototyping",
+        "UI design system",
+        "Development and testing",
+      ],
+      technologies: ["Adobe Photoshop", "Figma", "React", "Next.js"],
+      images: ["/alexbodniawebsite/predictions-page-cyclesense.jpg", "/alexbodniawebsite/period-calendar-cyclesense.jpg", "/alexbodniawebsite/symptomps-page-cyclesense.jpg", "/alexbodniawebsite/settings-page-cyclesense.jpg", "/alexbodniawebsite/insights-screen-cyclesense.jpg"],
+      // Links defined here
+      liveUrl: "https://alexbodniadev.github.io/PeriodTrackerApp", 
+      githubUrl: "https://github.com/AlexBodniaDev/PeriodTrackerApp",
+    },
+
+    "mobile-app-cryptoxapp": {
+      overview:
+        "Cross-platform mobile application with intuitive user interface, focusing on seamless user experience and performance.",
+      challenge:
+        "Creating a consistent experience across iOS and Android while optimizing for different screen sizes and interaction patterns.",
+      solution: "Developed using React Native with platform-specific optimizations and a comprehensive design system.",
+      process: [
+        "User journey mapping",
+        "Wireframing and prototyping",
+        "UI design system",
+        "Development and testing",
+      ],
+      technologies: ["Adobe Photoshop", "Figma", "React", "Next.js"],
+      images: ["/alexbodniawebsite/main-screen-cryptox.jpg", "/alexbodniawebsite/markets-page-cryptox.jpg", "/alexbodniawebsite/list-token-cryptox.jpg", "/alexbodniawebsite/notifications-cryptox.jpg", "/alexbodniawebsite/portfolio-page-cryptox.jpg", "/alexbodniawebsite/profile-settings-page-cryptox.jpg", "/alexbodniawebsite/settings-page-cryptox.jpg"],
+      // Links defined here
+      liveUrl: "https://github.com/AlexBodniaDev/CryptoXApp", 
+      githubUrl: "https://github.com/AlexBodniaDev/CryptoXApp",
+    }
   }
 
   // The 'details' object is the one that contains the links you set above.
