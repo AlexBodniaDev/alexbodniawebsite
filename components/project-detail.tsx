@@ -45,7 +45,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Figma", "Adobe Photoshop", "Blender",],
       images: ["/alexbodniawebsite/entrance-view.png", "/alexbodniawebsite/all-courts-view.png", "/alexbodniawebsite/second-entrance-view.png", "/alexbodniawebsite/1-court-view.png", "/alexbodniawebsite/3-court-view.png", "/alexbodniawebsite/inventoty-boot-view.png",],
-      liveUrl: undefined, 
+      liveUrl: "https://drive.google.com/file/d/1fCvXCnh6GpEOE-9ezJQq9DrB7j_E1OBw/view?usp=sharing", 
       githubUrl: undefined,
     },
     "dnipro-redesign": {
@@ -63,7 +63,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Figma", "Adobe Photoshop"],
       images: ["/alexbodniawebsite/main-hero-section-dnepronet.jpg", "/alexbodniawebsite/internet-dnepronet.jpg", "/alexbodniawebsite/tv-dnepro-net.jpg", "/alexbodniawebsite/map-faq-dnepronet.jpg", "/alexbodniawebsite/footer-dnepronet.jpg", "/alexbodniawebsite/about-dnepronet.jpg"],
-      liveUrl: undefined, 
+      liveUrl: "https://drive.google.com/file/d/1yDtr7PmPJqzxp4g4CTsx4sGefKuQHR3C/view?usp=sharing", 
       githubUrl: undefined,
     },
     "ketotox-package": {
@@ -81,7 +81,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       ],
       technologies: ["Adobe Illustrator", "Adobe Photoshop", "Figma"],
       images: ["/alexbodniawebsite/mockup-one-keto.jpg", "/alexbodniawebsite/mockup-second-keto.png", "/alexbodniawebsite/mockup-third-keto.jpg", "/alexbodniawebsite/illustrations.jpg"],
-      liveUrl: undefined, 
+      liveUrl: "https://drive.google.com/file/d/1mrNA11sG5BVX7TRU8QoUoB2x8U7NYbxM/view?usp=sharing", 
       githubUrl: undefined,
     },
     "mobile-app-todo": {
@@ -137,7 +137,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
       technologies: ["Adobe Photoshop", "Figma", "React", "Next.js"],
       images: ["/alexbodniawebsite/main-screen-cryptox.jpg", "/alexbodniawebsite/markets-page-cryptox.jpg", "/alexbodniawebsite/list-token-cryptox.jpg", "/alexbodniawebsite/notifications-cryptox.jpg", "/alexbodniawebsite/portfolio-page-cryptox.jpg", "/alexbodniawebsite/profile-settings-page-cryptox.jpg", "/alexbodniawebsite/settings-page-cryptox.jpg"],
       // Links defined here
-      liveUrl: "https://github.com/AlexBodniaDev/CryptoXApp", 
+      liveUrl: "https://alexbodniadev.github.io/CryptoXApp", 
       githubUrl: "https://github.com/AlexBodniaDev/CryptoXApp",
     }
   }

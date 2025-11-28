@@ -33,7 +33,7 @@
       "id": "tennis-courts-3d",
       "title": "Tennis Courts 3D",
       "description": "Interactive 3D visualization of tennis court designs with realistic lighting and materials",
-      "image": "/alexbodniawebsite/1-court-view.png",
+      "image": "/alexbodniawebsite/3dcourtsprv.jpg",
       "tags": ["3D Design", "Blender", "3D from sketch"],
       "year": "2022"
     },
@@ -41,7 +41,7 @@
       "id": "dnipro-redesign",
       "title": "Dnipro.net Redesign",
       "description": "Complete redesign of the Dnipro.net website with improved UX and modern interface",
-      "image": "/alexbodniawebsite/preview-second.jpg",
+      "image": "/alexbodniawebsite/Dnepronetprv.jpg",
       "tags": ["Web Design", "UX/UI", "Redesign"],
       "year": "2023"
     },
@@ -49,7 +49,7 @@
       "id": "ketotox-package",
       "title": "Ketotox Plus Medical Package",
       "description": "Medical packaging design with hand-drawn illustrations",
-      "image": "/alexbodniawebsite/mockup-one-keto.jpg",
+      "image": "/alexbodniawebsite/Ketoprv.jpg",
       "tags": ["Package Design", "Medical", "Branding"],
       "year": "2023"
     },
@@ -57,7 +57,7 @@
       "id": "mobile-app-todo",
       "title": "Responsive Mobile App",
       "description": "Cross-platform mobile application with intuitive user interface",
-      "image": "/alexbodniawebsite/Logo-2.jpg",
+      "image": "/alexbodniawebsite/Todoprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "ToDo App"],
       "year": "2022"
     },
@@ -65,7 +65,7 @@
       "id": "mobile-app-cyclesense",
       "title": "CycleSense period tracker app",
       "description": "Cross-platform mobile application with intuitive user interface",
-      "image": "/alexbodniawebsite/cyclesenselogo.png",
+      "image": "/alexbodniawebsite/Cyclesenseprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "Period tracker App", "Woman health"],
       "year": "2025"
     },
@@ -73,7 +73,7 @@
       "id": "mobile-app-cryptoxapp",
       "title": "Modern minimalistic trading app - 'CryptoX'",
       "description": "Cross-platform mobile application with intuitive user interface",
-      "image": "/alexbodniawebsite/cryptoxlogo.png",
+      "image": "/alexbodniawebsite/Cryptoxprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "Trading App", "Crypto App"],
       "year": "2025"
     }
