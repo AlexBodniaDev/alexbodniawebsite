@@ -48,6 +48,9 @@
   --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: oklch(0.88 0.005 240);
   --sidebar-ring: var(--primary);
+  
+  /* ADDITION for smooth theme transitions */
+  --theme-transition-duration: 300ms;
 }
 
 .dark {
@@ -142,9 +145,18 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* FIX 1: Apply broad transitions to all elements to catch theme color changes */
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: var(--theme-transition-duration);
   }
+  
   body {
     @apply bg-background text-foreground font-sans;
+    /* FIX 2: Explicitly ensure body background and text color transition */
+    transition-property: background-color, color; 
+    transition-duration: var(--theme-transition-duration);
+    
     /* Premium typography settings */
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-variant-numeric: oldstyle-nums;
