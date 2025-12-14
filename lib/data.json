@@ -1,0 +1,81 @@
+{
+  "personal": {
+    "name": "Alex",
+    "title": "UX/UI Designer & Developer",
+    "subtitle": "Creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
+    "quote": "When you think something is impossible my work is to take off the 'im' and make your idea possible.",
+    "about": "Hello there, I'm Alex, creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
+    "contact": "Feel free to share your ideas with me and we'll see how idea turns into result.",
+    "email": "bodniaalex2911@gmail.com",
+    "github": "https://github.com/AlexBodniaDev",
+    "linkedin": "https://www.linkedin.com/in/oleksandr-bodnia-13489920b/"
+  },
+  "experience": [
+    {
+      "period": "2022-2024",
+      "title": "Open to work",
+      "description": "Gained hands-on experience in UX/UI design and React development"
+    },
+    {
+      "period": "2018-2022",
+      "title": "Voronin Design Studio",
+      "description": "Worked as intern  on various design projects and developed creative solutions"
+    },
+    {
+      "period": "2018-2022",
+      "title": "IT Step University",
+      "description": "achieved a Bachelor's degree in Computer Science and gained practical skills through internships"
+    }
+  ],
+  "tools": ["Figma", "Photoshop", "Illustrator", "Adobe XD", "React", "Next.js", "Adobe XD", "After Effects"],
+  "projects": [
+    {
+      "id": "tennis-courts-3d",
+      "title": "Tennis Courts 3D",
+      "description": "Interactive 3D visualization of tennis court designs with realistic lighting and materials",
+      "image": "/alexbodniawebsite/3dcourtsprv.jpg",
+      "tags": ["3D Design", "Blender", "3D from sketch"],
+      "year": "2022"
+    },
+    {
+      "id": "dnipro-redesign",
+      "title": "Dnipro.net Redesign",
+      "description": "Complete redesign of the Dnipro.net website with improved UX and modern interface",
+      "image": "/alexbodniawebsite/Dnepronetprv.jpg",
+      "tags": ["Web Design", "UX/UI", "Redesign"],
+      "year": "2023"
+    },
+    {
+      "id": "ketotox-package",
+      "title": "Ketotox Plus Medical Package",
+      "description": "Medical packaging design with hand-drawn illustrations",
+      "image": "/alexbodniawebsite/Ketoprv.jpg",
+      "tags": ["Package Design", "Medical", "Branding"],
+      "year": "2023"
+    },
+    {
+      "id": "mobile-app-todo",
+      "title": "Responsive Mobile App",
+      "description": "Cross-platform mobile application with intuitive user interface",
+      "image": "/alexbodniawebsite/Todoprv.jpg",
+      "tags": ["Mobile Design", "Mobile App Design", "ToDo App"],
+      "year": "2022"
+    },
+    {
+      "id": "mobile-app-cyclesense",
+      "title": "CycleSense period tracker app",
+      "description": "Cross-platform mobile application with intuitive user interface",
+      "image": "/alexbodniawebsite/Cyclesenseprv.jpg",
+      "tags": ["Mobile Design", "Mobile App Design", "Period tracker App", "Woman health"],
+      "year": "2025"
+    },
+    {
+      "id": "mobile-app-cryptoxapp",
+      "title": "Modern minimalistic trading app - 'CryptoX'",
+      "description": "Cross-platform mobile application with intuitive user interface",
+      "image": "/alexbodniawebsite/Cryptoxprv.jpg",
+      "tags": ["Mobile Design", "Mobile App Design", "Trading App", "Crypto App"],
+      "year": "2025"
+    }
+  ]
+}
