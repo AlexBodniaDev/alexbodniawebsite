@@ -7,15 +7,24 @@ export function HeroSection() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth) * 100,
-        y: (e.clientY / window.innerHeight) * 100,
-      })
-    }
+    // Only track mouse movement on large screens for performance, 
+    // or use a static position on mobile.
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      const handleMouseMove = (e: MouseEvent) => {
+        setMousePosition({
+          x: (e.clientX / window.innerWidth) * 100,
+          y: (e.clientY / window.innerHeight) * 100,
+        })
+      }
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
+      window.addEventListener("mousemove", handleMouseMove)
+      return () => window.removeEventListener("mousemove", handleMouseMove)
+    } else {
+        // Set a default, static position for mobile/small screens
+        setMousePosition({ x: 50, y: 50 });
+    }
+    // Dependency array includes an empty array, but we check window.innerWidth inside useEffect 
+    // to determine if we attach the listener.
   }, [])
 
   const scrollToWorks = () => {
@@ -27,14 +36,21 @@ export function HeroSection() {
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/30 pt-20 md:pt-0">
+      {/* 1. MOUSE-TRACKING RADIAL GLOW: 
+          Removed 'hidden md:block' to ensure visibility on mobile.
+          The mousePosition is set to a static 50% 50% on mobile (due to the useEffect logic).
+          The opacity is reduced on mobile for better performance/subtlety. */}
       <div
-        className="absolute inset-0 opacity-10 transition-all duration-1000 ease-out hidden md:block"
+        className="absolute inset-0 opacity-50 md:opacity-10 transition-all duration-1000 ease-out"
         style={{
           background: `radial-gradient(600px circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(99, 63, 38, 0.1), transparent 50%)`,
         }}
       />
 
-      <div className="absolute inset-0 pointer-events-none hidden lg:block">
+      {/* 2. FLOATING BACKGROUND SHAPES (Circle and Square): 
+          Removed 'hidden lg:block' to ensure visibility on mobile. 
+          The floating animation (animate-float) will now run on all devices. */}
+      <div className="absolute inset-0 pointer-events-none"> 
         <div className="absolute top-1/4 right-1/4 w-40 h-40 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 backdrop-blur-sm animate-float" />
         <div className="absolute bottom-1/3 left-1/5 w-32 h-32 rounded-2xl bg-gradient-to-tr from-accent/20 to-primary/15 backdrop-blur-sm" />
       </div>
@@ -59,7 +75,7 @@ export function HeroSection() {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-4 duration-800 delay-600">
-             My role is to help solve problems and create exceptional user experiences and innovative digital solutions.
+              My role is to help solve problems and create exceptional user experiences and innovative digital solutions.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-in fade-in slide-in-from-bottom-4 duration-800 delay-800">
