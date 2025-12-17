@@ -1,32 +1,20 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-// Assuming your data.json structure is correct and accessible
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
 import data from "@/lib/data.json" 
 
-// Custom hook to hide the scrollbar for Webkit browsers (Chrome, Safari, etc.)
-// This is necessary since Tailwind utility classes (like scrollbar-hide) require 
-// global CSS which is not guaranteed to be present.
 const useHideScrollbar = (ref: React.RefObject<HTMLElement>) => {
   useEffect(() => {
     if (ref.current) {
       const styleElement = document.createElement('style');
-      styleElement.textContent = `
-        .scrollbar-hide-dynamic::-webkit-scrollbar {
-          display: none !important;
-        }
-      `;
+      styleElement.textContent = `.scrollbar-hide-dynamic::-webkit-scrollbar { display: none !important; }`;
       ref.current.classList.add('scrollbar-hide-dynamic');
       document.head.appendChild(styleElement);
-
       return () => {
-        // Clean up the style element when the component unmounts
         ref.current?.classList.remove('scrollbar-hide-dynamic');
         const existingStyle = document.head.querySelector('style:last-child');
-        if (existingStyle && existingStyle.textContent?.includes('scrollbar-hide-dynamic')) {
-            document.head.removeChild(existingStyle);
-        }
+        if (existingStyle) document.head.removeChild(existingStyle);
       };
     }
   }, [ref]);
@@ -35,31 +23,17 @@ const useHideScrollbar = (ref: React.RefObject<HTMLElement>) => {
 export function AboutSection() {
   const [activeImage, setActiveImage] = useState(0)
   const scrollRef = useRef<HTMLDivElement>(null)
-  
-  // Activate scrollbar hiding hook
   useHideScrollbar(scrollRef);
 
-  const profileImages = ["/alexbodniawebsite/photo-of-me-one.jpg", "/alexbodniawebsite/photo-of-me-second.jpg", "/alexbodniawebsite/photo-of-me-third.jpg"]
-
-  const goToPrevious = () => {
-    setActiveImage((prev) => (prev - 1 + profileImages.length) % profileImages.length)
-  }
-
-  const goToNext = () => {
-    setActiveImage((prev) => (prev + 1) % profileImages.length)
-  }
-
-  const goToImage = (index: number) => {
-    setActiveImage(index)
-  }
+  const profileImages = [
+    "/alexbodniawebsite/photo-of-me-one.jpg", 
+    "/alexbodniawebsite/photo-of-me-second.jpg", 
+    "/alexbodniawebsite/photo-of-me-third.jpg"
+  ]
 
   const scrollTools = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const scrollAmount = 200
-      scrollRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      })
+      scrollRef.current.scrollBy({ left: direction === "left" ? -300 : 300, behavior: "smooth" })
     }
   }
 
@@ -79,162 +53,116 @@ export function AboutSection() {
   ]
 
   return (
-    <section id="about" className="py-16 md:py-20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12 md:mb-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <h2 className="text-2xl md:text-4xl font-light mb-3 md:mb-4">About Me</h2>
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
-            A little showcase who I am and what i do.
+    <section id="about" className="py-24 md:py-32 bg-background relative overflow-hidden">
+      <div className="container mx-auto px-6 max-w-6xl relative z-10">
+        
+        {/* HEADER */}
+        <div className="text-center mb-20 md:mb-28">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 mb-6">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">Who I Am</span>
+          </div>
+          <h2 className="text-5xl md:text-7xl font-serif tracking-tighter mb-6">
+            About <span className="italic font-light text-primary">Me</span>
+          </h2>
+          <p className="text-foreground/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal">
+            A little showcase of my journey, my principles, and the craft behind my work.
           </p>
         </div>
 
         <div className="max-w-6xl mx-auto">
-          {/* Photo Stack and Introduction (UNCHANGED) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20">
-            <div className="relative animate-in fade-in slide-in-from-left duration-600">
-              <div className="relative w-full max-w-sm mx-auto">
-                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-muted/30 shadow-lg">
-                  {profileImages.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image || "/placeholder.svg"}
-                      alt={`Alex - Photo ${index + 1}`}
-                      loading="lazy"
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                        index === activeImage ? "opacity-100" : "opacity-0"
-                      }`}
-                    />
-                  ))}
+          {/* PHOTO STACK & TEXT */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-32">
+            <div className="relative group">
+              <div className="relative w-full max-w-sm mx-auto aspect-[4/5] rounded-[2.5rem] overflow-hidden border-2 border-border shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]">
+                {profileImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image || "/placeholder.svg"}
+                    alt="Alex"
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${index === activeImage ? "opacity-100" : "opacity-0 scale-105"}`}
+                  />
+                ))}
+                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
+                  <button onClick={() => setActiveImage(p => (p - 1 + profileImages.length) % profileImages.length)} className="pointer-events-auto p-3 bg-background/90 backdrop-blur-md rounded-full shadow-lg hover:bg-primary hover:text-white transition-all">
+                    <ChevronLeft className="w-5 h-5"/>
+                  </button>
+                  <button onClick={() => setActiveImage(p => (p + 1) % profileImages.length)} className="pointer-events-auto p-3 bg-background/90 backdrop-blur-md rounded-full shadow-lg hover:bg-primary hover:text-white transition-all">
+                    <ChevronRight className="w-5 h-5"/>
+                  </button>
                 </div>
-
-                {/* Navigation Buttons */}
-                <button
-                  onClick={goToPrevious}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-black rounded-full p-2 transition-all duration-300 hover:scale-110 active:scale-95"
-                  aria-label="Previous photo"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={goToNext}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-black rounded-full p-2 transition-all duration-300 hover:scale-110 active:scale-95"
-                  aria-label="Next photo"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-
-                {/* Indicator Dots */}
-                <div className="flex justify-center gap-2 mt-4">
-                  {profileImages.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToImage(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        index === activeImage
-                          ? "bg-primary w-6"
-                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50 w-2"
-                      }`}
-                      aria-label={`View photo ${index + 1}`}
-                    />
-                  ))}
-                </div>
+              </div>
+              <div className="flex justify-center gap-2 mt-8">
+                {profileImages.map((_, i) => (
+                  <button key={i} onClick={() => setActiveImage(i)} className={`h-1.5 rounded-full transition-all duration-500 ${i === activeImage ? "bg-primary w-8" : "bg-muted-foreground/30 w-2"}`} />
+                ))}
               </div>
             </div>
 
-            <div className="animate-in fade-in slide-in-from-right duration-600 delay-200">
-              <h3 className="text-2xl font-light mb-6">{data.personal.about}</h3>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                I believe that great design is not just about making things look beautiful—it's about solving real
-                problems and creating meaningful experiences. My approach combines analytical thinking with creative
-                intuition, always keeping the user at the center of every decision.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                When I'm not designing or coding, you can find me exploring new technologies, sketching ideas in my
-                notebook, or seeking inspiration in everyday interactions and beautiful design patterns around us.
-              </p>
+            <div className="space-y-8">
+              <h3 className="text-3xl md:text-4xl font-serif leading-tight text-foreground">
+                {data.personal.about}
+              </h3>
+              <div className="space-y-6 text-lg md:text-xl text-foreground/80 leading-relaxed font-light">
+                <p>I believe that great design is not just about aesthetics—it's about <strong className="text-foreground font-semibold underline decoration-primary/30 underline-offset-4">solving real problems</strong> and creating meaningful experiences.</p>
+                <p>My approach combines analytical thinking with creative intuition, always keeping the user at the center of every decision.</p>
+              </div>
             </div>
           </div>
 
-          {/* Experience Timeline (UNCHANGED) */}
-          <div className="mb-16 md:mb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h3 className="text-2xl font-light mb-8 md:mb-12 text-center">Experience</h3>
-            <div className="relative max-w-4xl mx-auto">
-              {/* Timeline line - hidden on mobile */}
-              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-border" />
-
+          {/* EXPERIENCE WITH NEW CARDS */}
+          <div className="mb-32">
+            <h3 className="text-3xl md:text-5xl font-serif text-center mb-20 italic">Experience</h3>
+            <div className="relative max-w-5xl mx-auto space-y-12">
+              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-border to-transparent" />
+              
               {data.experience.map((exp, index) => (
-                <div
-                  key={index}
-                  className={`relative flex items-center mb-6 md:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-400 ${
-                    index % 2 === 0 ? "md:flex-row flex-col" : "md:flex-row-reverse flex-col"
-                  }`}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  {/* Mobile: full width, Desktop: half width with alternating sides */}
-                  <div className="w-full md:w-1/2 mt-4 md:mt-0">
-                    <div className={`bg-card border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-300 ${index % 2 === 0 ? "md:pr-8 md:text-right" : "md:pl-8"}`}>
-                      <span className="text-sm font-mono text-muted-foreground">{exp.period}</span>
-                      <h4 className="text-lg font-medium mt-2 mb-3">{exp.title}</h4>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{exp.description}</p>
+                <div key={index} className={`relative flex items-center flex-col md:flex-row ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}>
+                  <div className="w-full md:w-1/2 px-4 md:px-10">
+                    <div className="group relative bg-card/40 backdrop-blur-md border border-primary/10 p-8 md:p-10 rounded-[2.5rem] shadow-sm transition-all duration-500 hover:shadow-2xl hover:border-primary/30 hover:-translate-y-2 overflow-hidden">
+                      <div className="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 blur-3xl group-hover:bg-primary/10 transition-colors" />
+                      <div className={`absolute top-10 bottom-10 w-1 bg-primary/20 rounded-full ${index % 2 === 0 ? "right-0" : "left-0"}`} />
+                      
+                      <div className="relative z-10">
+                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] bg-primary/5 px-4 py-1.5 rounded-full border border-primary/10 mb-6 inline-block">
+                          {exp.period}
+                        </span>
+                        <h4 className="text-2xl md:text-3xl font-serif mb-4 text-foreground group-hover:text-primary transition-colors duration-300">
+                          {exp.title}
+                        </h4>
+                        <p className="text-foreground/70 leading-relaxed font-normal text-base md:text-lg">
+                          {exp.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Timeline dot */}
-                  <div className="md:absolute md:left-1/2 md:transform md:-translate-x-1/2 w-4 h-4 bg-primary rounded-full border-4 border-background z-10 md:top-1/2 md:-translate-y-1/2 mt-4 md:mt-0" />
+                  <div className="hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-background border-2 border-primary/30 z-10 absolute left-1/2 -translate-x-1/2">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Tools Section (FINAL FIXES APPLIED) */}
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h3 className="text-2xl font-light mb-8 text-center">Tools & Technologies</h3>
-            <div className="relative max-w-5xl mx-auto md:px-16">
-              
-              {/* Scroll Left Button: Hidden on mobile */}
-              <button
-                onClick={() => scrollTools("left")}
-                className="hidden md:flex absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-full items-center justify-center w-8 h-8 bg-card border border-border rounded-full p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 z-20"
-                aria-label="Scroll left"
-              >
-                <ChevronLeft className="h-5 w-5 text-foreground" />
+          {/* TOOLS & TECH */}
+          <div className="pb-12">
+            <h3 className="text-2xl font-serif text-center mb-12 italic text-muted-foreground">Tech Stack & Tools</h3>
+            <div className="relative flex items-center group max-w-5xl mx-auto">
+              <button onClick={() => scrollTools("left")} className="p-3 text-muted-foreground hover:text-primary transition-all hover:scale-125">
+                <ChevronLeft className="w-6 h-6" />
               </button>
               
-              {/* Outer Centering Wrapper: Uses flex and justify-center to center the scroll area when it's short */}
-              <div className="flex justify-center w-full"> 
-                {/* Scroll Container: Handles overflow/scroll, receives the ref, and applies inline CSS to hide scrollbar */}
-                <div
-                  ref={scrollRef}
-                  className="flex gap-3 md:gap-4 overflow-x-auto pb-4 px-4 md:px-0"
-                  // Inline styles to hide scrollbar in Firefox and Edge/IE
-                  style={{ 
-                    scrollbarWidth: "none", // For Firefox
-                    msOverflowStyle: "none"  // For IE and Edge
-                  }}
-                >
-                  {toolsWithIcons.map((tool, index) => (
-                    <div
-                      key={tool.name}
-                      // *** 16px Top Padding Applied (pt-4) ***
-                      className="flex-shrink-0 bg-card border border-border rounded-xl px-4 md:px-6 pt-4 pb-3 md:pb-4 shadow-sm hover:shadow-md transition-all hover:scale-105 hover:-translate-y-1 animate-in fade-in scale-in-95 duration-300"
-                      style={{ animationDelay: `${index * 25}ms` }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <img src={tool.icon || "/placeholder.svg"} alt={`${tool.name} icon`} loading="lazy" className="w-6 h-6" />
-                        <span className="font-medium text-sm whitespace-nowrap">{tool.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div ref={scrollRef} className="flex gap-5 overflow-x-auto pb-8 px-4 no-scrollbar scroll-smooth" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+                {toolsWithIcons.map((tool) => (
+                  <div key={tool.name} className="flex-shrink-0 flex items-center gap-4 bg-card border border-border px-7 py-5 rounded-[1.5rem] shadow-sm hover:border-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group/tool">
+                    <img src={tool.icon} alt={tool.name} className="w-7 h-7 object-contain transition-transform group-hover/tool:scale-110" />
+                    <span className="font-bold text-sm tracking-tight text-foreground/90">{tool.name}</span>
+                  </div>
+                ))}
               </div>
-              
-              {/* Scroll Right Button: Hidden on mobile */}
-              <button
-                onClick={() => scrollTools("right")}
-                className="hidden md:flex absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-full items-center justify-center w-8 h-8 bg-card border border-border rounded-full p-2 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 z-20"
-                aria-label="Scroll right"
-              >
-                <ChevronRight className="h-5 w-5 text-foreground" />
+
+              <button onClick={() => scrollTools("right")} className="p-3 text-muted-foreground hover:text-primary transition-all hover:scale-125">
+                <ChevronRight className="w-6 h-6" />
               </button>
             </div>
           </div>

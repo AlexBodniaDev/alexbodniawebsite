@@ -1,124 +1,90 @@
 "use client"
 
 import type React from "react"
-
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Github, Linkedin, Mail, ExternalLink } from "lucide-react"
-import { useState } from "react"
+import { Github, Linkedin, Mail, ExternalLink, Sparkles, Dribbble, Palette } from "lucide-react"
 import data from "@/lib/data.json"
 
 export function ContactSection() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // In a real app, this would send the form data to a server
-    console.log("Form submitted:", formData)
-    // Reset form
-    setFormData({ name: "", email: "", message: "" })
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
+  const contactLinks = [
+    { name: "Email Me", icon: Mail, href: `mailto:${data.personal.email}`, label: data.personal.email },
+    { name: "Professional", icon: Linkedin, href: data.personal.linkedin, label: "LinkedIn" },
+    { name: "Portfolio", icon: Palette, href: "https://www.behance.net/bodniaalex", label: "Behance" },
+    { name: "Shots", icon: Dribbble, href: "https://dribbble.com/AlexBodnia", label: "Dribbble" },
+    { name: "Code", icon: Github, href: data.personal.github, label: "GitHub" },
+  ]
 
   return (
-    <section id="contact" className="py-16 md:py-20 bg-muted/30">
+    <section id="contact" className="py-24 md:py-32 bg-background border-t border-border/50">
       <div className="container mx-auto px-6">
+        
+        {/* HEADER */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-16 md:mb-24"
         >
-          <h2 className="text-2xl md:text-4xl font-light mb-3 md:mb-4">Let's Work Together</h2>
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">{data.personal.contact}</p>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 mb-6">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">Get in touch</span>
+          </div>
+          <h2 className="text-5xl md:text-7xl font-serif tracking-tighter mb-8 text-foreground">
+            Let's Work <span className="italic font-light text-primary">Together</span>
+          </h2>
+          <p className="text-foreground/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal">
+            {data.personal.contact || "I'm always interested in hearing about new projects and opportunities."}
+          </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-1 gap-16">
-
-
-            {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="space-y-6 md:space-y-8"
-            >
-              <div>
-                <h3 className="text-xl font-medium mb-6">Get In Touch</h3>
-                <p className="text-muted-foreground leading-relaxed mb-8">
-                  I'm always interested in hepling my client get what they want!
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <a
-                  href={`mailto:${data.personal.email}`}
-                  className="flex items-center gap-4 p-4 bg-card border border-border rounded-lg hover:shadow-md transition-all duration-300 group"
-                >
-                  <Mail className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <div>
-                    <div className="font-medium">Email</div>
-                    <div className="text-sm text-muted-foreground">{data.personal.email}</div>
+        <div className="max-w-2xl mx-auto">
+          {/* CONTACT LINKS - ONE COLUMN COMPACT */}
+          <div className="grid grid-cols-1 gap-4">
+            {contactLinks.map((link, index) => (
+              <motion.a
+                key={link.name}
+                href={link.href}
+                target={link.name === "Email Me" ? undefined : "_blank"}
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="flex items-center gap-5 p-4 md:p-5 bg-card border border-border rounded-[1.5rem] hover:shadow-xl hover:border-primary/30 hover:-translate-y-1 transition-all duration-500 group"
+              >
+                <div className="w-11 h-11 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <link.icon className="h-5 w-5" />
+                </div>
+                
+                <div className="flex-grow">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">
+                    {link.name}
                   </div>
-                  <ExternalLink className="h-4 w-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
-
-                <a
-                  href={data.personal.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 bg-card border border-border rounded-lg hover:shadow-md transition-all duration-300 group"
-                >
-                  <Github className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <div>
-                    <div className="font-medium">GitHub</div>
-                    <div className="text-sm text-muted-foreground">View my code</div>
+                  <div className="text-base md:text-lg font-bold text-foreground">
+                    {link.label}
                   </div>
-                  <ExternalLink className="h-4 w-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
+                </div>
 
-                <a
-                  href={data.personal.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 bg-card border border-border rounded-lg hover:shadow-md transition-all duration-300 group"
-                >
-                  <Linkedin className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <div>
-                    <div className="font-medium">LinkedIn</div>
-                    <div className="text-sm text-muted-foreground">Connect with me</div>
-                  </div>
-                  <ExternalLink className="h-4 w-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
-              </div>
-            </motion.div>
+                <ExternalLink className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary transition-all" />
+              </motion.a>
+            ))}
           </div>
         </div>
 
-        {/* Footer */}
+        {/* FOOTER - EXACTLY AS BEFORE */}
         <motion.footer
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.6 }}
           viewport={{ once: true }}
-          className="mt-16 md:mt-20 pt-6 md:pt-8 border-t border-border text-center"
+          className="mt-32 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left"
         >
-          <p className="text-muted-foreground text-xs md:text-sm">© 2025 All rights reserved. Designed and built with passion by Alex Bodnia.</p>
+          <p className="text-muted-foreground text-sm font-medium">© 2025 All rights reserved.</p>
+          <div className="font-serif italic text-2xl text-foreground">
+            Alex <span className="text-primary">Bodnia</span>
+          </div>
+          <p className="text-muted-foreground text-sm font-light italic">Built with Passion and Precision.</p>
         </motion.footer>
       </div>
     </section>

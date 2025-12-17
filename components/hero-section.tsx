@@ -1,154 +1,180 @@
 "use client"
 
-import { ChevronDown, ArrowRight } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ArrowRight, Sparkles, Code2, Cpu, Layers, Framer, Zap, ChevronDown } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+
+const ICONS = [
+    { component: <Code2 size={40} />, size: 90 },
+    { component: <Framer size={45} />, size: 100 },
+    { component: <Cpu size={40} />, size: 95 },
+    { component: <Layers size={35} />, size: 85 },
+    { component: <Zap size={30} />, size: 80 },
+];
 
 export function HeroSection() {
-    const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 }) // Default center position
-    
-    // FIX 1: State to track the current theme (no external hook needed)
+    const [hasMounted, setHasMounted] = useState(false);
     const [theme, setTheme] = useState('light');
-    
-    // FIX 2: State to track if the initial mount has completed
-    const [hasMounted, setHasMounted] = useState(false); 
+    const iconsRef = useRef<any[]>([]);
+    const physicsRef = useRef<any[]>([]);
+    const mouseRef = useRef({ x: 50, y: 50 });
+    const dragRef = useRef<{ id: number | null; x: number; y: number; vx: number; vy: number }>({
+        id: null, x: 0, y: 0, vx: 0, vy: 0
+    });
 
-    // Effect to determine theme status and manage initial mount
     useEffect(() => {
-        // Initial Mount Logic: Set hasMounted to true after first render
         setHasMounted(true);
-
-        // Theme Detection Logic
-        // Check initial theme state
         const initialTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         setTheme(initialTheme);
 
-        // Observer to watch for theme changes (class change on <html>)
         const observer = new MutationObserver(() => {
-            const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            setTheme(currentTheme);
+            setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         });
-
-        // Start observing for attribute changes (specifically 'class') on the root element
         observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-        return () => {
-            observer.disconnect();
-        };
-    }, [])
-    
-    // Mouse Movement Effect (Unchanged)
+        physicsRef.current = ICONS.map(() => ({
+            x: Math.random() * 80 + 10,
+            y: Math.random() * 60 + 20,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: (Math.random() - 0.5) * 0.15,
+        }));
+
+        return () => observer.disconnect();
+    }, []);
+
     useEffect(() => {
-        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
-        
-        const handleMouseMove = (e: MouseEvent) => {
-            setMousePosition({
-                x: (e.clientX / window.innerWidth) * 100,
-                y: (e.clientY / window.innerHeight) * 100,
-            })
-        }
+        const handleMove = (e: any) => {
+            const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
+            const y = 'touches' in e ? e.touches[0].clientY : e.clientY;
+            const cx = (x / window.innerWidth) * 100;
+            const cy = (y / window.innerHeight) * 100;
+            mouseRef.current = { x: cx, y: cy };
 
-        if (isDesktop) {
-            window.addEventListener("mousemove", handleMouseMove)
-        }
-        
-        return () => {
-            if (isDesktop) {
-                window.removeEventListener("mousemove", handleMouseMove)
+            if (dragRef.current.id !== null) {
+                dragRef.current.vx = cx - dragRef.current.x;
+                dragRef.current.vy = cy - dragRef.current.y;
+                dragRef.current.x = cx; dragRef.current.y = cy;
             }
-        }
-    }, [])
+        };
 
-    const scrollToWorks = () => {
-        const element = document.getElementById("works")
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth" })
-        }
-    }
-    
-    // FIX 3: Dynamic Glow Color based on the detected theme
-    const radialGlowColor = theme === 'dark' 
-        ? 'rgba(255, 255, 255, 0.05)' // Subtle white/light color for dark mode
-        : 'rgba(99, 63, 38, 0.1)';   // Original reddish color for light mode
+        const handleUp = () => { dragRef.current.id = null; };
+        window.addEventListener("mousemove", handleMove);
+        window.addEventListener("touchmove", handleMove, { passive: false });
+        window.addEventListener("mouseup", handleUp);
+        window.addEventListener("touchend", handleUp);
 
-    // FIX 4: Conditional Animation Utility
-    // Returns the animation class string only if the component has NOT finished mounting (initial load)
-    const conditionalAnimateClass = (baseClass: string) => {
-        return hasMounted ? '' : baseClass;
-    }
+        let frame: number;
+        const update = () => {
+            physicsRef.current.forEach((p, i) => {
+                const el = iconsRef.current[i];
+                if (!el) return;
+
+                if (dragRef.current.id === i) {
+                    p.x += (dragRef.current.x - p.x) * 0.25;
+                    p.y += (dragRef.current.y - p.y) * 0.25;
+                } else {
+                    p.x += p.vx; p.y += p.vy;
+                    const dx = mouseRef.current.x - p.x;
+                    const dy = mouseRef.current.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 18) {
+                        p.vx -= dx * 0.004;
+                        p.vy -= dy * 0.004;
+                    }
+                    if (p.x < 6 || p.x > 94) p.vx *= -0.8;
+                    if (p.y < 12 || p.y > 90) p.vy *= -0.8;
+                    p.vx *= 0.992; p.vy *= 0.992;
+                }
+                el.style.transform = `translate3d(${p.x}vw, ${p.y}vh, 0) translate(-50%, -50%)`;
+            });
+            frame = requestAnimationFrame(update);
+        };
+        frame = requestAnimationFrame(update);
+        return () => cancelAnimationFrame(frame);
+    }, []);
+
+    const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
     return (
-        <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/30 pt-20 md:pt-0">
-            {/* RADIAL GLOW: Uses dynamic color from state, relying on the global CSS transition fix for smoothness */}
-            <div
-                className="absolute inset-0 opacity-50 md:opacity-10 transition-all duration-1000 ease-out"
-                style={{
-                    // FIX: Use the dynamic color
-                    background: `radial-gradient(600px circle at ${mousePosition.x}% ${mousePosition.y}%, ${radialGlowColor}, transparent 50%)`,
-                }}
+        <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-20 px-6">
+            
+            {/* GRID 2px */}
+            <div className="absolute inset-0 z-0 pointer-events-none" 
+                style={{ 
+                    backgroundImage: `linear-gradient(var(--primary) 2px, transparent 2px), linear-gradient(90deg, var(--primary) 2px, transparent 2px)`, 
+                    backgroundSize: '100px 100px',
+                    opacity: theme === 'dark' ? 0.12 : 0.25,
+                    maskImage: 'radial-gradient(circle at center, black, transparent 90%)'
+                }} 
             />
 
-            {/* FLOATING SHAPES (Unchanged) */}
-            <div className="absolute inset-0 pointer-events-none"> 
-                <div className="absolute top-1/4 right-1/4 w-40 h-40 rounded-full bg-gradient-to-br from-primary/15 to-accent/20 backdrop-blur-sm animate-float" />
-                <div className="absolute bottom-1/3 left-1/5 w-32 h-32 rounded-2xl bg-gradient-to-tr from-accent/20 to-primary/15 backdrop-blur-sm" />
+            {/* RADIAL GLOW */}
+            <div className="absolute inset-0 z-0 opacity-40 transition-all duration-1000 pointer-events-none"
+                style={{ background: `radial-gradient(800px circle at ${mouseRef.current.x}% ${mouseRef.current.y}%, ${theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(99,63,38,0.12)'}, transparent 60%)` }}
+            />
+
+            {/* PHYSICS ICONS */}
+            <div className="absolute inset-0 z-10 pointer-events-none">
+                {ICONS.map((icon, i) => (
+                    <div
+                        key={i}
+                        ref={el => { iconsRef.current[i] = el; }}
+                        onMouseDown={(e) => {
+                            dragRef.current = { id: i, x: (e.clientX/window.innerWidth)*100, y: (e.clientY/window.innerHeight)*100, vx: 0, vy: 0 };
+                        }}
+                        className="absolute pointer-events-auto cursor-grab active:cursor-grabbing flex items-center justify-center rounded-[2.5rem] border-2 border-primary/20 bg-background/60 backdrop-blur-xl shadow-2xl transition-colors"
+                        style={{ width: icon.size, height: icon.size, left: 0, top: 0, touchAction: 'none' }}
+                    >
+                        <div className="text-primary pointer-events-none">{icon.component}</div>
+                    </div>
+                ))}
             </div>
 
-            <div className="container mx-auto px-6 text-center relative z-10 max-w-6xl">
-                {/* FIX 5: Apply conditional animation utility to prevent restarts */}
-                <div className={conditionalAnimateClass("animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200")}>
+            {/* CONTENT - FIXED TYPOGRAPHY */}
+            <div className="container mx-auto text-center relative z-20 max-w-5xl pointer-events-none">
+                <div className={hasMounted ? "" : "opacity-0"}>
                     
-                    <div className={`mb-6 ${conditionalAnimateClass("animate-in fade-in slide-in-from-bottom-4 duration-800 delay-300")}`}>
-                        <span className="inline-block px-4 py-2 rounded-full bg-muted/50 text-muted-foreground text-sm font-mono tracking-wider uppercase">
-                            UX/UI Designer & React Developer
-                        </span>
+                    <div className="mb-8 pointer-events-auto transition-transform hover:scale-105">
+                        <button 
+                            onClick={scrollToTop}
+                            className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border-2 border-primary/20 text-foreground text-xs md:text-sm font-black tracking-[0.2em] uppercase shadow-lg"
+                        >
+                            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                            UI/UX expert & React dev
+                        </button>
                     </div>
 
-                    <h1 className={`text-display font-serif leading-none text-balance mb-8 text-foreground ${conditionalAnimateClass("animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400")}`}>
-                        Together we transform
-                        <br />
-                        <span className="italic font-light text-primary">your vision</span> into
-                        <br />
-                        <span className="relative">
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tighter text-foreground pointer-events-auto mb-10">
+                        Together we transform<br />
+                        <span className="italic font-light text-primary">your vision</span> into<br />
+                        <span className="relative inline-block">
                             excellent product.
-                            <div className={`absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 to-accent/60 rounded-full ${conditionalAnimateClass("animate-in slide-in-from-left duration-800 delay-1200")}`} />
+                            <div className="absolute -bottom-2 left-0 right-0 h-1.5 bg-primary/30 rounded-full" />
                         </span>
                     </h1>
 
-                    <p className={`text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-light ${conditionalAnimateClass("animate-in fade-in slide-in-from-bottom-4 duration-800 delay-600")}`}>
-                        My role is to help solve problems and create exceptional user experiences and innovative digital solutions.
+                    <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-16 font-light leading-relaxed pointer-events-auto">
+                        Engineering <span className="text-foreground font-semibold">bespoke digital systems</span> where <span className="text-foreground italic">art</span> meets logic.
                     </p>
 
-                    <div className={`flex flex-col sm:flex-row gap-6 justify-center items-center ${conditionalAnimateClass("animate-in fade-in slide-in-from-bottom-4 duration-800 delay-800")}`}>
-                        <button
-                            onClick={scrollToWorks}
-                            className="group relative px-8 py-4 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-all duration-500 flex items-center gap-3 font-medium overflow-hidden hover:scale-105 active:scale-95"
+                    <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pointer-events-auto">
+                        <button 
+                            onClick={() => document.getElementById("works")?.scrollIntoView({ behavior: "smooth" })} 
+                            className="group px-10 py-5 bg-foreground text-background rounded-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 font-bold text-lg shadow-2xl"
                         >
-                            <span className="relative z-10">Explore My Work</span>
-                            <div className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
-                                <ArrowRight className="h-4 w-4" />
-                            </div>
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+                            View Portfolio <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-2 transition-transform" />
                         </button>
-
-                        <button
-                            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                            className="px-8 py-4 border-2 border-border rounded-2xl hover:bg-accent hover:border-accent-foreground/20 transition-all duration-500 font-medium hover:scale-105 active:scale-95"
+                        <button 
+                            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} 
+                            className="px-10 py-5 border-2 border-primary/20 rounded-2xl font-bold text-lg backdrop-blur-md hover:bg-foreground hover:text-background transition-all active:scale-95 text-foreground"
                         >
-                            Contacts
+                            Let's Talk
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div
-                className={`absolute bottom-12 left-1/2 transform -translate-x-1/2 cursor-pointer ${conditionalAnimateClass("animate-in fade-in slide-in-from-bottom-4 duration-800 delay-1200")} hover:scale-110 transition-transform`}
-                onClick={scrollToWorks}
-            >
-                <div className="flex flex-col items-center gap-3 text-muted-foreground hover:text-foreground transition-colors duration-300 animate-bounce">
-                    <div className="w-px h-16 bg-gradient-to-b from-transparent via-muted-foreground to-transparent" />
-                    <ChevronDown className="h-5 w-5" />
-                </div>
-            </div>
+            {/* SCROLL INDICATOR */}
+            
         </section>
     )
 }
