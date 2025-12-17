@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { WorksSection } from "@/components/works-section"
 import { AboutSection } from "@/components/about-section"
@@ -12,7 +11,6 @@ export default function Home() {
       <ScrollProgress />
       {/* <LoadingScreen /> */}
       <div className="min-h-screen">
-        <Header />
         <main>
           <HeroSection />
           <WorksSection />

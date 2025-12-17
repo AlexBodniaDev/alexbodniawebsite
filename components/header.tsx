@@ -1,12 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Download, Menu, X } from "lucide-react"
 
 export function Header() {
+  const router = useRouter()
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -19,14 +22,31 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const scrollToSection = (sectionId: string) => {
-    setIsMobileMenuOpen(false)
-    setTimeout(() => {
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
+  const navigateToSection = (sectionId: string) => {
+    if (pathname === "/") {
+      // On home page, scroll to section
       const element = document.getElementById(sectionId)
       if (element) {
         element.scrollIntoView({ behavior: "smooth" })
       }
-    }, 100)
+    } else {
+      // On other pages, navigate to home with hash
+      router.push(`/#${sectionId}`)
+    }
+    // Close mobile menu after navigation
+    setTimeout(() => setIsMobileMenuOpen(false), 100)
   }
 
   const navItems = [
@@ -48,7 +68,7 @@ export function Header() {
       <div className="container mx-auto px-6 py-4">
         <nav className="flex items-center justify-between">
           <motion.button
-            onClick={() => scrollToSection("hero")}
+            onClick={() => navigateToSection("hero")}
             className="text-xl font-mono font-semibold hover:opacity-80 transition-opacity"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -57,12 +77,12 @@ export function Header() {
           </motion.button>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <button
                 key={item.sectionId}
-                onClick={() => scrollToSection(item.sectionId)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => navigateToSection(item.sectionId)}
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-all"
               >
                 {item.label}
               </button>
@@ -70,13 +90,13 @@ export function Header() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
             <ThemeToggle />
             <Button
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 px-4"
               onClick={() => {
-                window.open("./cv.pdf", "_blank")
+                window.open("/alexbodniawebsite/cv.pdf", "_blank")
               }}
             >
               <Download className="h-4 w-4" />
@@ -102,40 +122,34 @@ export function Header() {
       </div>
 
       {/* Mobile Menu - Positioned absolutely to not push content */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden absolute top-full left-0 right-0 z-40 bg-background border-b border-border/50 overflow-hidden"
-          >
-            <div className="container mx-auto px-6 py-4 space-y-3">
-              {navItems.map((item) => (
-                <button
-                  key={item.sectionId}
-                  onClick={() => scrollToSection(item.sectionId)}
-                  className="block w-full text-left px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                >
-                  {item.label}
-                </button>
-              ))}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 z-[60] bg-background border-b border-border/50 overflow-hidden">
+          <div className="container mx-auto px-6 py-6 space-y-2">
+            {navItems.map((item) => (
+              <button
+                key={item.sectionId}
+                onClick={() => navigateToSection(item.sectionId)}
+                className="block w-full text-left px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+              >
+                {item.label}
+              </button>
+            ))}
+            <div className="pt-2 border-t border-border/50">
               <Button
                 size="sm"
                 className="w-full flex items-center justify-center gap-2 mt-2"
                 onClick={() => {
-                  window.open("./cv.pdf", "_blank")
-                  setIsMobileMenuOpen(false)
+                  window.open("/alexbodniawebsite/cv.pdf", "_blank")
+                  setTimeout(() => setIsMobileMenuOpen(false), 100)
                 }}
               >
                 <Download className="h-4 w-4" />
                 Download CV
               </Button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </motion.header>
   )
 }

@@ -77,7 +77,7 @@ export function ProjectDetail({ project }: { project: any }) {
       {/* 1. HERO - BALANCED PREVIEW */}
       <section className="pt-24 md:pt-32 pb-16 border-b border-border/50">
         <div className="container mx-auto px-6">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <Button variant="ghost" onClick={() => router.back()} className="mb-8 -ml-4 group text-muted-foreground hover:text-primary">
               <ArrowLeft className="h-5 w-5 mr-2" />
               <span className="text-lg">Back</span>
@@ -179,11 +179,12 @@ export function ProjectDetail({ project }: { project: any }) {
             
             <div className={`grid gap-8 ${isMobileProject ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" : "grid-cols-1 md:grid-cols-2"}`}>
               {details?.images.map((image: string, index: number) => (
-                <motion.div 
+                <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
                   className="overflow-hidden border border-border bg-muted/10 shadow-lg"
                 >
                   <img 

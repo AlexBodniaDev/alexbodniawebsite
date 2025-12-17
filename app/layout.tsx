@@ -3,6 +3,7 @@ import { Quicksand, Merriweather, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { PageTransition } from "@/components/page-transition"
+import { Header } from "@/components/header"
 import type { Metadata } from "next"
 
 const quicksand = Quicksand({
@@ -65,6 +66,7 @@ export default function RootLayout({
     >
       <body className="overflow-x-hidden">
         <ThemeProvider defaultTheme="light" storageKey="alex-portfolio-theme">
+          <Header />
           <PageTransition>{children}</PageTransition>
         </ThemeProvider>
       </body>
