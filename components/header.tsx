@@ -139,7 +139,7 @@ export function Header() {
                 size="sm"
                 className="w-full flex items-center justify-center gap-2 mt-2"
                 onClick={() => {
-                  window.open("/alexbodniawebsite/cv.pdf", "_blank")
+                  window.open("/cv.pdf", "_blank")
                   setTimeout(() => setIsMobileMenuOpen(false), 100)
                 }}
               >
