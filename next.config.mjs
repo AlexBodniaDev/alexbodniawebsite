@@ -15,12 +15,6 @@ const nextConfig = {
       },
     ],
   },
-
-  // ✅ Головне для GitHub Pages:
-  output: 'export',                 // Вмикаємо статичний експорт
-  basePath: '/alexbodniawebsite',   // Ім'я репозиторію
-  assetPrefix: '/alexbodniawebsite/',// Префікс для всіх ресурсів
-  trailingSlash: true,               // Додаємо / в кінці шляхів
 };
 
 export default nextConfig;
