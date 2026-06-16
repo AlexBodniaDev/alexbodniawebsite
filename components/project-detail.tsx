@@ -17,7 +17,7 @@ export function ProjectDetail({ project }: { project: any }) {
       solution: "Implemented using Blender, with progressive loading and adaptive quality settings based on device capabilities.",
       process: ["Research and concept development", "3D modeling and texturing", "Performance optimization", "Visualization from scratch"],
       technologies: ["Figma", "Adobe Photoshop", "Blender"],
-      images: ["/alexbodniawebsite/entrance-view.png", "/alexbodniawebsite/all-courts-view.png", "/alexbodniawebsite/second-entrance-view.png", "/alexbodniawebsite/1-court-view.png", "/alexbodniawebsite/3-court-view.png", "/alexbodniawebsite/inventoty-boot-view.png"],
+      images: ["/entrance-view.png", "/all-courts-view.png", "/second-entrance-view.png", "/1-court-view.png", "/3-court-view.png", "/inventoty-boot-view.png"],
       liveUrl: "https://drive.google.com/file/d/1fCvXCnh6GpEOE-9ezJQq9DrB7j_E1OBw/view?usp=sharing",
     },
     "dnipro-redesign": {
@@ -26,7 +26,7 @@ export function ProjectDetail({ project }: { project: any }) {
       solution: "Implemented a desktop view approach with clean typography, improved navigation and streamlined user flows.",
       process: ["User research and analysis", "Information architecture", "Wireframing and prototyping", "Visual design system", "Development and testing"],
       technologies: ["Figma", "Adobe Photoshop"],
-      images: ["/alexbodniawebsite/main-hero-section-dnepronet.jpg", "/alexbodniawebsite/internet-dnepronet.jpg", "/alexbodniawebsite/tv-dnepro-net.jpg", "/alexbodniawebsite/map-faq-dnepronet.jpg", "/alexbodniawebsite/footer-dnepronet.jpg", "/alexbodniawebsite/about-dnepronet.jpg"],
+      images: ["/main-hero-section-dnepronet.jpg", "/internet-dnepronet.jpg", "/tv-dnepro-net.jpg", "/map-faq-dnepronet.jpg", "/footer-dnepronet.jpg", "/about-dnepronet.jpg"],
       liveUrl: "https://drive.google.com/file/d/1yDtr7PmPJqzxp4g4CTsx4sGefKuQHR3C/view?usp=sharing",
     },
     "ketotox-package": {
@@ -35,7 +35,7 @@ export function ProjectDetail({ project }: { project: any }) {
       solution: "Created a clean, medical-grade design system with clear hierarchy, safety information and brand consistency.",
       process: ["Regulatory research", "Brand analysis", "Concept development", "Packaging prototypes"],
       technologies: ["Adobe Illustrator", "Adobe Photoshop", "Figma"],
-      images: ["/alexbodniawebsite/mockup-one-keto.jpg", "/alexbodniawebsite/mockup-second-keto.png", "/alexbodniawebsite/mockup-third-keto.jpg", "/alexbodniawebsite/illustrations.jpg"],
+      images: ["/mockup-one-keto.jpg", "/mockup-second-keto.png", "/mockup-third-keto.jpg", "/illustrations.jpg"],
       liveUrl: "https://drive.google.com/file/d/1mrNA11sG5BVX7TRU8QoUoB2x8U7NYbxM/view?usp=sharing",
     },
     "mobile-app-todo": {
@@ -44,7 +44,7 @@ export function ProjectDetail({ project }: { project: any }) {
       solution: "Developed using React Native with platform-specific optimizations and a comprehensive design system.",
       process: ["User journey mapping", "Wireframing and prototyping", "UI design system", "Development and testing"],
       technologies: ["Adobe Photoshop", "Figma"],
-      images: ["/alexbodniawebsite/welcome-screen-dsrk.jpg", "/alexbodniawebsite/task-screen.jpg", "/alexbodniawebsite/register-screen.jpg", "/alexbodniawebsite/pick-time-popup.jpg", "/alexbodniawebsite/pick-date-popup-green.jpg", "/alexbodniawebsite/main-screen-lightgreen.jpg"],
+      images: ["/welcome-screen-dsrk.jpg", "/task-screen.jpg", "/register-screen.jpg", "/pick-time-popup.jpg", "/pick-date-popup-green.jpg", "/main-screen-lightgreen.jpg"],
       liveUrl: "https://alexbodniadev.github.io/ToDoApp", 
       githubUrl: "https://github.com/AlexBodniaDev/ToDoApp",
     },
@@ -54,7 +54,7 @@ export function ProjectDetail({ project }: { project: any }) {
       solution: "Developed using React Native with platform-specific optimizations and a comprehensive design system.",
       process: ["UX Research", "UI Design", "Prototyping", "User journey mapping", "Wireframing", "Visual design system", "Development and testing"],
       technologies: ["Adobe Photoshop", "Figma", "React", "Next.js"],
-      images: ["/alexbodniawebsite/predictions-page-cyclesense.jpg", "/alexbodniawebsite/period-calendar-cyclesense.jpg", "/alexbodniawebsite/symptomps-page-cyclesense.jpg", "/alexbodniawebsite/insights-screen-cyclesense.jpg", "/alexbodniawebsite/settings-page-cyclesense.jpg"],
+      images: ["/predictions-page-cyclesense.jpg", "/period-calendar-cyclesense.jpg", "/symptomps-page-cyclesense.jpg", "/insights-screen-cyclesense.jpg", "/settings-page-cyclesense.jpg"],
       liveUrl: "https://alexbodniadev.github.io/PeriodTrackerApp", 
       githubUrl: "https://github.com/AlexBodniaDev/PeriodTrackerApp",
     },
@@ -64,7 +64,7 @@ export function ProjectDetail({ project }: { project: any }) {
       solution: "Developed using React Native with platform-specific optimizations and a comprehensive design system.",
       process: ["Architecture", "UI Design", "Testing", "User journey mapping", "Wireframing", "Visual design system", "Development and testing"],
       technologies: ["Adobe Photoshop", "Figma", "React", "Next.js"],
-      images: ["/alexbodniawebsite/main-screen-cryptox.jpg", "/alexbodniawebsite/markets-page-cryptox.jpg", "/alexbodniawebsite/portfolio-page-cryptox.jpg", "/alexbodniawebsite/settings-page-cryptox.jpg", "/alexbodniawebsite/notifications-cryptox.jpg"],
+      images: ["/main-screen-cryptox.jpg", "/markets-page-cryptox.jpg", "/portfolio-page-cryptox.jpg", "/settings-page-cryptox.jpg", "/notifications-cryptox.jpg"],
       liveUrl: "https://alexbodniadev.github.io/CryptoXApp", 
       githubUrl: "https://github.com/AlexBodniaDev/CryptoXApp",
     }
