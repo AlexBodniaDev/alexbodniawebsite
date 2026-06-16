@@ -26,9 +26,9 @@ export function AboutSection() {
   useHideScrollbar(scrollRef);
 
   const profileImages = [
-    "/alexbodniawebsite/photo-of-me-one.jpg", 
-    "/alexbodniawebsite/photo-of-me-second.jpg", 
-    "/alexbodniawebsite/photo-of-me-third.jpg"
+    "/photo-of-me-one.jpg", 
+    "/photo-of-me-second.jpg", 
+    "/photo-of-me-third.jpg"
   ]
 
   const scrollTools = (direction: "left" | "right") => {
@@ -38,18 +38,18 @@ export function AboutSection() {
   }
 
   const toolsWithIcons = [
-    { name: "Figma", icon: "/alexbodniawebsite/figma-logo.jpg" },
-    { name: "Adobe XD", icon: "/alexbodniawebsite/adobe-xd-logo-icon.jpg" },
-    { name: "Sketch", icon: "/alexbodniawebsite/sketch-app-logo-icon.jpg" },
-    { name: "React", icon: "/alexbodniawebsite/react-logo-icon.jpg" },
-    { name: "Next.js", icon: "/alexbodniawebsite/next-js-logo-icon.jpg" },
-    { name: "TypeScript", icon: "/alexbodniawebsite/tech/typescript.png" },
-    { name: "Tailwind CSS", icon: "/alexbodniawebsite/tailwind-css-logo-icon.jpg" },
-    { name: "Framer", icon: "/alexbodniawebsite/framer-logo-icon.jpg" },
-    { name: "Webflow", icon: "/alexbodniawebsite/webflow-logo-icon.jpg" },
-    { name: "Photoshop", icon: "/alexbodniawebsite/adobe-photoshop-logo-icon.jpg" },
-    { name: "Illustrator", icon: "/alexbodniawebsite/adobe-illustrator-logo-icon.jpg" },
-    { name: "After Effects", icon: "/alexbodniawebsite/adobe-after-effects-logo-icon.jpg" },
+    { name: "Figma", icon: "/figma-logo.jpg" },
+    { name: "Adobe XD", icon: "/adobe-xd-logo-icon.jpg" },
+    { name: "Sketch", icon: "/sketch-app-logo-icon.jpg" },
+    { name: "React", icon: "/react-logo-icon.jpg" },
+    { name: "Next.js", icon: "/next-js-logo-icon.jpg" },
+    { name: "TypeScript", icon: "/tech/typescript.png" },
+    { name: "Tailwind CSS", icon: "/tailwind-css-logo-icon.jpg" },
+    { name: "Framer", icon: "/framer-logo-icon.jpg" },
+    { name: "Webflow", icon: "/webflow-logo-icon.jpg" },
+    { name: "Photoshop", icon: "/adobe-photoshop-logo-icon.jpg" },
+    { name: "Illustrator", icon: "/adobe-illustrator-logo-icon.jpg" },
+    { name: "After Effects", icon: "/adobe-after-effects-logo-icon.jpg" },
   ]
 
   return (
