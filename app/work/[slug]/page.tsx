@@ -3,9 +3,9 @@ import data from "@/lib/data.json"
 import ProjectPageClient from "./ProjectPageClient"
 
 interface ProjectPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateStaticParams() {
@@ -15,7 +15,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ProjectPageProps) {
-  const project = data.projects.find((p) => p.id === params.slug)
+  const { slug } = await params
+  const project = data.projects.find((p) => p.id === slug)
 
   if (!project) {
     return {
@@ -29,8 +30,9 @@ export async function generateMetadata({ params }: ProjectPageProps) {
   }
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = data.projects.find((p) => p.id === params.slug)
+export default async function ProjectPage({ params }: ProjectPageProps) {
+  const { slug } = await params
+  const project = data.projects.find((p) => p.id === slug)
 
   if (!project) {
     notFound()
