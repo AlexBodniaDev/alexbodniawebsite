@@ -96,7 +96,7 @@ export function Header() {
               size="sm"
               className="flex items-center gap-2 px-4"
               onClick={() => {
-                window.open("/alexbodniawebsite/cv.pdf", "_blank")
+                window.open("/cv.pdf", "_blank")
               }}
             >
               <Download className="h-4 w-4" />
