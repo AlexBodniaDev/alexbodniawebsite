@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
 :root {
   /* LIGHT MODE: Optimized for MAXIMUM Text Readability */
 

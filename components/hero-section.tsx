@@ -1,180 +1,193 @@
 "use client"
 
-import { ArrowRight, Sparkles, Code2, Cpu, Layers, Framer, Zap, ChevronDown } from "lucide-react"
-import { useEffect, useState, useRef } from "react"
+import { ArrowRight, Sparkles } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
-const ICONS = [
-    { component: <Code2 size={40} />, size: 90 },
-    { component: <Framer size={45} />, size: 100 },
-    { component: <Cpu size={40} />, size: 95 },
-    { component: <Layers size={35} />, size: 85 },
-    { component: <Zap size={30} />, size: 80 },
-];
+const WAVES = [
+  { baseAmp: 44, freq: 0.0048, speed: 0.006, phase: 0,   yFrac: 0.60 },
+  { baseAmp: 32, freq: 0.0062, speed: 0.009, phase: 2.0, yFrac: 0.66 },
+  { baseAmp: 22, freq: 0.0078, speed: 0.013, phase: 4.1, yFrac: 0.72 },
+  { baseAmp: 54, freq: 0.0035, speed: 0.004, phase: 1.1, yFrac: 0.55 },
+  { baseAmp: 16, freq: 0.0095, speed: 0.018, phase: 3.2, yFrac: 0.78 },
+]
+const ALPHAS = [0.055, 0.072, 0.09, 0.042, 0.038]
 
 export function HeroSection() {
-    const [hasMounted, setHasMounted] = useState(false);
-    const [theme, setTheme] = useState('light');
-    const iconsRef = useRef<any[]>([]);
-    const physicsRef = useRef<any[]>([]);
-    const mouseRef = useRef({ x: 50, y: 50 });
-    const dragRef = useRef<{ id: number | null; x: number; y: number; vx: number; vy: number }>({
-        id: null, x: 0, y: 0, vx: 0, vy: 0
-    });
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef  = useRef({ x: -1, y: -1, active: false })
+  const rafRef    = useRef<number>(0)
+  const [hasMounted, setHasMounted] = useState(false)
 
-    useEffect(() => {
-        setHasMounted(true);
-        const initialTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-        setTheme(initialTheme);
+  useEffect(() => { setHasMounted(true) }, [])
 
-        const observer = new MutationObserver(() => {
-            setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
 
-        physicsRef.current = ICONS.map(() => ({
-            x: Math.random() * 80 + 10,
-            y: Math.random() * 60 + 20,
-            vx: (Math.random() - 0.5) * 0.15,
-            vy: (Math.random() - 0.5) * 0.15,
-        }));
+    let W = 0, H = 0, t = 0, mAmp = 0, targetMamp = 0
 
-        return () => observer.disconnect();
-    }, []);
+    const resize = () => {
+      W = canvas.width  = canvas.offsetWidth
+      H = canvas.height = canvas.offsetHeight
+    }
+    const onMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect()
+      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top, active: true }
+      targetMamp = 1
+    }
+    const onLeave = () => { mouseRef.current.active = false; targetMamp = 0 }
 
-    useEffect(() => {
-        const handleMove = (e: any) => {
-            const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
-            const y = 'touches' in e ? e.touches[0].clientY : e.clientY;
-            const cx = (x / window.innerWidth) * 100;
-            const cy = (y / window.innerHeight) * 100;
-            mouseRef.current = { x: cx, y: cy };
+    window.addEventListener("mousemove", onMove)
+    window.addEventListener("mouseleave", onLeave)
+    window.addEventListener("resize", resize)
+    resize()
 
-            if (dragRef.current.id !== null) {
-                dragRef.current.vx = cx - dragRef.current.x;
-                dragRef.current.vy = cy - dragRef.current.y;
-                dragRef.current.x = cx; dragRef.current.y = cy;
-            }
-        };
+    const getY = (w: typeof WAVES[0], x: number) => {
+      let y = H * w.yFrac + Math.sin(x * w.freq + t * w.speed + w.phase) * w.baseAmp
+      const { x: mx, y: my, active } = mouseRef.current
+      if (active && mAmp > 0.005) {
+        const hInf = Math.max(0, 1 - Math.abs(x - mx) / 200)
+        const vInf = Math.max(0, 1 - Math.abs(H * w.yFrac - my) / 160)
+        y -= hInf * vInf * mAmp * 48
+      }
+      return y
+    }
 
-        const handleUp = () => { dragRef.current.id = null; };
-        window.addEventListener("mousemove", handleMove);
-        window.addEventListener("touchmove", handleMove, { passive: false });
-        window.addEventListener("mouseup", handleUp);
-        window.addEventListener("touchend", handleUp);
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H)
+      mAmp += (targetMamp - mAmp) * 0.05
+      const dark = document.documentElement.classList.contains("dark")
+      const colors = dark
+        ? [[120,85,240],[90,55,200],[140,100,255],[80,50,185],[110,75,225]]
+        : [[95,55,195],[70,40,170],[115,75,215],[65,38,165],[90,60,200]]
 
-        let frame: number;
-        const update = () => {
-            physicsRef.current.forEach((p, i) => {
-                const el = iconsRef.current[i];
-                if (!el) return;
+      WAVES.forEach((w, i) => {
+        const c = colors[i].join(",")
+        const a = ALPHAS[i]
+        const baseY = H * w.yFrac
 
-                if (dragRef.current.id === i) {
-                    p.x += (dragRef.current.x - p.x) * 0.25;
-                    p.y += (dragRef.current.y - p.y) * 0.25;
-                } else {
-                    p.x += p.vx; p.y += p.vy;
-                    const dx = mouseRef.current.x - p.x;
-                    const dy = mouseRef.current.y - p.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 18) {
-                        p.vx -= dx * 0.004;
-                        p.vy -= dy * 0.004;
-                    }
-                    if (p.x < 6 || p.x > 94) p.vx *= -0.8;
-                    if (p.y < 12 || p.y > 90) p.vy *= -0.8;
-                    p.vx *= 0.992; p.vy *= 0.992;
-                }
-                el.style.transform = `translate3d(${p.x}vw, ${p.y}vh, 0) translate(-50%, -50%)`;
-            });
-            frame = requestAnimationFrame(update);
-        };
-        frame = requestAnimationFrame(update);
-        return () => cancelAnimationFrame(frame);
-    }, []);
+        ctx.beginPath()
+        for (let x = 0; x <= W; x += 3) {
+          const y = getY(w, x)
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        }
+        ctx.lineTo(W, H)
+        ctx.lineTo(0, H)
+        ctx.closePath()
 
-    const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+        const grad = ctx.createLinearGradient(0, baseY - w.baseAmp - 20, 0, H)
+        grad.addColorStop(0,    `rgba(${c},0)`)
+        grad.addColorStop(0.08, `rgba(${c},${a * 1.6})`)
+        grad.addColorStop(0.35, `rgba(${c},${a * 1.1})`)
+        grad.addColorStop(0.75, `rgba(${c},${a * 0.5})`)
+        grad.addColorStop(1,    `rgba(${c},0)`)
+        ctx.fillStyle = grad
+        ctx.fill()
+      })
 
-    return (
-        <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-20 px-6">
-            
-            {/* GRID 2px */}
-            <div className="absolute inset-0 z-0 pointer-events-none" 
-                style={{ 
-                    backgroundImage: `linear-gradient(var(--primary) 2px, transparent 2px), linear-gradient(90deg, var(--primary) 2px, transparent 2px)`, 
-                    backgroundSize: '100px 100px',
-                    opacity: theme === 'dark' ? 0.12 : 0.25,
-                    maskImage: 'radial-gradient(circle at center, black, transparent 90%)'
-                }} 
-            />
+      t++
+      rafRef.current = requestAnimationFrame(draw)
+    }
 
-            {/* RADIAL GLOW */}
-            <div className="absolute inset-0 z-0 opacity-40 transition-all duration-1000 pointer-events-none"
-                style={{ background: `radial-gradient(800px circle at ${mouseRef.current.x}% ${mouseRef.current.y}%, ${theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(99,63,38,0.12)'}, transparent 60%)` }}
-            />
+    draw()
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      window.removeEventListener("mousemove", onMove)
+      window.removeEventListener("mouseleave", onLeave)
+      window.removeEventListener("resize", resize)
+    }
+  }, [])
 
-            {/* PHYSICS ICONS */}
-            <div className="absolute inset-0 z-10 pointer-events-none">
-                {ICONS.map((icon, i) => (
-                    <div
-                        key={i}
-                        ref={el => { iconsRef.current[i] = el; }}
-                        onMouseDown={(e) => {
-                            dragRef.current = { id: i, x: (e.clientX/window.innerWidth)*100, y: (e.clientY/window.innerHeight)*100, vx: 0, vy: 0 };
-                        }}
-                        className="absolute pointer-events-auto cursor-grab active:cursor-grabbing flex items-center justify-center rounded-[2.5rem] border-2 border-primary/20 bg-background/60 backdrop-blur-xl shadow-2xl transition-colors"
-                        style={{ width: icon.size, height: icon.size, left: 0, top: 0, touchAction: 'none' }}
-                    >
-                        <div className="text-primary pointer-events-none">{icon.component}</div>
-                    </div>
-                ))}
-            </div>
+  return (
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-20 px-6"
+    >
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ zIndex: 0 }}
+      />
 
-            {/* CONTENT - FIXED TYPOGRAPHY */}
-            <div className="container mx-auto text-center relative z-20 max-w-5xl pointer-events-none">
-                <div className={hasMounted ? "" : "opacity-0"}>
-                    
-                    <div className="mb-8 pointer-events-auto transition-transform hover:scale-105">
-                        <button 
-                            onClick={scrollToTop}
-                            className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border-2 border-primary/20 text-foreground text-xs md:text-sm font-black tracking-[0.2em] uppercase shadow-lg"
-                        >
-                            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                            UI/UX expert & React dev
-                        </button>
-                    </div>
+      <div
+        className={`container mx-auto text-center relative max-w-5xl transition-all duration-700 ${
+          hasMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+        }`}
+        style={{ zIndex: 1 }}
+      >
+        {/* Availability badge */}
+        <div className="flex items-center justify-center gap-2.5 mb-4">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+          </span>
+          <span className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">
+            Available for projects
+          </span>
+        </div>
 
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tighter text-foreground pointer-events-auto mb-10">
-                        Together we transform<br />
-                        <span className="italic font-light text-primary">your vision</span> into<br />
-                        <span className="relative inline-block">
-                            excellent product.
-                            <div className="absolute -bottom-2 left-0 right-0 h-1.5 bg-primary/30 rounded-full" />
-                        </span>
-                    </h1>
+        {/* Role badge */}
+        <div className="mb-8">
+          <span className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border-2 border-primary/20 text-foreground text-xs md:text-sm font-black tracking-[0.2em] uppercase shadow-lg">
+            <Sparkles className="w-4 h-4 text-primary animate-pulse shrink-0" />
+            UI/UX designer &amp; React developer
+          </span>
+        </div>
 
-                    <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-16 font-light leading-relaxed pointer-events-auto">
-                        Engineering <span className="text-foreground font-semibold">bespoke digital systems</span> where <span className="text-foreground italic">art</span> meets logic.
-                    </p>
+        {/* Headline — original Tailwind sizing */}
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tighter text-foreground mb-10">
+          Together we transform<br />
+          <em className="not-italic italic font-light text-primary">your vision</em> into<br />
+          <span className="relative inline-block">
+            excellent product.
+            <svg
+              viewBox="0 0 340 16"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              className="absolute left-0 w-full text-primary overflow-visible"
+              style={{ bottom: "-0.06em", height: "0.13em" }}
+              aria-hidden="true"
+            >
+              <path
+                d="M3 11 Q85 4 170 9 Q255 14 337 6"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeLinecap="round"
+                fill="none"
+              />
+            </svg>
+          </span>
+        </h1>
 
-                    <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pointer-events-auto">
-                        <button 
-                            onClick={() => document.getElementById("works")?.scrollIntoView({ behavior: "smooth" })} 
-                            className="group px-10 py-5 bg-foreground text-background rounded-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 font-bold text-lg shadow-2xl"
-                        >
-                            View Portfolio <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-2 transition-transform" />
-                        </button>
-                        <button 
-                            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} 
-                            className="px-10 py-5 border-2 border-primary/20 rounded-2xl font-bold text-lg backdrop-blur-md hover:bg-foreground hover:text-background transition-all active:scale-95 text-foreground"
-                        >
-                            Let's Talk
-                        </button>
-                    </div>
-                </div>
-            </div>
+        {/* Subline */}
+        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-16 font-light leading-relaxed">
+          Engineering{" "}
+          <span className="text-foreground font-semibold">bespoke digital systems</span>{" "}
+          where{" "}
+          <span className="italic text-foreground font-medium">art</span>{" "}
+          meets logic.
+        </p>
 
-            {/* SCROLL INDICATOR */}
-            
-        </section>
-    )
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <button
+            onClick={() => document.getElementById("works")?.scrollIntoView({ behavior: "smooth" })}
+            className="group inline-flex items-center gap-4 px-10 py-5 bg-foreground text-background rounded-2xl font-bold text-lg hover:scale-[1.03] active:scale-95 transition-all shadow-xl shadow-foreground/10"
+          >
+            View Portfolio
+            <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-2 transition-transform" />
+          </button>
+
+          <button
+            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            className="inline-flex items-center gap-4 px-10 py-5 border-2 border-primary/20 rounded-2xl font-bold text-lg text-foreground bg-background/40 backdrop-blur-sm hover:bg-foreground hover:text-background transition-all active:scale-95"
+          >
+            Let's Talk
+          </button>
+        </div>
+      </div>
+    </section>
+  )
 }
