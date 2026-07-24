@@ -2,24 +2,42 @@
 
 import type React from "react"
 import { motion } from "framer-motion"
-import { Github, Linkedin, Mail, ArrowUpRight, Sparkles, Dribbble, Palette } from "lucide-react"
+import {
+  Github,
+  Linkedin,
+  Mail,
+  ArrowUpRight,
+  Sparkles,
+  Dribbble,
+  Palette,
+} from "lucide-react"
 import data from "@/lib/data.json"
+import { useLanguage } from "@/components/language-provider"
 
 const container = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
   },
-}
+} as const
 
 const item = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: {
+    opacity: 0,
+    y: 18,
+  },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
   },
-}
+} as const
 
 type SocialLink = {
   name: string
@@ -33,6 +51,7 @@ function SocialIconButton({ link }: { link: SocialLink }) {
       variants={item}
       whileHover={{ y: -3 }}
       whileTap={{ scale: 0.94 }}
+      transition={{ type: "spring", stiffness: 400, damping: 34 }}
       href={link.href}
       target="_blank"
       rel="noopener noreferrer"
@@ -48,26 +67,56 @@ function SocialIconButton({ link }: { link: SocialLink }) {
 }
 
 export function ContactSection() {
+  const { t, locale } = useLanguage()
+
+  const contactBlurb =
+    locale === "uk" && (data.personal as any).contact_uk
+      ? (data.personal as any).contact_uk
+      : data.personal.contact
+
   const socialLinks: SocialLink[] = [
-    { name: "LinkedIn", icon: Linkedin, href: data.personal.linkedin },
-    { name: "Behance", icon: Palette, href: "https://www.behance.net/bodniaalex" },
-    { name: "Dribbble", icon: Dribbble, href: "https://dribbble.com/AlexBodnia" },
-    { name: "GitHub", icon: Github, href: data.personal.github },
+    {
+      name: "LinkedIn",
+      icon: Linkedin,
+      href: data.personal.linkedin,
+    },
+    {
+      name: "Behance",
+      icon: Palette,
+      href: "https://www.behance.net/bodniaalex",
+    },
+    {
+      name: "Dribbble",
+      icon: Dribbble,
+      href: "https://dribbble.com/AlexBodnia",
+    },
+    {
+      name: "GitHub",
+      icon: Github,
+      href: data.personal.github,
+    },
   ]
 
   return (
-    <section id="contact" className="relative overflow-hidden py-24 md:py-32 bg-background border-t border-border/50">
-      {/* Ambient glow — restrained, single signature touch */}
+    <section
+      id="contact"
+      className="relative overflow-hidden py-24 md:py-32 bg-background border-t border-border/50"
+    >
       <motion.div
         aria-hidden="true"
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[640px] h-[640px] rounded-full bg-primary/10 blur-[140px] pointer-events-none"
-        animate={{ scale: [1, 1.08, 1], opacity: [0.6, 0.9, 0.6] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-160 h-160 rounded-full bg-primary/10 blur-[140px] pointer-events-none"
+        animate={{
+          scale: [1, 1.08, 1],
+          opacity: [0.6, 0.9, 0.6],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
 
       <div className="container mx-auto px-6 relative z-10">
-
-        {/* HEADER */}
         <motion.div
           className="text-center mb-12 md:mb-16"
           variants={container}
@@ -80,23 +129,29 @@ export function ContactSection() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 mb-6"
           >
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">Get in touch</span>
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">
+              {t.contact.eyebrow}
+            </span>
           </motion.div>
+
           <motion.h2
             variants={item}
             className="text-5xl md:text-7xl font-serif tracking-tighter mb-8 text-foreground"
           >
-            Let's Work <span className="italic font-light text-primary">Together</span>
+            {t.contact.heading1}{" "}
+            <span className="italic font-light text-primary">
+              {t.contact.heading2}
+            </span>
           </motion.h2>
+
           <motion.p
             variants={item}
             className="text-foreground/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal"
           >
-            {data.personal.contact || "I'm always interested in hearing about new projects and opportunities."}
+            {contactBlurb || t.contact.subheading}
           </motion.p>
         </motion.div>
 
-        {/* CONTACT — one clear CTA, then a tidy row of social icons */}
         <motion.div
           className="flex flex-col items-center gap-10"
           variants={container}
@@ -108,29 +163,48 @@ export function ContactSection() {
             variants={item}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 34,
+            }}
             href={`mailto:${data.personal.email}`}
             className="group inline-flex items-center gap-3 px-7 md:px-10 py-4 md:py-5 rounded-full bg-primary text-primary-foreground font-semibold text-base md:text-lg shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.5)] transition-shadow duration-500 hover:shadow-[0_25px_70px_-12px_hsl(var(--primary)/0.65)]"
           >
             <Mail className="h-5 w-5" />
+
             {data.personal.email}
+
             <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
           </motion.a>
 
-          <motion.div variants={item} className="flex items-center gap-4 md:gap-5">
+          <motion.div
+            variants={item}
+            className="flex items-center gap-4 md:gap-5"
+          >
             {socialLinks.map((link) => (
               <SocialIconButton key={link.name} link={link} />
             ))}
           </motion.div>
         </motion.div>
 
-        {/* FOOTER */}
         <footer className="mt-32 pt-12 relative flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-          <span aria-hidden="true" className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-          <p className="text-muted-foreground text-sm font-medium">© 2026 All rights reserved.</p>
+          <span
+            aria-hidden="true"
+            className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-border to-transparent"
+          />
+
+          <p className="text-muted-foreground text-sm font-medium">
+            {t.contact.rightsReserved}
+          </p>
+
           <div className="font-serif italic text-2xl text-foreground">
             Alex <span className="text-primary">Bodnia</span>
           </div>
-          <p className="text-muted-foreground text-sm font-light italic">Built with Passion and Precision.</p>
+
+          <p className="text-muted-foreground text-sm font-light italic">
+            {t.contact.builtWith}
+          </p>
         </footer>
       </div>
     </section>

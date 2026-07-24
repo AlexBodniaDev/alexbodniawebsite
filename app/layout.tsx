@@ -2,11 +2,14 @@ import type React from "react"
 import { Quicksand, Merriweather, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { LanguageProvider } from "@/components/language-provider"
 import { PageTransition } from "@/components/page-transition"
 import { Header } from "@/components/header"
 import type { Metadata } from "next"
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/seo"
+import data from "@/lib/data.json"
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -31,28 +34,87 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Alex — UX/UI Designer & Developer",
-  description:
-    "UX/UI designer and developer that can take the 'im' part of the word impossible and make your vision become possible.",
-  keywords: ["UX Designer", "UI Designer", "Creative Developer", "Digital Design", "Portfolio"],
-  authors: [{ name: "Alex", url: "https://alex-portfolio.vercel.app" }],
-  creator: "AlexBodnia",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Alex Bodnia — UI/UX Designer & Developer",
+    template: "%s | Alex Bodnia",
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "Alex Bodnia",
+    "UX Designer",
+    "UI Designer",
+    "Creative Developer",
+    "React Developer",
+    "Next.js Developer",
+    "Digital Design",
+    "Product Design Portfolio",
+    "Web Design Portfolio",
+  ],
+  authors: [{ name: "Alex Bodnia", url: SITE_URL }],
+  creator: "Alex Bodnia",
+  publisher: "Alex Bodnia",
+  alternates: {
+    canonical: "/",
+    languages: {
+      en: "/",
+      uk: "/",
+    },
+  },
   openGraph: {
-    title: "Alex — Creative Designer & Developer",
-    description: "UX/UI designer and developer crafting exceptional digital experiences.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: "Alex Bodnia Portfolio",
     type: "website",
     locale: "en_US",
+    alternateLocale: ["uk_UA"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Alex — Creative Designer & Developer",
-    description: "UX/UI designer and developer crafting exceptional digital experiences.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
-    generator: 'v0.app'
+  category: "technology",
+  generator: "v0.app",
+}
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Alex Bodnia",
+  url: SITE_URL,
+  image: `${SITE_URL}/photo-of-me-one.jpg`,
+  jobTitle: "UI/UX Designer & React Developer",
+  description: SITE_DESCRIPTION,
+  email: `mailto:${data.personal.email}`,
+  sameAs: [
+    data.personal.linkedin,
+    data.personal.github,
+    "https://www.behance.net/bodniaalex",
+    "https://dribbble.com/AlexBodnia",
+  ],
+  knowsAbout: ["UI Design", "UX Design", "React", "Next.js", "TypeScript", "3D Visualization"],
+}
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Alex Bodnia Portfolio",
+  url: SITE_URL,
+  inLanguage: ["en", "uk"],
+  author: { "@type": "Person", name: "Alex Bodnia" },
 }
 
 export default function RootLayout({
@@ -66,10 +128,24 @@ export default function RootLayout({
       className={`${quicksand.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+      </head>
       <body className="overflow-x-hidden">
         <ThemeProvider defaultTheme="light" storageKey="alex-portfolio-theme">
-          <Header />
-          <PageTransition>{children}</PageTransition>
+          <LanguageProvider defaultLocale="en" storageKey="alex-portfolio-locale">
+            <Header />
+            <PageTransition>{children}</PageTransition>
+          </LanguageProvider>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

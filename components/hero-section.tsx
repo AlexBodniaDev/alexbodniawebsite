@@ -2,6 +2,7 @@
 
 import { ArrowRight, Sparkles } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { useLanguage } from "@/components/language-provider"
 
 const WAVES = [
   { baseAmp: 44, freq: 0.0048, speed: 0.006, phase: 0,   yFrac: 0.60 },
@@ -13,6 +14,7 @@ const WAVES = [
 const ALPHAS = [0.055, 0.072, 0.09, 0.042, 0.038]
 
 export function HeroSection() {
+  const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef  = useRef({ x: -1, y: -1, active: false })
   const rafRef    = useRef<number>(0)
@@ -27,6 +29,7 @@ export function HeroSection() {
     if (!ctx) return
 
     let W = 0, H = 0, t = 0, mAmp = 0, targetMamp = 0
+    let isVisible = true
 
     const resize = () => {
       W = canvas.width  = canvas.offsetWidth
@@ -91,9 +94,36 @@ export function HeroSection() {
       rafRef.current = requestAnimationFrame(draw)
     }
 
-    draw()
-    return () => {
+    const startLoop = () => {
+      if (!rafRef.current) draw()
+    }
+    const stopLoop = () => {
       cancelAnimationFrame(rafRef.current)
+      rafRef.current = 0
+    }
+
+    // Only run the draw loop while the hero is actually visible on screen
+    // and the tab is in the foreground — this was previously running
+    // forever, redrawing 5 wave layers every frame regardless of whether
+    // anyone could see it.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+        isVisible && !document.hidden ? startLoop() : stopLoop()
+      },
+      { threshold: 0 }
+    )
+    io.observe(canvas)
+
+    const onVisibilityChange = () => {
+      document.hidden || !isVisible ? stopLoop() : startLoop()
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange)
+
+    return () => {
+      stopLoop()
+      io.disconnect()
+      document.removeEventListener("visibilitychange", onVisibilityChange)
       window.removeEventListener("mousemove", onMove)
       window.removeEventListener("mouseleave", onLeave)
       window.removeEventListener("resize", resize)
@@ -124,7 +154,7 @@ export function HeroSection() {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
           </span>
           <span className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">
-            Available for projects
+            {t.hero.availableForProjects}
           </span>
         </div>
 
@@ -132,16 +162,16 @@ export function HeroSection() {
         <div className="mb-8">
           <span className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border-2 border-primary/20 text-foreground text-xs md:text-sm font-black tracking-[0.2em] uppercase shadow-lg">
             <Sparkles className="w-4 h-4 text-primary animate-pulse shrink-0" />
-            UI/UX designer &amp; React developer
+            {t.hero.role}
           </span>
         </div>
 
         {/* Headline — original Tailwind sizing */}
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tighter text-foreground mb-10">
-          Together we transform<br />
-          <em className="not-italic italic font-light text-primary">your vision</em> into<br />
+          {t.hero.headline1}<br />
+          <em className="italic font-light text-primary">{t.hero.headline2}</em> {t.hero.headline2Suffix}<br />
           <span className="relative inline-block">
-            excellent product.
+            {t.hero.headline3}
             <svg
               viewBox="0 0 340 16"
               xmlns="http://www.w3.org/2000/svg"
@@ -163,11 +193,11 @@ export function HeroSection() {
 
         {/* Subline */}
         <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-16 font-light leading-relaxed">
-          Engineering{" "}
-          <span className="text-foreground font-semibold">bespoke digital systems</span>{" "}
-          where{" "}
-          <span className="italic text-foreground font-medium">art</span>{" "}
-          meets logic.
+          {t.hero.subline1}{" "}
+          <span className="text-foreground font-semibold">{t.hero.subline2}</span>{" "}
+          {t.hero.subline3}{" "}
+          <span className="italic text-foreground font-medium">{t.hero.subline4}</span>{" "}
+          {t.hero.subline5}
         </p>
 
         {/* CTAs */}
@@ -176,7 +206,7 @@ export function HeroSection() {
             onClick={() => document.getElementById("works")?.scrollIntoView({ behavior: "smooth" })}
             className="group inline-flex items-center gap-4 px-10 py-5 bg-foreground text-background rounded-2xl font-bold text-lg hover:scale-[1.03] active:scale-95 transition-all shadow-xl shadow-foreground/10"
           >
-            View Portfolio
+            {t.hero.viewPortfolio}
             <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-2 transition-transform" />
           </button>
 
@@ -184,7 +214,7 @@ export function HeroSection() {
             onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
             className="inline-flex items-center gap-4 px-10 py-5 border-2 border-primary/20 rounded-2xl font-bold text-lg text-foreground bg-background/40 backdrop-blur-sm hover:bg-foreground hover:text-background transition-all active:scale-95"
           >
-            Let's Talk
+            {t.hero.letsTalk}
           </button>
         </div>
       </div>

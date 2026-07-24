@@ -48,7 +48,7 @@ function ChapterDivider({ label }: { label: string }) {
 // ─── Eyebrow label ───────────────────────────────────────────────────────────
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
+    <p className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
       {children}
     </p>
   )
@@ -335,17 +335,17 @@ export function ProjectDetail({ project }: { project: any }) {
             <div className="flex items-center gap-3">
               {details?.liveUrl && (
                 <Link href={details.liveUrl} target="_blank">
-                  <button className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 shadow-lg shadow-primary/20">
+                  <button className="group inline-flex items-center gap-2 rounded-2xl bg-foreground px-6 py-3 text-sm font-bold text-background transition-all duration-200 hover:scale-[1.03] active:scale-95 shadow-xl shadow-foreground/10">
                     View Project
-                    <ExternalLink className="h-3.5 w-3.5 opacity-60 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    <ExternalLink className="h-3.5 w-3.5 text-primary opacity-80 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </button>
                 </Link>
               )}
               {details?.githubUrl && (
                 <Link href={details.githubUrl} target="_blank">
-                  <button className="group inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground/70 transition-all duration-200 hover:border-foreground/40 hover:text-foreground">
+                  <button className="group inline-flex items-center gap-2 rounded-2xl border-2 border-primary/20 bg-background/40 backdrop-blur-sm px-6 py-3 text-sm font-bold text-foreground transition-all duration-200 hover:bg-foreground hover:text-background active:scale-95">
                     Source
-                    <Github className="h-3.5 w-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                    <Github className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
                   </button>
                 </Link>
               )}
@@ -364,7 +364,7 @@ export function ProjectDetail({ project }: { project: any }) {
             <img
               src={project.image}
               alt={project.title}
-              className={`w-full block ${isMobileProject ? "max-h-[560px] object-contain" : "h-auto"}`}
+              className={`w-full block ${isMobileProject ? "max-h-140 object-contain" : "h-auto"}`}
             />
           </div>
         </motion.div>
@@ -380,7 +380,7 @@ export function ProjectDetail({ project }: { project: any }) {
 
           {/* Overview — editorial pull-quote size */}
           <FadeUp>
-            <p className="text-2xl md:text-3xl font-serif font-normal text-foreground leading-[1.5] max-w-3xl">
+            <p className="text-2xl md:text-3xl font-serif font-normal text-foreground leading-normal max-w-3xl">
               {details?.overview}
             </p>
           </FadeUp>
@@ -414,14 +414,14 @@ export function ProjectDetail({ project }: { project: any }) {
           {/* Process — timeline */}
           <div className="relative">
             {/* Vertical rail */}
-            <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border hidden md:block" />
+            <div className="absolute left-1.75 top-2 bottom-2 w-px bg-border hidden md:block" />
 
             <div className="space-y-0">
               {details?.process.map((step: any, i: number) => (
                 <FadeUp key={i} delay={i * 0.06}>
                   <div className="relative md:pl-10 pb-10 group">
                     {/* Timeline dot */}
-                    <div className="absolute left-0 top-[6px] h-[15px] w-[15px] rounded-full border-2 border-border bg-background group-hover:border-primary transition-colors duration-300 hidden md:block" />
+                    <div className="absolute left-0 top-1.5 h-3.75 w-3.75 rounded-full border-2 border-border bg-background group-hover:border-primary transition-colors duration-300 hidden md:block" />
 
                     <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-8 mb-2">
                       {/* Step number */}
@@ -429,12 +429,12 @@ export function ProjectDetail({ project }: { project: any }) {
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       {/* Step title */}
-                      <h3 className="text-lg font-semibold text-foreground tracking-tight">
+                      <h3 className="text-lg font-bold text-foreground tracking-tight">
                         {step.title}
                       </h3>
                     </div>
                     {/* Description — indented under title on large screens */}
-                    <div className="sm:pl-[3.25rem] md:pl-0">
+                    <div className="sm:pl-13 md:pl-0">
                       <p className="text-base text-foreground/80 leading-[1.8]">
                         {step.description}
                       </p>
@@ -525,7 +525,7 @@ export function ProjectDetail({ project }: { project: any }) {
                       <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-primary/40 shrink-0">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <h3 className="text-base font-semibold text-foreground tracking-tight">
+                      <h3 className="text-base font-bold text-foreground tracking-tight">
                         {img.title}
                       </h3>
                     </div>
@@ -550,7 +550,7 @@ export function ProjectDetail({ project }: { project: any }) {
             <p className="text-lg font-serif text-foreground/80">Ready to see more <span className="text-primary">work?</span></p>
           </div>
           <Link href="/#works">
-            <button className="group inline-flex items-center gap-3 rounded-full border border-border px-8 py-3.5 text-sm font-medium text-foreground/70 transition-all duration-200 hover:border-foreground/40 hover:text-foreground">
+            <button className="group inline-flex items-center gap-3 rounded-2xl border-2 border-primary/20 bg-background/40 backdrop-blur-sm px-8 py-3.5 text-sm font-bold text-foreground transition-all duration-200 hover:bg-foreground hover:text-background active:scale-95">
               <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
               Back to Projects
             </button>

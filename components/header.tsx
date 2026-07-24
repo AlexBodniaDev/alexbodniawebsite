@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter, usePathname } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Download, ArrowUpRight, Home, User, Briefcase, Mail } from "lucide-react"
+import { LanguageToggle } from "@/components/language-toggle"
+import { useLanguage } from "@/components/language-provider"
+import { Download, ArrowUpRight, Home, User, Briefcase, Mail, Quote } from "lucide-react"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface NavItem {
@@ -12,14 +14,6 @@ interface NavItem {
   sectionId: string
   icon: React.ElementType
 }
-
-// ─── Nav items ────────────────────────────────────────────────────────────────
-const NAV_ITEMS: NavItem[] = [
-  { label: "Home",    sectionId: "hero",    icon: Home      },
-  { label: "Works",   sectionId: "works",   icon: Briefcase },
-  { label: "About",   sectionId: "about",   icon: User      },
-  { label: "Contact", sectionId: "contact", icon: Mail      },
-]
 
 // ─── Tubelight pill — the glowing active indicator ───────────────────────────
 function TubelightIndicator({ activeIndex }: { activeIndex: number }) {
@@ -44,6 +38,15 @@ function TubelightIndicator({ activeIndex }: { activeIndex: number }) {
 export function Header() {
   const router   = useRouter()
   const pathname = usePathname()
+  const { t }    = useLanguage()
+
+  const NAV_ITEMS: NavItem[] = [
+    { label: t.nav.home,         sectionId: "hero",         icon: Home      },
+    { label: t.nav.works,        sectionId: "works",        icon: Briefcase },
+    { label: t.nav.about,        sectionId: "about",        icon: User      },
+    { label: t.nav.testimonials, sectionId: "testimonials", icon: Quote     },
+    { label: t.nav.contact,      sectionId: "contact",      icon: Mail      },
+  ]
 
   const [isScrolled,      setIsScrolled     ] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -54,12 +57,21 @@ export function Header() {
 
   // ── Scroll listener ──────────────────────────────────────────────────────
   useEffect(() => {
+    // Section anchors (hero/works/about/testimonials/contact) only exist on the
+    // homepage. On other routes (e.g. individual project pages) there is nothing
+    // to scroll-detect, so just mark "Works" active since that's the parent
+    // section project pages belong to, and skip attaching the scroll listener.
+    if (pathname !== "/") {
+      setActiveSection("works")
+      return
+    }
+
     const onScroll = () => {
       setIsScrolled(window.scrollY > 40)
 
       // Use getBoundingClientRect so position is always accurate regardless of layout
       // Walk in actual page order; last section whose top edge is at/above 30% viewport height wins
-      const ids = ["hero", "works", "about", "contact"]
+      const ids = ["hero", "works", "about", "testimonials", "contact"]
       let current = "hero"
       for (const id of ids) {
         const el = document.getElementById(id)
@@ -69,9 +81,10 @@ export function Header() {
       }
       setActiveSection(current)
     }
+    onScroll() // set correct state immediately on mount, don't wait for first scroll
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+  }, [pathname])
 
   // ── Body scroll lock ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -97,7 +110,7 @@ export function Header() {
       ═══════════════════════════════════════════════════════════════════ */}
       <div className="fixed top-0 left-0 right-0 z-50 hidden md:block pointer-events-none">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <div className="flex h-[72px] items-center justify-between">
+          <div className="flex h-18 items-center justify-between">
 
             {/* ── Logo ──────────────────────────────────────────────────── */}
             <motion.button
@@ -115,7 +128,7 @@ export function Header() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </span>
-                Available
+                {t.header.available}
               </span>
             </motion.button>
 
@@ -171,6 +184,7 @@ export function Header() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
+              <LanguageToggle />
               <ThemeToggle />
 
               {/* Resume CTA */}
@@ -179,12 +193,12 @@ export function Header() {
                 className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-all duration-300 hover:bg-foreground/85"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                transition={{ type: "spring", stiffness: 400, damping: 34 }}
               >
                 {/* Sweep shimmer on hover */}
-                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-linear-to-r from-transparent via-white/15 to-transparent" />
                 <Download className="relative h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-110" />
-                <span className="relative">Resume</span>
+                <span className="relative">{t.header.resume}</span>
                 <ArrowUpRight className="relative h-3 w-3 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </motion.button>
             </motion.div>
@@ -217,6 +231,7 @@ export function Header() {
         </button>
 
         <div className="flex items-center gap-2">
+          <LanguageToggle className="h-9" />
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(v => !v)}
@@ -250,10 +265,10 @@ export function Header() {
                   animate={{ opacity: 1, rotate: 0, scale: 1 }}
                   exit={{ opacity: 0, rotate: -45, scale: 0.7 }}
                   transition={{ duration: 0.18 }}
-                  className="flex flex-col gap-[5px] w-[18px]"
+                  className="flex flex-col gap-1.25 w-4.5"
                 >
                   <span className="block h-px w-full bg-foreground rounded-full" />
-                  <span className="block h-px w-[13px] bg-foreground rounded-full" />
+                  <span className="block h-px w-3.25 bg-foreground rounded-full" />
                   <span className="block h-px w-full bg-foreground rounded-full" />
                 </motion.span>
               )}
@@ -277,7 +292,7 @@ export function Header() {
               <button
                 key={item.sectionId}
                 onClick={() => navigateTo(item.sectionId)}
-                className="relative flex flex-col items-center gap-1 px-4 py-2 rounded-full"
+                className="relative flex flex-col items-center gap-1 px-3 py-2 rounded-full"
               >
                 {isActive && (
                   <motion.span
@@ -289,7 +304,7 @@ export function Header() {
                   </motion.span>
                 )}
                 <Icon
-                  className={`relative z-10 h-[18px] w-[18px] transition-colors duration-200 ${
+                  className={`relative z-10 h-4.5 w-4.5 transition-colors duration-200 ${
                     isActive ? "text-foreground" : "text-muted-foreground"
                   }`}
                 />
@@ -368,6 +383,8 @@ export function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.42, duration: 0.45 }}
               >
+                
+
                 <button
                   onClick={() => {
                     window.open("/cv.pdf", "_blank")
@@ -375,9 +392,9 @@ export function Header() {
                   }}
                   className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl border border-border bg-muted/40 px-6 py-4 text-base font-medium transition-colors hover:bg-muted"
                 >
-                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-linear-to-r from-transparent via-white/5 to-transparent" />
                   <Download className="h-4 w-4" />
-                  Download Resume
+                  {t.header.downloadResume}
                   <ArrowUpRight className="h-3.5 w-3.5 opacity-40 group-hover:opacity-80 transition-opacity" />
                 </button>
 
@@ -386,7 +403,7 @@ export function Header() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   </span>
-                  <span className="text-xs text-muted-foreground">Open to freelance opportunities</span>
+                  <span className="text-xs text-muted-foreground">{t.header.openToFreelance}</span>
                 </div>
               </motion.div>
             </div>

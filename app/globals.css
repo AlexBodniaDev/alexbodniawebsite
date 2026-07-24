@@ -146,8 +146,13 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    /* FIX 1: Apply broad transitions to all elements to catch theme color changes */
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    /* FIX: Only transition color-related props here — theme switching needs this.
+       transform/opacity/box-shadow/filter/backdrop-filter are intentionally
+       excluded: those are driven by Framer Motion / component-level Tailwind
+       transition utilities, and having BOTH this global CSS transition and
+       Framer Motion animate transform on the same element every frame caused
+       visible stutter/jumping across pill nav, cards, carousels, etc. */
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: var(--theme-transition-duration);
   }

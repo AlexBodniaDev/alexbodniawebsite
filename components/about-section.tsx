@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
 import data from "@/lib/data.json"
+import { useLanguage } from "@/components/language-provider"
 
 // ── SVG Icons ──────────────────────────────────────────────────────────────
 const FigmaIcon = () => (
@@ -103,6 +104,7 @@ const toolsWithIcons = [
 const marqueeItems = [...toolsWithIcons, ...toolsWithIcons]
 
 export function AboutSection() {
+  const { t, locale } = useLanguage()
   const [activeImage, setActiveImage] = useState(0)
   const sectionRef = useRef<HTMLDivElement>(null)
 
@@ -138,13 +140,13 @@ export function AboutSection() {
         <div className="text-center mb-20 md:mb-28">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 mb-6">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">Who I Am</span>
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">{t.about.eyebrow}</span>
           </div>
           <h2 className="text-5xl md:text-7xl font-serif tracking-tighter mb-6">
-            About <span className="italic font-light text-primary">Me</span>
+            {t.about.heading1} <span className="italic font-light text-primary">{t.about.heading2}</span>
           </h2>
           <p className="text-foreground/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal">
-            A little showcase of my journey, my principles, and the craft behind my work.
+            {t.about.subheading}
           </p>
         </div>
 
@@ -153,7 +155,7 @@ export function AboutSection() {
 
           {/* ── Photo ── */}
           <div className="lg:sticky lg:top-24 space-y-4">
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-muted">
+            <div className="relative aspect-4/5 rounded-2xl overflow-hidden bg-muted">
               {profileImages.map((src, i) => (
                 <img
                   key={i}
@@ -166,7 +168,7 @@ export function AboutSection() {
                   }`}
                 />
               ))}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-transparent" />
 
               {/* Controls */}
               <div className="absolute bottom-5 inset-x-5 flex items-center justify-between">
@@ -175,7 +177,7 @@ export function AboutSection() {
                     <button
                       key={i}
                       onClick={() => setActiveImage(i)}
-                      className={`h-[3px] rounded-full transition-all duration-500 ${
+                      className={`h-0.75 rounded-full transition-all duration-500 ${
                         i === activeImage
                           ? "bg-white w-7"
                           : "bg-white/30 w-2.5"
@@ -221,49 +223,147 @@ export function AboutSection() {
               accent bleed can happen.
             */}
             <p className="text-2xl md:text-[1.75rem] font-medium leading-[1.35] text-foreground">
-              Hello there, I'm Alex, creative UX/UI designer and developer
-              with 4+ years of experience making truly stand-out things.
+              {t.about.intro}
             </p>
 
             <div className="space-y-4 text-base md:text-[17px] text-muted-foreground leading-[1.75]">
               <p>
-                I believe that great design is not just about aesthetics — it's
-                about{" "}
+                {t.about.p1a}{" "}
                 <span className="text-foreground font-medium">
-                  solving real problems
+                  {t.about.p1b}
                 </span>{" "}
-                and creating meaningful experiences.
+                {t.about.p1c}
               </p>
               <p>
-                My approach combines analytical thinking with creative
-                intuition, always keeping the user at the center of every
-                decision.
+                {t.about.p2}
               </p>
             </div>
 
-            {/* ── Stat cards ── */}
-            <div className="grid grid-cols-3 gap-3 pt-2">
+            {/* ── Minimal Editorial Stats ── */}
+            <div className="grid grid-cols-3 gap-4 md:gap-6 pt-6">
+
               {[
-                { value: "5+",   top: "Years",    bot: "Experience" },
-                { value: "30+",  top: "Projects", bot: "Shipped"    },
-                { value: "100%", top: "Passion",  bot: "For Craft"  },
-              ].map(stat => (
+                {
+                  value: "5+",
+                  top: t.about.statYears,
+                  bot: t.about.statExperience,
+                },
+                {
+                  value: "30+",
+                  top: t.about.statProjects,
+                  bot: t.about.statShipped,
+                },
+                {
+                  value: "100%",
+                  top: t.about.statPassion,
+                  bot: t.about.statCraft,
+                },
+              ].map((stat) => (
+
                 <div
                   key={stat.top}
-                  className="rounded-xl bg-foreground text-background px-4 py-5 md:px-5 md:py-6 flex flex-col gap-3"
+                  className="
+                    group
+                    relative
+                    overflow-hidden
+                    rounded-3xl
+                    bg-card/40
+                    backdrop-blur-sm
+                    px-4
+                    py-6
+                    md:px-6
+                    md:py-8
+                    transition-all
+                    duration-500
+                    hover:-translate-y-1
+                  "
                 >
-                  <p className="text-[2rem] md:text-[2.5rem] font-serif font-light leading-none tracking-tight">
+
+                  {/* soft glow */}
+                  <div
+                    className="
+                      absolute
+                      -top-10
+                      -right-10
+                      w-24
+                      h-24
+                      rounded-full
+                      bg-primary/10
+                      blur-3xl
+                      opacity-0
+                      transition-opacity
+                      duration-500
+                      group-hover:opacity-100
+                    "
+                  />
+
+
+                  <p
+                    className="
+                      relative
+                      text-4xl
+                      md:text-5xl
+                      font-serif
+                      tracking-tight
+                      leading-none
+                      text-foreground
+                      transition-colors
+                      duration-300
+                      group-hover:text-primary
+                    "
+                  >
                     {stat.value}
                   </p>
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] opacity-55 leading-none">
+
+
+                  <div className="relative mt-5">
+
+                    <p
+                      className="
+                        text-[10px]
+                        md:text-xs
+                        uppercase
+                        tracking-[0.18em]
+                        font-semibold
+                        text-foreground
+                      "
+                    >
                       {stat.top}
                     </p>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] opacity-55 leading-none mt-0.5">
+
+                    <p
+                      className="
+                        text-[10px]
+                        md:text-xs
+                        uppercase
+                        tracking-[0.18em]
+                        text-muted-foreground
+                        mt-1
+                      "
+                    >
                       {stat.bot}
                     </p>
+
                   </div>
+
+
+                  {/* tiny accent */}
+                  <span
+                    className="
+                      absolute
+                      bottom-5
+                      left-6
+                      w-6
+                      h-px
+                      bg-primary/40
+                      transition-all
+                      duration-500
+                      group-hover:w-12
+                    "
+                  />
+
                 </div>
+
               ))}
             </div>
           </div>
@@ -275,11 +375,11 @@ export function AboutSection() {
 
         {/* Same size + two-tone treatment as "About Me" / "Let's Work Together" */}
         <h3 className="text-5xl md:text-7xl font-serif tracking-tighter text-center mb-16 md:mb-20 text-foreground">
-          My <span className="italic font-light text-primary">Experience</span>
+          {t.about.experienceHeading1} <span className="italic font-light text-primary">{t.about.experienceHeading2}</span>
         </h3>
 
         <div>
-          {data.experience.map((exp, index) => (
+          {data.experience.map((exp: any, index) => (
             <div
               key={index}
               className="group grid grid-cols-[100px_1fr] md:grid-cols-[160px_1fr] gap-6 md:gap-12 py-8 border-t border-border last:border-b"
@@ -292,10 +392,10 @@ export function AboutSection() {
               {/* Content */}
               <div className="space-y-2">
                 <h3 className="text-lg md:text-xl font-semibold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
-                  {exp.title}
+                  {locale === "uk" && exp.title_uk ? exp.title_uk : exp.title}
                 </h3>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                  {exp.description}
+                  {locale === "uk" && exp.description_uk ? exp.description_uk : exp.description}
                 </p>
               </div>
             </div>
@@ -307,14 +407,14 @@ export function AboutSection() {
       <div>
         <div className="container mx-auto px-6 max-w-6xl mb-10">
           <h3 className="text-5xl md:text-7xl font-serif tracking-tighter text-center text-foreground">
-            Tech Stack & <span className="italic font-light text-primary">Tools</span>
+            {t.about.techHeading1} <span className="italic font-light text-primary">{t.about.techHeading2}</span>
           </h3>
         </div>
 
         {/* Marquee — full bleed */}
         <div className="relative overflow-hidden mt-6">
-          <div className="pointer-events-none absolute left-0 inset-y-0 w-16 md:w-24 z-10 bg-gradient-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute right-0 inset-y-0 w-16 md:w-24 z-10 bg-gradient-to-l from-background to-transparent" />
+          <div className="pointer-events-none absolute left-0 inset-y-0 w-16 md:w-24 z-10 bg-linear-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute right-0 inset-y-0 w-16 md:w-24 z-10 bg-linear-to-l from-background to-transparent" />
 
           <div
             className="ab-marquee-track flex w-max"
@@ -323,7 +423,7 @@ export function AboutSection() {
             {marqueeItems.map(({ name, Icon }, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2.5 mx-2 px-4 py-2.5 rounded-xl border border-border/70 bg-card whitespace-nowrap flex-shrink-0"
+                className="flex items-center gap-2.5 mx-2 px-4 py-2.5 rounded-xl border border-border/70 bg-card whitespace-nowrap shrink-0"
               >
                 <Icon />
                 <span className="text-sm font-medium text-foreground/80">

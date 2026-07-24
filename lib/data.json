@@ -6,7 +6,7 @@
     "quote": "When you think something is impossible my work is to take off the 'im' and make your idea possible.",
     "about": "Hello there, I'm Alex, creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
     "contact": "Feel free to share your ideas with me and we'll see how idea turns into result.",
-    "email": "bodniaalex2911@gmail.com",
+    "contact_uk": "Поділись своєю ідеєю — і подивимось, як вона перетвориться на результат.",    "email": "bodniaalex2911@gmail.com",
     "github": "https://github.com/AlexBodniaDev",
     "linkedin": "https://www.linkedin.com/in/oleksandr-bodnia-13489920b/"
   },
@@ -14,18 +14,67 @@
     {
       "period": "2022-2024",
       "title": "Open to work",
-      "description": "Gained hands-on experience in UX/UI design and React development"
-    },
+      "title_uk": "У пошуку проєктів",
+      "description": "Gained hands-on experience in UX/UI design and React development",
+      "description_uk": "Отримав практичний досвід у UX/UI дизайні та React-розробці"    },
     {
       "period": "2018-2022",
       "title": "Voronin Design Studio",
-      "description": "Worked as intern  on various design projects and developed creative solutions"
-    },
+      "title_uk": "Voronin Design Studio",
+      "description": "Worked as intern  on various design projects and developed creative solutions",
+      "description_uk": "Працював стажером над різними дизайн-проєктами, розвивав креативні рішення"    },
     {
       "period": "2018-2022",
       "title": "IT Step University",
-      "description": "achieved a Bachelor's degree in Computer Science and gained practical skills through internships"
+      "title_uk": "IT Step University",
+      "description": "achieved a Bachelor's degree in Computer Science and gained practical skills through internships",
+      "description_uk": "здобув ступінь бакалавра з комп'ютерних наук та практичні навички під час стажувань"
     }
+  ],
+  "testimonials": [
+    {
+      "id": "t1",
+      "name": "Marta Kovalenko",
+      "name_uk": "Марта Коваленко",
+      "role": "Founder, Dnipro.net",
+      "role_uk": "Засновниця, Dnipro.net",
+      "avatar": "/placeholder-user.jpg",
+      "rating": 5,
+      "quote": "Alex completely reimagined our web presence. The redesign wasn't just prettier — it made everything easier to use, and our conversion rate jumped within weeks.",
+      "quote_uk": "Алекс повністю переосмислив наш сайт. Редизайн вийшов не просто гарнішим — усе стало зручнішим, і конверсія зросла вже за кілька тижнів."
+    },
+    {
+      "id": "t2",
+      "name": "Daniel Reyes",
+      "name_uk": "Деніел Рейєс",
+      "role": "Product Lead, CryptoX",
+      "role_uk": "Product Lead, CryptoX",
+      "avatar": "/placeholder-user.jpg",
+      "rating": 5,
+      "quote": "Working with Alex felt effortless. He understood the product deeply, asked the right questions, and delivered a design system our whole team still uses.",
+      "quote_uk": "Працювати з Алексом було легко. Він глибоко розібрався в продукті, ставив правильні питання і створив дизайн-систему, якою вся команда користується досі."
+    },
+    {
+      "id": "t3",
+      "name": "Olena Sydorenko",
+      "name_uk": "Олена Сидоренко",
+      "role": "CEO, Ketotox Plus",
+      "role_uk": "CEO, Ketotox Plus",
+      "avatar": "/placeholder-user.jpg",
+      "rating": 5,
+      "quote": "The packaging design exceeded every expectation. Alex balanced medical clarity with a warm, human illustration style — customers noticed immediately.",
+      "quote_uk": "Дизайн упаковки перевершив усі очікування. Алекс поєднав медичну зрозумілість із теплим, людяним стилем ілюстрацій — клієнти помітили це відразу."
+    },
+    {
+      "id": "t4",
+      "name": "Igor Petrenko",
+      "name_uk": "Ігор Петренко",
+      "role": "Founder, CycleSense",
+      "role_uk": "Засновник, CycleSense",
+      "avatar": "/placeholder-user.jpg",
+      "rating": 5,
+      "quote": "Alex has a rare mix of design taste and engineering discipline. Our app went from a rough prototype to something that genuinely feels premium.",
+      "quote_uk": "У Алекса рідкісне поєднання дизайнерського смаку та інженерної дисципліни. Наш застосунок перетворився з чорнового прототипу на по-справжньому преміальний продукт."    }
   ],
   "tools": ["Figma", "Photoshop", "Illustrator", "Adobe XD", "React", "Next.js", "Adobe XD", "After Effects"],
   "projects": [
@@ -79,3 +128,4 @@
     }
   ]
 }
+
