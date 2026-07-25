@@ -12,7 +12,10 @@ const WAVES = [
   { baseAmp: 14, freq: 0.0095, speed: 0.018, phase: 3.2, yFrac: 0.82 },
 ]
 
-const ALPHAS = [0.05, 0.07, 0.08, 0.045, 0.04]
+// Bumped up from [0.05, 0.07, 0.08, 0.045, 0.04] — the previous values were
+// tuned on a display with more contrast than typical Android phone screens
+// and were effectively invisible there.
+const ALPHAS = [0.11, 0.15, 0.17, 0.09, 0.08]
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -23,7 +26,6 @@ export function HeroSection() {
     if (!canvas) return
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (prefersReducedMotion) return
 
     const isMobile = window.matchMedia("(max-width: 767px)").matches
 
@@ -41,9 +43,53 @@ export function HeroSection() {
 
     const mouse = { x: -1, y: -1, active: false }
 
+    // ── Gradient cache ──────────────────────────────────────────────────
+    // createLinearGradient()/addColorStop() were previously called for
+    // every wave on every single animation frame (18-30x/sec), even though
+    // the gradient geometry only depends on canvas size + theme, neither
+    // of which change frame-to-frame. Rebuilding 5 gradients that often is
+    // pure wasted CPU work, and on Android's weaker canvas/GPU pipeline
+    // that adds up fast. Now we only rebuild when size or theme changes.
+    let waveGradients: CanvasGradient[] = []
+    let cachedDark: boolean | null = null
+
+    const buildGradients = (dark: boolean) => {
+      const colors = dark
+        ? [
+            [59, 130, 246],
+            [37, 99, 235],
+            [96, 165, 250],
+            [29, 78, 216],
+            [147, 197, 253],
+          ]
+        : [
+            [29, 78, 216],
+            [37, 99, 235],
+            [30, 64, 175],
+            [2, 132, 199],
+            [79, 70, 229],
+          ]
+      const alphaMult = dark ? 1.0 : 2.2
+
+      waveGradients = WAVES.map((w, i) => {
+        const c = colors[i].join(",")
+        const a = ALPHAS[i] * alphaMult
+        const baseY = H * w.yFrac
+        const grad = ctx.createLinearGradient(0, baseY - w.baseAmp - 20, 0, H)
+        grad.addColorStop(0,   `rgba(${c},0)`)
+        grad.addColorStop(0.1, `rgba(${c},${a * 1.2})`)
+        grad.addColorStop(0.4, `rgba(${c},${a * 0.8})`)
+        grad.addColorStop(0.8, `rgba(${c},${a * 0.25})`)
+        grad.addColorStop(1,   `rgba(${c},0)`)
+        return grad
+      })
+      cachedDark = dark
+    }
+
     const resize = () => {
       W = canvas.width  = canvas.offsetWidth
       H = canvas.height = canvas.offsetHeight
+      if (cachedDark !== null) buildGradients(cachedDark)
     }
 
     const onMove = (e: MouseEvent) => {
@@ -90,8 +136,10 @@ export function HeroSection() {
       }
 
       const dark = document.documentElement.classList.contains("dark")
+      if (dark !== cachedDark) buildGradients(dark)
 
-      const colors = dark
+      const alphaMult = dark ? 1.0 : 2.2
+      const strokeColors = dark
         ? [
             [59, 130, 246],
             [37, 99, 235],
@@ -107,12 +155,9 @@ export function HeroSection() {
             [79, 70, 229],
           ]
 
-      const alphaMult = dark ? 1.0 : 2.2
-
       WAVES.forEach((w, i) => {
-        const c = colors[i].join(",")
+        const c = strokeColors[i].join(",")
         const a = ALPHAS[i] * alphaMult
-        const baseY = H * w.yFrac
 
         const points: Array<[number, number]> = []
         for (let x = 0; x <= W; x += STEP) {
@@ -128,13 +173,7 @@ export function HeroSection() {
         ctx.lineTo(0, H)
         ctx.closePath()
 
-        const grad = ctx.createLinearGradient(0, baseY - w.baseAmp - 20, 0, H)
-        grad.addColorStop(0,    `rgba(${c},0)`)
-        grad.addColorStop(0.1,  `rgba(${c},${a * 1.2})`)
-        grad.addColorStop(0.4,  `rgba(${c},${a * 0.8})`)
-        grad.addColorStop(0.8,  `rgba(${c},${a * 0.25})`)
-        grad.addColorStop(1,    `rgba(${c},0)`)
-        ctx.fillStyle = grad
+        ctx.fillStyle = waveGradients[i]
         ctx.fill()
 
         ctx.beginPath()
@@ -155,6 +194,22 @@ export function HeroSection() {
     const stopLoop = () => {
       cancelAnimationFrame(rafId)
       rafId = 0
+    }
+
+    // Some Android devices/OEM skins (e.g. Samsung's "Remove animations",
+    // certain battery-saver modes) set prefers-reduced-motion at the OS
+    // level even though the user never touched an a11y toggle for this
+    // page specifically. The previous code returned immediately in that
+    // case, so the canvas never painted anything — the line was gone, not
+    // just static. Instead, draw one still frame so the effect is always
+    // visible; just skip the animation loop and mouse interaction.
+    if (prefersReducedMotion) {
+      const redrawStatic = () => draw(0)
+      draw(0)
+      cancelAnimationFrame(rafId) // draw() schedules a follow-up frame; cancel it
+      rafId = 0
+      window.addEventListener("resize", redrawStatic)
+      return () => window.removeEventListener("resize", redrawStatic)
     }
 
     const io = new IntersectionObserver(

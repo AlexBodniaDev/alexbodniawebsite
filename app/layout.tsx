@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/components/language-provider"
 import { PageTransition } from "@/components/page-transition"
 import { Header } from "@/components/header"
+import { ErrorBoundary } from "@/components/error-boundary"
 import type { Metadata } from "next"
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -88,6 +89,16 @@ export const metadata: Metadata = {
   },
   category: "technology",
   generator: "v0.app",
+  // The site ships its own EN/UA toggle (see LanguageProvider), so Chrome's
+  // automatic page-translate feature must be disabled. Left enabled, Chrome
+  // rewrites text nodes in-place with <font> wrapper elements; the next time
+  // React re-renders (scroll state, animations, etc.) it tries to update
+  // nodes Chrome already restructured and throws an uncaught DOM error,
+  // which crashes the whole React tree and freezes the page on a blank
+  // screen — exactly what was happening in production.
+  other: {
+    google: "notranslate",
+  },
 }
 
 const personJsonLd = {
@@ -125,10 +136,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${quicksand.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased`}
+      translate="no"
+      className={`${quicksand.variable} ${merriweather.variable} ${jetbrainsMono.variable} antialiased notranslate`}
       suppressHydrationWarning
     >
       <head>
+        <meta name="google" content="notranslate" />
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
@@ -140,13 +153,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
-      <body className="overflow-x-hidden">
-        <ThemeProvider defaultTheme="light" storageKey="alex-portfolio-theme">
-          <LanguageProvider defaultLocale="en" storageKey="alex-portfolio-locale">
-            <Header />
-            <PageTransition>{children}</PageTransition>
-          </LanguageProvider>
-        </ThemeProvider>
+      <body className="overflow-x-hidden notranslate" translate="no">
+        <ErrorBoundary>
+          <ThemeProvider defaultTheme="light" storageKey="alex-portfolio-theme">
+            <LanguageProvider defaultLocale="en" storageKey="alex-portfolio-locale">
+              <Header />
+              <PageTransition>{children}</PageTransition>
+            </LanguageProvider>
+          </ThemeProvider>
+        </ErrorBoundary>
         <Analytics />
         <SpeedInsights />
       </body>

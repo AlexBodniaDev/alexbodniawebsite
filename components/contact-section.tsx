@@ -109,9 +109,18 @@ export function ContactSection() {
       />
 
       {/* Background glow positioned relative to section center without clipping bounds */}
+      {/*
+        Desktop-only, matching the same glow in testimonials-section.tsx.
+        This div animates scale+opacity on an 8s infinite loop over a
+        140px-blurred area up to 800px wide. Rendering that on mobile meant
+        Android phones were continuously re-rasterizing a huge blurred,
+        animating layer for as long as the tab was open — not just while
+        the contact section was in view. Purely decorative, so hiding it
+        below md removes a persistent cost for no visible loss on phones.
+      */}
       <div
         aria-hidden="true"
-        className="ab-contact-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-140 md:w-200 h-140 md:h-200 rounded-full bg-primary/10 blur-[140px] pointer-events-none z-0"
+        className="ab-contact-glow hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-140 md:w-200 h-140 md:h-200 rounded-full bg-primary/10 blur-[140px] pointer-events-none z-0"
       />
 
       <div className="container mx-auto px-6 relative z-20">

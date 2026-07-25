@@ -187,7 +187,7 @@ export function Header() {
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex md:hidden items-center justify-between px-5 h-16 transition-colors duration-300 ${
           isScrolled
-            ? "bg-background/80 backdrop-blur-md border-b border-border/20"
+            ? "bg-background/95 border-b border-border/20"
             : "bg-transparent"
         }`}
       >
@@ -242,8 +242,17 @@ export function Header() {
       </div>
 
       {/* MOBILE — Bottom Dock (< 768px) */}
+      {/*
+        NOTE: no backdrop-blur here on purpose. This element is fixed and
+        always mounted (unlike the top bar, which only blurs once scrolled).
+        A fixed, always-on backdrop-filter sitting over actively scrolling
+        content is one of the most expensive things to ask Android Chrome's
+        compositor to do — it has to resample everything underneath every
+        single frame. bg-background/95 is close to opaque so it reads almost
+        identically without that per-frame cost.
+      */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex md:hidden pointer-events-auto max-w-[calc(100vw-2rem)]">
-        <div className="flex items-center gap-0.5 rounded-full border border-border/60 dark:border-white/15 bg-background/90 backdrop-blur-md p-1.5 shadow-lg overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-0.5 rounded-full border border-border/60 dark:border-white/15 bg-background/95 p-1.5 shadow-lg overflow-x-auto no-scrollbar">
           {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.sectionId
             const Icon = item.icon
