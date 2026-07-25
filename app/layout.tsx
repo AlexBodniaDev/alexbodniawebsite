@@ -141,6 +141,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <meta name="google-site-verification" content="iY9Yp7VEkL7d0orO8mF_kCHkh2OCaiv4vQhZk_qmWhY" />
         <meta name="google" content="notranslate" />
         <script
           type="application/ld+json"
