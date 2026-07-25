@@ -9,7 +9,11 @@ import { useLanguage } from "@/components/language-provider"
 type Project = typeof data.projects[0]
 
 export function WorksSection() {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+
+  const getTitle = (p: Project) => (locale === "uk" ? (p as any).title_uk ?? p.title : p.title)
+  const getDescription = (p: Project) => (locale === "uk" ? (p as any).description_uk ?? p.description : p.description)
+  const getTags = (p: Project) => (locale === "uk" ? (p as any).tags_uk ?? p.tags : p.tags)
 
   const [activeProject, setActiveProject] = useState<string | null>(null)
   const [previewProject, setPreviewProject] = useState<Project | null>(null)
@@ -70,7 +74,7 @@ export function WorksSection() {
           <div className="w-56 h-36 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border animate-in fade-in zoom-in-95 duration-150">
             <img
               src={activeProjectData.image || "/placeholder.svg"}
-              alt={activeProjectData.title}
+              alt={getTitle(activeProjectData)}
               className="w-full h-full object-cover"
             />
           </div>
@@ -135,7 +139,7 @@ export function WorksSection() {
 
             <img
               src={previewProject.image || "/placeholder.svg"}
-              alt={previewProject.title}
+              alt={getTitle(previewProject)}
               className="
                 w-full
                 aspect-video
@@ -147,17 +151,17 @@ export function WorksSection() {
             <div className="p-5">
 
               <h3 className="text-xl font-bold">
-                {previewProject.title}
+                {getTitle(previewProject)}
               </h3>
 
 
               <p className="mt-2 text-sm text-muted-foreground">
-                {previewProject.description}
+                {getDescription(previewProject)}
               </p>
 
 
               <div className="flex flex-wrap gap-2 mt-4">
-                {previewProject.tags.map((tag) => (
+                {getTags(previewProject).map((tag: string) => (
                   <span
                     key={tag}
                     className="
@@ -188,7 +192,7 @@ export function WorksSection() {
                   font-bold
                 "
               >
-                View Project
+                {t.works.viewProject}
               </Link>
 
             </div>
@@ -276,12 +280,12 @@ export function WorksSection() {
                     truncate
                     mb-2
                   ">
-                    {project.title}
+                    {getTitle(project)}
                   </h3>
 
 
                   <div className="flex flex-wrap gap-1.5">
-                    {project.tags.slice(0, 3).map((tag) => (
+                    {getTags(project).slice(0, 3).map((tag: string) => (
                       <span
                         key={tag}
                         className="
@@ -310,7 +314,7 @@ export function WorksSection() {
                   text-sm
                   text-muted-foreground
                 ">
-                  {project.description}
+                  {getDescription(project)}
                 </p>
 
 
