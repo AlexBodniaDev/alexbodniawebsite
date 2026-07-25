@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import { ArrowLeft, ExternalLink, Github, Zap, Lightbulb } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -29,14 +28,13 @@ function FadeUp({
   )
 }
 
-// ─── Chapter divider — the signature element ─────────────────────────────────
-// A hairline rule with a floating mono label notched into it.
+// ─── Chapter divider ─────────────────────────────────────────────────────────
 function ChapterDivider({ label }: { label: string }) {
   return (
     <FadeUp>
       <div className="relative flex items-center py-2 my-20">
         <div className="flex-1 h-px bg-border" />
-        <span className="mx-5 font-mono text-[10px] uppercase tracking-[0.3em] text-primary whitespace-nowrap select-none">
+        <span className="mx-5 font-mono text-[11px] uppercase tracking-[0.25em] text-primary whitespace-nowrap select-none font-bold">
           {label}
         </span>
         <div className="flex-1 h-px bg-border" />
@@ -48,7 +46,7 @@ function ChapterDivider({ label }: { label: string }) {
 // ─── Eyebrow label ───────────────────────────────────────────────────────────
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono font-bold text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
+    <p className="font-mono font-bold text-[11px] uppercase tracking-[0.25em] text-primary mb-3">
       {children}
     </p>
   )
@@ -260,7 +258,7 @@ export function ProjectDetail({ project }: { project: any }) {
   const details = projectDetails[project.id]
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-background min-h-screen text-foreground">
 
       {/* ════════════════════════════════════════════════════════════════════
           HERO
@@ -268,7 +266,7 @@ export function ProjectDetail({ project }: { project: any }) {
       <section className="pt-28 md:pt-36 pb-0">
         <div className="mx-auto max-w-5xl px-6">
 
-          {/* Back */}
+          {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
@@ -276,19 +274,19 @@ export function ProjectDetail({ project }: { project: any }) {
           >
             <button
               onClick={() => router.back()}
-              className="group mb-14 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground/60 hover:text-foreground transition-colors duration-200"
+              className="group mb-12 inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-200 cursor-pointer"
             >
-              <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
+              <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-1 text-primary" />
               Back to projects
             </button>
           </motion.div>
 
           {/* Year + type eyebrow */}
-            <Eyebrow>{project.year} · Case Study</Eyebrow>
+          <Eyebrow>{project.year} · Case Study</Eyebrow>
 
           {/* Title */}
           <motion.h1
-            className="font-serif text-5xl md:text-7xl lg:text-8xl font-normal tracking-tight leading-[0.95] mb-6"
+            className="font-serif text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-[0.95] text-foreground mb-6"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
@@ -299,7 +297,7 @@ export function ProjectDetail({ project }: { project: any }) {
           {/* Tagline */}
           {details?.tagline && (
             <motion.p
-              className="text-lg md:text-xl text-foreground/80 leading-relaxed max-w-2xl mb-12"
+              className="text-lg md:text-xl text-foreground/90 leading-relaxed max-w-2xl mb-12 font-normal"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.18 }}
@@ -320,10 +318,10 @@ export function ProjectDetail({ project }: { project: any }) {
               <div className="flex gap-10 sm:gap-14 flex-1">
                 {details.metrics.map((m: any, i: number) => (
                   <div key={i} className="space-y-1.5">
-                    <div className="font-serif text-4xl md:text-5xl font-normal text-primary leading-none">
+                    <div className="font-serif text-4xl md:text-5xl font-semibold text-primary leading-none">
                       {m.value}
                     </div>
-                    <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 leading-snug">
+                    <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/70 font-bold leading-snug">
                       {m.label}
                     </div>
                   </div>
@@ -332,20 +330,20 @@ export function ProjectDetail({ project }: { project: any }) {
             )}
 
             {/* CTAs */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-4">
               {details?.liveUrl && (
                 <Link href={details.liveUrl} target="_blank">
-                  <button className="group inline-flex items-center gap-2 rounded-2xl bg-foreground px-6 py-3 text-sm font-bold text-background transition-all duration-200 hover:scale-[1.03] active:scale-95 shadow-xl shadow-foreground/10">
+                  <button className="group inline-flex items-center gap-2.5 px-7 py-3.5 bg-primary text-primary-foreground rounded-2xl font-bold text-sm hover:bg-primary/90 hover:scale-[1.02] active:scale-95 transition-all shadow-md shadow-primary/20 cursor-pointer">
                     View Project
-                    <ExternalLink className="h-3.5 w-3.5 text-primary opacity-80 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    <ExternalLink className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </button>
                 </Link>
               )}
               {details?.githubUrl && (
                 <Link href={details.githubUrl} target="_blank">
-                  <button className="group inline-flex items-center gap-2 rounded-2xl border-2 border-primary/20 bg-background/40 backdrop-blur-sm px-6 py-3 text-sm font-bold text-foreground transition-all duration-200 hover:bg-foreground hover:text-background active:scale-95">
+                  <button className="group inline-flex items-center gap-2.5 px-7 py-3.5 border border-border rounded-2xl font-bold text-sm text-foreground bg-background hover:bg-accent hover:border-primary/50 hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
                     Source
-                    <Github className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <Github className="h-4 w-4 text-foreground/70 group-hover:text-foreground transition-colors" />
                   </button>
                 </Link>
               )}
@@ -353,18 +351,18 @@ export function ProjectDetail({ project }: { project: any }) {
           </motion.div>
         </div>
 
-        {/* Hero image — full-bleed below the header text */}
+        {/* Hero image */}
         <motion.div
           className="mt-0 mx-auto max-w-5xl px-6 pt-10"
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="overflow-hidden rounded-2xl border border-border/60 bg-muted/10">
+          <div className="overflow-hidden rounded-2xl border border-border bg-muted/20 shadow-sm">
             <img
               src={project.image}
               alt={project.title}
-              className={`w-full block ${isMobileProject ? "max-h-140 object-contain" : "h-auto"}`}
+              className={`w-full block ${isMobileProject ? "max-h-140 object-contain py-6" : "h-auto"}`}
             />
           </div>
         </motion.div>
@@ -378,64 +376,59 @@ export function ProjectDetail({ project }: { project: any }) {
 
           <ChapterDivider label="Overview" />
 
-          {/* Overview — editorial pull-quote size */}
+          {/* Overview */}
           <FadeUp>
-            <p className="text-2xl md:text-3xl font-serif font-normal text-foreground leading-normal max-w-3xl">
+            <p className="text-2xl md:text-3xl font-serif font-normal text-foreground leading-relaxed max-w-3xl">
               {details?.overview}
             </p>
           </FadeUp>
 
           <ChapterDivider label="The Brief" />
 
-          {/* Challenge / Solution — two columns */}
+          {/* Challenge / Solution */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
             <FadeUp delay={0}>
-              <div className="space-y-5">
-                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
-                  <Zap className="h-3.5 w-3.5" />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-primary font-bold mb-1">
+                  <Zap className="h-4 w-4" />
                   The Challenge
                 </div>
-                <p className="text-lg text-foreground/90 leading-[1.75]">{details?.challenge}</p>
+                <p className="text-base md:text-lg text-foreground/90 leading-relaxed font-normal">{details?.challenge}</p>
               </div>
             </FadeUp>
             <FadeUp delay={0.08}>
-              <div className="space-y-5">
-                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
-                  <Lightbulb className="h-3.5 w-3.5" />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-primary font-bold mb-1">
+                  <Lightbulb className="h-4 w-4" />
                   The Solution
                 </div>
-                <p className="text-lg text-foreground/90 leading-[1.75]">{details?.solution}</p>
+                <p className="text-base md:text-lg text-foreground/90 leading-relaxed font-normal">{details?.solution}</p>
               </div>
             </FadeUp>
           </div>
 
           <ChapterDivider label="Process" />
 
-          {/* Process — timeline */}
+          {/* Process Timeline */}
           <div className="relative">
-            {/* Vertical rail */}
             <div className="absolute left-1.75 top-2 bottom-2 w-px bg-border hidden md:block" />
 
             <div className="space-y-0">
               {details?.process.map((step: any, i: number) => (
                 <FadeUp key={i} delay={i * 0.06}>
                   <div className="relative md:pl-10 pb-10 group">
-                    {/* Timeline dot */}
-                    <div className="absolute left-0 top-1.5 h-3.75 w-3.75 rounded-full border-2 border-border bg-background group-hover:border-primary transition-colors duration-300 hidden md:block" />
+                    <div className="absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full border-2 border-border bg-background group-hover:border-primary transition-colors duration-300 hidden md:block" />
 
                     <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-8 mb-2">
-                      {/* Step number */}
-                      <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/40 shrink-0 w-6 sm:w-auto">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary shrink-0 w-6 sm:w-auto font-bold">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      {/* Step title */}
                       <h3 className="text-lg font-bold text-foreground tracking-tight">
                         {step.title}
                       </h3>
                     </div>
-                    {/* Description — indented under title on large screens */}
                     <div className="sm:pl-13 md:pl-0">
-                      <p className="text-base text-foreground/80 leading-[1.8]">
+                      <p className="text-base text-foreground/85 leading-relaxed font-normal">
                         {step.description}
                       </p>
                     </div>
@@ -447,15 +440,15 @@ export function ProjectDetail({ project }: { project: any }) {
 
           <ChapterDivider label="Deliverables" />
 
-          {/* Role + Tools — two compact columns */}
+          {/* Role + Tools */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
             <FadeUp>
               <div className="space-y-5">
                 <Eyebrow>My Role</Eyebrow>
                 <ul className="space-y-3">
                   {details?.role?.map((r: string) => (
-                    <li key={r} className="flex items-center gap-3 text-base text-foreground/85">
-                      <span className="h-px w-4 bg-primary/40 shrink-0" />
+                    <li key={r} className="flex items-center gap-3 text-base text-foreground font-medium">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                       {r}
                     </li>
                   ))}
@@ -469,7 +462,7 @@ export function ProjectDetail({ project }: { project: any }) {
                   {details?.technologies.map((tech: string) => (
                     <span
                       key={tech}
-                      className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-mono text-sm text-primary hover:bg-primary/10 transition-colors duration-200"
+                      className="inline-flex items-center rounded-lg border border-border bg-secondary text-secondary-foreground px-3.5 py-1.5 font-mono text-xs font-semibold shadow-2xs"
                     >
                       {tech}
                     </span>
@@ -489,11 +482,10 @@ export function ProjectDetail({ project }: { project: any }) {
         <div className="mx-auto max-w-5xl px-6">
           <ChapterDivider label="Visual Walkthrough" />
 
-          {/* Section opener */}
           <FadeUp>
             <p className="font-serif text-3xl md:text-4xl font-normal text-foreground leading-snug mb-16 max-w-xl">
               A closer look at every screen and{" "}
-              <span className="text-primary">design decision.</span>
+              <span className="text-primary italic">design decision.</span>
             </p>
           </FadeUp>
         </div>
@@ -501,7 +493,7 @@ export function ProjectDetail({ project }: { project: any }) {
         {/* Gallery */}
         <div className="mx-auto max-w-5xl px-6">
           <div
-            className={`grid gap-x-10 gap-y-20 ${
+            className={`grid gap-x-10 gap-y-16 ${
               isMobileProject
                 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                 : "grid-cols-1 md:grid-cols-2"
@@ -509,27 +501,25 @@ export function ProjectDetail({ project }: { project: any }) {
           >
             {details?.images.map((img: any, index: number) => (
               <FadeUp key={index} delay={Math.min(index * 0.05, 0.25)}>
-                <div className="group space-y-5">
-                  {/* Image */}
-                  <div className="overflow-hidden rounded-xl border border-border/50 bg-muted/5 transition-all duration-500 group-hover:border-primary/40">
+                <div className="group space-y-4">
+                  <div className="overflow-hidden rounded-xl border border-border bg-muted/10 transition-all duration-300 group-hover:border-primary/50 shadow-2xs">
                     <img
                       src={img.src}
                       alt={img.title}
-                      className="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.015]"
+                      className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.01]"
                     />
                   </div>
 
-                  {/* Annotation */}
-                  <div className="space-y-2">
-                    <div className="flex items-baseline gap-4">
-                      <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-primary/40 shrink-0">
+                  <div className="space-y-1.5">
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary shrink-0 font-bold">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <h3 className="text-base font-bold text-foreground tracking-tight">
                         {img.title}
                       </h3>
                     </div>
-                    <p className="text-base text-foreground/75 leading-[1.75] pl-8">
+                    <p className="text-sm md:text-base text-foreground/85 leading-relaxed font-normal pl-6">
                       {img.description}
                     </p>
                   </div>
@@ -541,17 +531,17 @@ export function ProjectDetail({ project }: { project: any }) {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════════
-          FOOTER CTA
+          FOOTER CTA (Збільшений нижній відступ pb-32 md:pb-40)
       ════════════════════════════════════════════════════════════════════ */}
-      <footer className="mt-32 border-t border-border">
-        <div className="mx-auto max-w-5xl px-6 py-24 flex flex-col sm:flex-row items-center justify-between gap-8">
+      <footer className="mt-32 border-t border-border pt-20 pb-32 md:pb-40">
+        <div className="mx-auto max-w-5xl px-6 flex flex-col sm:flex-row items-center justify-between gap-8">
           <div className="space-y-1 text-center sm:text-left">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50">Next step</p>
-            <p className="text-lg font-serif text-foreground/80">Ready to see more <span className="text-primary">work?</span></p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary font-bold">Next step</p>
+            <p className="text-xl font-serif text-foreground">Ready to see more <span className="text-primary italic">work?</span></p>
           </div>
           <Link href="/#works">
-            <button className="group inline-flex items-center gap-3 rounded-2xl border-2 border-primary/20 bg-background/40 backdrop-blur-sm px-8 py-3.5 text-sm font-bold text-foreground transition-all duration-200 hover:bg-foreground hover:text-background active:scale-95">
-              <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
+            <button className="group inline-flex items-center gap-2.5 px-8 py-3.5 border border-border rounded-2xl font-bold text-sm text-foreground bg-background hover:bg-accent hover:border-primary/50 hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
+              <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1 text-primary" />
               Back to Projects
             </button>
           </Link>

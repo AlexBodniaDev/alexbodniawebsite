@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState, useCallback, memo } from "react"
 import { motion, type Variants } from "framer-motion"
 import { Quote, Sparkles, Star, ChevronLeft, ChevronRight } from "lucide-react"
 import data from "@/lib/data.json"
@@ -18,45 +18,41 @@ const container: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
     },
   },
 }
 
 const item: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 18,
-  },
+  hidden: { opacity: 0, y: 14 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.45,
       ease: [0.22, 1, 0.36, 1],
     },
   },
 }
 
-function TestimonialCard({
+const TestimonialCard = memo(function TestimonialCard({
   t,
 }: {
   t: Testimonial & { name: string; role: string; quote: string }
 }) {
   return (
-    <div className="group relative h-full rounded-3xl border border-border/60 bg-card/60 backdrop-blur-sm p-8 md:p-10 flex flex-col transition-all duration-300 hover:border-primary/20 hover:shadow-[0_20px_60px_-25px_hsl(var(--primary)/0.35)]">
-
+    <div className="group relative h-full rounded-3xl border border-border/60 bg-card/80 p-6 md:p-8 flex flex-col transition-all duration-200">
       <Quote
-        className="absolute top-7 right-7 w-10 h-10 text-primary/10 group-hover:text-primary/15 transition-colors duration-300"
+        className="absolute top-6 right-6 w-8 h-8 text-primary/10 transition-colors duration-200"
         strokeWidth={1.5}
       />
 
-      <div className="flex items-center gap-1 mb-6">
+      <div className="flex items-center gap-1 mb-5">
         {Array.from({ length: 5 }).map((_, i) => (
           <Star
             key={i}
-            className={`w-4 h-4 ${
+            className={`w-3.5 h-3.5 ${
               i < t.rating
                 ? "fill-primary text-primary"
                 : "fill-muted text-muted"
@@ -65,15 +61,17 @@ function TestimonialCard({
         ))}
       </div>
 
-      <p className="relative text-lg md:text-xl font-serif italic font-light leading-relaxed text-foreground mb-8 flex-1">
+      <p className="relative text-base md:text-lg font-serif italic leading-relaxed text-foreground mb-6 flex-1">
         "{t.quote}"
       </p>
 
-      <div className="flex items-center gap-3.5 pt-6 border-t border-border/60">
-        <div className="w-11 h-11 rounded-full overflow-hidden bg-muted shrink-0 ring-1 ring-border">
+      <div className="flex items-center gap-3 pt-4 border-t border-border/60">
+        <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0 ring-1 ring-border">
           <img
             src={t.avatar || "/placeholder-user.jpg"}
             alt={t.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
           />
         </div>
@@ -89,7 +87,7 @@ function TestimonialCard({
       </div>
     </div>
   )
-}
+})
 
 export function TestimonialsSection() {
   const { t, locale } = useLanguage()
@@ -103,21 +101,12 @@ export function TestimonialsSection() {
 
   const localized = data.testimonials.map((tm: any) => ({
     ...tm,
-    name:
-      locale === "uk" && tm.name_uk
-        ? tm.name_uk
-        : tm.name,
-    role:
-      locale === "uk" && tm.role_uk
-        ? tm.role_uk
-        : tm.role,
-    quote:
-      locale === "uk" && tm.quote_uk
-        ? tm.quote_uk
-        : tm.quote,
+    name: locale === "uk" && tm.name_uk ? tm.name_uk : tm.name,
+    role: locale === "uk" && tm.role_uk ? tm.role_uk : tm.role,
+    quote: locale === "uk" && tm.quote_uk ? tm.quote_uk : tm.quote,
   }))
 
-    useEffect(() => {
+  useEffect(() => {
     if (!api) return
 
     setCount(api.scrollSnapList().length)
@@ -128,7 +117,6 @@ export function TestimonialsSection() {
     }
 
     api.on("select", onSelect)
-
     return () => {
       api.off("select", onSelect)
     }
@@ -145,7 +133,7 @@ export function TestimonialsSection() {
       } else {
         api.scrollTo(0)
       }
-    }, 4500)
+    }, 5000)
 
     return () => {
       if (autoplayRef.current) {
@@ -154,52 +142,41 @@ export function TestimonialsSection() {
     }
   }, [api])
 
-  const scrollTo = useCallback(
-    (i: number) => api?.scrollTo(i),
-    [api]
-  )
+  const scrollTo = useCallback((i: number) => api?.scrollTo(i), [api])
 
   return (
     <section
       id="testimonials"
-      className="relative py-24 md:py-32 -mb-16 bg-background overflow-hidden z-10"
+      className="relative pt-20 pb-12 md:pt-32 md:pb-16 bg-background overflow-hidden z-10 border-none"
       onMouseEnter={() => (isHovering.current = true)}
       onMouseLeave={() => (isHovering.current = false)}
     >
       <div
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full bg-primary/8 blur-[140px] pointer-events-none"
-      />
-
-      {/* Seamless bottom transition */}
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-background pointer-events-none"
+        className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"
       />
 
       <div className="container mx-auto px-6 max-w-6xl relative z-10">
-
         <motion.div
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-12 md:mb-16"
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-40px" }}
         >
           <motion.div
             variants={item}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 mb-6"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/5 border border-primary/20 mb-4"
           >
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-
-            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-foreground/70">
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-foreground/70">
               {t.testimonials.eyebrow}
             </span>
           </motion.div>
 
           <motion.h2
             variants={item}
-            className="text-5xl md:text-7xl font-serif tracking-tighter mb-6 text-foreground"
+            className="text-4xl md:text-7xl font-serif tracking-tight mb-4 text-foreground"
           >
             {t.testimonials.heading1}{" "}
             <span className="italic font-light text-primary">
@@ -209,23 +186,13 @@ export function TestimonialsSection() {
 
           <motion.p
             variants={item}
-            className="text-foreground/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal"
+            className="text-foreground/70 text-base md:text-xl max-w-2xl mx-auto leading-relaxed"
           >
             {t.testimonials.subheading}
           </motion.p>
         </motion.div>
 
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{
-            duration: 0.7,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
-
+        <div>
           <Carousel
             setApi={setApi}
             opts={{
@@ -246,17 +213,14 @@ export function TestimonialsSection() {
             </CarouselContent>
           </Carousel>
 
-
-          <div className="flex items-center justify-center gap-6 mt-10">
-
+          <div className="flex items-center justify-center gap-6 mt-8">
             <button
               onClick={() => api?.scrollPrev()}
-              aria-label="Previous"
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300"
+              aria-label="Previous slide"
+              className="w-10 h-10 rounded-full border border-border/60 flex items-center justify-center text-muted-foreground active:scale-95 transition-transform touch-manipulation"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-
 
             <div className="flex items-center gap-2">
               {Array.from({ length: count }).map((_, i) => (
@@ -264,28 +228,24 @@ export function TestimonialsSection() {
                   key={i}
                   onClick={() => scrollTo(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                  className={`h-1.5 rounded-full transition-all duration-200 touch-manipulation ${
                     i === selectedIndex
                       ? "w-6 bg-primary"
-                      : "w-1.5 bg-border hover:bg-muted-foreground/50"
+                      : "w-1.5 bg-border"
                   }`}
                 />
               ))}
             </div>
 
-
             <button
               onClick={() => api?.scrollNext()}
-              aria-label="Next"
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300"
+              aria-label="Next slide"
+              className="w-10 h-10 rounded-full border border-border/60 flex items-center justify-center text-muted-foreground active:scale-95 transition-transform touch-manipulation"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
-
           </div>
-
-        </motion.div>
-
+        </div>
       </div>
     </section>
   )

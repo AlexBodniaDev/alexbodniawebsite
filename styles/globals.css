@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
 :root {
   /* LIGHT MODE: Optimized for MAXIMUM Text Readability */
 
@@ -48,6 +49,9 @@
   --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: oklch(0.88 0.005 240);
   --sidebar-ring: var(--primary);
+  
+  /* ADDITION for smooth theme transitions */
+  --theme-transition-duration: 300ms;
 }
 
 .dark {
@@ -142,9 +146,23 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* FIX: Only transition color-related props here — theme switching needs this.
+       transform/opacity/box-shadow/filter/backdrop-filter are intentionally
+       excluded: those are driven by Framer Motion / component-level Tailwind
+       transition utilities, and having BOTH this global CSS transition and
+       Framer Motion animate transform on the same element every frame caused
+       visible stutter/jumping across pill nav, cards, carousels, etc. */
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: var(--theme-transition-duration);
   }
+  
   body {
     @apply bg-background text-foreground font-sans;
+    /* FIX 2: Explicitly ensure body background and text color transition */
+    transition-property: background-color, color; 
+    transition-duration: var(--theme-transition-duration);
+    
     /* Premium typography settings */
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-variant-numeric: oldstyle-nums;
@@ -175,6 +193,43 @@
     font-size: clamp(1.75rem, 5vw, 4rem);
     line-height: 1.1;
     letter-spacing: -0.03em;
+  }
+
+  /* Section headings (H2) — normalized so every section title shares one scale/weight */
+  .text-section-heading {
+    font-size: clamp(2rem, 4vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+
+  /* Card headings (H3) — normalized for cards, list items, and project titles */
+  .text-card-heading {
+    font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+
+  /* Body copy — consistent reading size/measure across sections */
+  .text-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  /* Small text: eyebrow labels & metadata.
+     NOTE: uses weight 700 (loaded), not 900 — Quicksand is only loaded at
+     300/400/500/600/700, so font-black (900) was being browser-synthesized
+     (faux-bold) wherever eyebrow labels used it. 700 + wide tracking reproduces
+     the same visual weight using an actually-loaded font file. */
+  .text-label {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
   }
 }
 

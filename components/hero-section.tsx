@@ -1,26 +1,24 @@
 "use client"
 
 import { ArrowRight, Sparkles } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useLanguage } from "@/components/language-provider"
 
 const WAVES = [
-  { baseAmp: 44, freq: 0.0048, speed: 0.006, phase: 0,   yFrac: 0.60 },
-  { baseAmp: 32, freq: 0.0062, speed: 0.009, phase: 2.0, yFrac: 0.66 },
-  { baseAmp: 22, freq: 0.0078, speed: 0.013, phase: 4.1, yFrac: 0.72 },
-  { baseAmp: 54, freq: 0.0035, speed: 0.004, phase: 1.1, yFrac: 0.55 },
-  { baseAmp: 16, freq: 0.0095, speed: 0.018, phase: 3.2, yFrac: 0.78 },
+  { baseAmp: 36, freq: 0.0048, speed: 0.006, phase: 0,   yFrac: 0.68 },
+  { baseAmp: 28, freq: 0.0062, speed: 0.009, phase: 2.0, yFrac: 0.72 },
+  { baseAmp: 20, freq: 0.0078, speed: 0.013, phase: 4.1, yFrac: 0.76 },
+  { baseAmp: 42, freq: 0.0035, speed: 0.004, phase: 1.1, yFrac: 0.64 },
+  { baseAmp: 14, freq: 0.0095, speed: 0.018, phase: 3.2, yFrac: 0.82 },
 ]
-const ALPHAS = [0.055, 0.072, 0.09, 0.042, 0.038]
+
+const ALPHAS = [0.05, 0.07, 0.08, 0.045, 0.04]
 
 export function HeroSection() {
   const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef  = useRef({ x: -1, y: -1, active: false })
   const rafRef    = useRef<number>(0)
-  const [hasMounted, setHasMounted] = useState(false)
-
-  useEffect(() => { setHasMounted(true) }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -62,13 +60,28 @@ export function HeroSection() {
       ctx.clearRect(0, 0, W, H)
       mAmp += (targetMamp - mAmp) * 0.05
       const dark = document.documentElement.classList.contains("dark")
+
       const colors = dark
-        ? [[120,85,240],[90,55,200],[140,100,255],[80,50,185],[110,75,225]]
-        : [[95,55,195],[70,40,170],[115,75,215],[65,38,165],[90,60,200]]
+        ? [
+            [59, 130, 246],  // Blue 500
+            [37, 99, 235],   // Blue 600
+            [96, 165, 250],  // Blue 400
+            [29, 78, 216],   // Blue 700
+            [147, 197, 253], // Blue 300
+          ]
+        : [
+            [29, 78, 216],   // Blue 700
+            [37, 99, 235],   // Blue 600
+            [30, 64, 175],   // Blue 800
+            [2, 132, 199],   // Sky 600
+            [79, 70, 229],   // Indigo 600
+          ]
+
+      const alphaMult = dark ? 1.0 : 2.2
 
       WAVES.forEach((w, i) => {
         const c = colors[i].join(",")
-        const a = ALPHAS[i]
+        const a = ALPHAS[i] * alphaMult
         const baseY = H * w.yFrac
 
         ctx.beginPath()
@@ -82,12 +95,23 @@ export function HeroSection() {
 
         const grad = ctx.createLinearGradient(0, baseY - w.baseAmp - 20, 0, H)
         grad.addColorStop(0,    `rgba(${c},0)`)
-        grad.addColorStop(0.08, `rgba(${c},${a * 1.6})`)
-        grad.addColorStop(0.35, `rgba(${c},${a * 1.1})`)
-        grad.addColorStop(0.75, `rgba(${c},${a * 0.5})`)
+        grad.addColorStop(0.1,  `rgba(${c},${a * 1.2})`)
+        grad.addColorStop(0.4,  `rgba(${c},${a * 0.8})`)
+        grad.addColorStop(0.8,  `rgba(${c},${a * 0.25})`)
         grad.addColorStop(1,    `rgba(${c},0)`)
         ctx.fillStyle = grad
         ctx.fill()
+
+        ctx.beginPath()
+        for (let x = 0; x <= W; x += 3) {
+          const y = getY(w, x)
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        }
+        ctx.strokeStyle = dark
+          ? `rgba(${c}, ${a * 1.5})`
+          : `rgba(${c}, ${a * 1.8})`
+        ctx.lineWidth = dark ? 1.2 : 1.5
+        ctx.stroke()
       })
 
       t++
@@ -102,10 +126,6 @@ export function HeroSection() {
       rafRef.current = 0
     }
 
-    // Only run the draw loop while the hero is actually visible on screen
-    // and the tab is in the foreground — this was previously running
-    // forever, redrawing 5 wave layers every frame regardless of whether
-    // anyone could see it.
     const io = new IntersectionObserver(
       ([entry]) => {
         isVisible = entry.isIntersecting
@@ -137,36 +157,35 @@ export function HeroSection() {
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: 0 }}
+        className="absolute inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      <div
-        className={`container mx-auto text-center relative max-w-5xl transition-all duration-700 ${
-          hasMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-        }`}
-        style={{ zIndex: 1 }}
-      >
+      <div 
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-background via-background/80 to-transparent pointer-events-none z-0"
+        aria-hidden="true"
+      />
+
+      <div className="container mx-auto text-center relative max-w-5xl z-10">
         {/* Availability badge */}
         <div className="flex items-center justify-center gap-2.5 mb-4">
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald=500 opacity-60" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">
+          <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground/70">
             {t.hero.availableForProjects}
           </span>
         </div>
 
         {/* Role badge */}
         <div className="mb-8">
-          <span className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/5 border-2 border-primary/20 text-foreground text-xs md:text-sm font-black tracking-[0.2em] uppercase shadow-lg">
+          <span className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/10 border border-primary/20 text-foreground text-xs md:text-sm font-black tracking-[0.2em] uppercase shadow-xs backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-primary animate-pulse shrink-0" />
             {t.hero.role}
           </span>
         </div>
 
-        {/* Headline — original Tailwind sizing */}
+        {/* Headline */}
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tighter text-foreground mb-10">
           {t.hero.headline1}<br />
           <em className="italic font-light text-primary">{t.hero.headline2}</em> {t.hero.headline2Suffix}<br />
@@ -192,7 +211,7 @@ export function HeroSection() {
         </h1>
 
         {/* Subline */}
-        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-16 font-light leading-relaxed">
+        <p className="text-xl md:text-2xl text-foreground/85 max-w-2xl mx-auto mb-16 font-light leading-relaxed">
           {t.hero.subline1}{" "}
           <span className="text-foreground font-semibold">{t.hero.subline2}</span>{" "}
           {t.hero.subline3}{" "}
@@ -201,18 +220,20 @@ export function HeroSection() {
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+          {/* Primary CTA */}
           <button
             onClick={() => document.getElementById("works")?.scrollIntoView({ behavior: "smooth" })}
-            className="group inline-flex items-center gap-4 px-10 py-5 bg-foreground text-background rounded-2xl font-bold text-lg hover:scale-[1.03] active:scale-95 transition-all shadow-xl shadow-foreground/10"
+            className="group inline-flex items-center gap-3 px-9 py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg hover:bg-primary/90 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 cursor-pointer"
           >
             {t.hero.viewPortfolio}
-            <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-2 transition-transform" />
+            <ArrowRight className="h-5 w-5 group-hover:translate-x-1.5 transition-transform" />
           </button>
 
+          {/* Secondary CTA (ПОВНІСТЮ БЕЗ БРУДНОЇ СІРОЇ ТІНІ) */}
           <button
             onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-            className="inline-flex items-center gap-4 px-10 py-5 border-2 border-primary/20 rounded-2xl font-bold text-lg text-foreground bg-background/40 backdrop-blur-sm hover:bg-foreground hover:text-background transition-all active:scale-95"
+            className="inline-flex items-center gap-3 px-9 py-4 border-2 border-border/80 rounded-2xl font-bold text-lg text-foreground bg-background/80 backdrop-blur-xl hover:bg-accent/60 hover:border-primary/50 hover:scale-[1.01] active:scale-95 transition-all shadow-none cursor-pointer"
           >
             {t.hero.letsTalk}
           </button>

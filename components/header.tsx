@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, memo, startTransition } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter, usePathname } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -8,33 +8,30 @@ import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/components/language-provider"
 import { Download, ArrowUpRight, Home, User, Briefcase, Mail, Quote } from "lucide-react"
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 interface NavItem {
   label: string
   sectionId: string
   icon: React.ElementType
 }
 
-// ─── Tubelight pill — the glowing active indicator ───────────────────────────
-function TubelightIndicator({ activeIndex }: { activeIndex: number }) {
+// ── Fixed: Pure CSS transition indicator (0 FLIP layout overhead) ────────────
+const TubelightIndicator = memo(function TubelightIndicator() {
   return (
     <motion.span
-      className="absolute inset-0 rounded-full"
-      layoutId="tubelight-pill"
-      transition={{ type: "spring", stiffness: 380, damping: 36 }}
+      className="absolute inset-0 rounded-full pointer-events-none"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.15, ease: "easeOut" }}
       style={{ zIndex: 0 }}
     >
-      {/* Frosted pill */}
-      <span className="absolute inset-0 rounded-full bg-white/10 dark:bg-white/8 border border-white/20 dark:border-white/10 backdrop-blur-sm" />
-      {/* Glow bloom under the pill */}
-      <span className="absolute inset-x-2 -bottom-2 h-4 rounded-full bg-white/30 dark:bg-white/20 blur-md" />
-      {/* Inner top shimmer */}
-      <span className="absolute inset-x-3 top-0 h-px rounded-full bg-white/60 dark:bg-white/30" />
+      <span className="absolute inset-0 rounded-full bg-foreground/10 dark:bg-white/10 border border-foreground/15 dark:border-white/20 backdrop-blur-xs" />
+      <span className="absolute inset-x-2 -bottom-2 h-4 rounded-full bg-foreground/15 dark:bg-white/20 blur-xs" />
+      <span className="absolute inset-x-3 top-0 h-px rounded-full bg-foreground/25 dark:bg-white/30" />
     </motion.span>
   )
-}
+})
 
-// ─── Main header ─────────────────────────────────────────────────────────────
 export function Header() {
   const router   = useRouter()
   const pathname = usePathname()
@@ -48,125 +45,114 @@ export function Header() {
     { label: t.nav.contact,      sectionId: "contact",      icon: Mail      },
   ]
 
-  const [isScrolled,      setIsScrolled     ] = useState(false)
+  const [isScrolled,       setIsScrolled]       = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [activeSection,   setActiveSection  ] = useState("hero")
+  const [activeSection,    setActiveSection]    = useState("hero")
 
-  // Derived active index for the pill
-  const activeIndex = NAV_ITEMS.findIndex(i => i.sectionId === activeSection)
-
-  // ── Scroll listener ──────────────────────────────────────────────────────
+  // ── Scroll handler with requestAnimationFrame ─────────────────────────────
   useEffect(() => {
-    // Section anchors (hero/works/about/testimonials/contact) only exist on the
-    // homepage. On other routes (e.g. individual project pages) there is nothing
-    // to scroll-detect, so just mark "Works" active since that's the parent
-    // section project pages belong to, and skip attaching the scroll listener.
     if (pathname !== "/") {
       setActiveSection("works")
       return
     }
 
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 40)
+    let ticking = false
+    const ids = ["hero", "works", "about", "testimonials", "contact"]
 
-      // Use getBoundingClientRect so position is always accurate regardless of layout
-      // Walk in actual page order; last section whose top edge is at/above 30% viewport height wins
-      const ids = ["hero", "works", "about", "testimonials", "contact"]
-      let current = "hero"
-      for (const id of ids) {
-        const el = document.getElementById(id)
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) {
-          current = id
-        }
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY
+          setIsScrolled(scrollY > 40)
+
+          const viewThreshold = window.innerHeight * 0.35
+          let current = "hero"
+          for (let i = 0; i < ids.length; i++) {
+            const el = document.getElementById(ids[i])
+            if (el && el.getBoundingClientRect().top <= viewThreshold) {
+              current = ids[i]
+            }
+          }
+          
+          startTransition(() => {
+            setActiveSection(current)
+          })
+          ticking = false
+        })
+        ticking = true
       }
-      setActiveSection(current)
     }
-    onScroll() // set correct state immediately on mount, don't wait for first scroll
+
+    onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [pathname])
 
-  // ── Body scroll lock ─────────────────────────────────────────────────────
-  useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : ""
-    return () => { document.body.style.overflow = "" }
-  }, [isMobileMenuOpen])
+  // ── Navigation action wrapped in startTransition ──────────────────────────
+  const navigateTo = useCallback((sectionId: string) => {
+    startTransition(() => {
+      setActiveSection(sectionId)
+    })
 
-  // ── Navigate ─────────────────────────────────────────────────────────────
-  const navigateTo = (sectionId: string) => {
     if (pathname === "/") {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" })
     } else {
       router.push(`/#${sectionId}`)
     }
-    setTimeout(() => setIsMobileMenuOpen(false), 120)
-  }
+    setIsMobileMenuOpen(false)
+  }, [pathname, router])
 
-  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <>
-      {/* ═══════════════════════════════════════════════════════════════════
-          DESKTOP HEADER — three-column layout
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* DESKTOP HEADER */}
       <div className="fixed top-0 left-0 right-0 z-50 hidden md:block pointer-events-none">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="flex h-18 items-center justify-between">
 
-            {/* ── Logo ──────────────────────────────────────────────────── */}
-            <motion.button
+            {/* Logo */}
+            <button
               onClick={() => navigateTo("hero")}
-              className="pointer-events-auto flex items-center gap-3 group"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="pointer-events-auto flex items-center gap-3 touch-manipulation select-none"
             >
-              <span className="font-mono text-sm font-semibold tracking-tight group-hover:opacity-75 transition-opacity duration-200">Alex Bodnia</span>
-
-              {/* Available pill */}
-              <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/8 px-2.5 py-1 text-[10px] font-medium text-emerald-500 leading-none">
+              <span className="font-mono text-sm font-semibold tracking-tight md:hover:opacity-75 transition-opacity duration-200">
+                Alex Bodnia
+              </span>
+              <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-medium text-emerald-500 leading-none">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 </span>
                 {t.header.available}
               </span>
-            </motion.button>
+            </button>
 
-            {/* ── Floating pill nav — absolutely centered ───────────────── */}
-            <motion.nav
-              className="pointer-events-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {/* Outer pill shell */}
+            {/* Floating Nav */}
+            <nav className="pointer-events-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
               <div
                 className={`
                   relative flex items-center gap-0.5 rounded-full p-1.5
-                  border border-white/10 dark:border-white/8
-                  transition-all duration-500
+                  border border-border/40 dark:border-white/10
+                  transition-colors duration-300
                   ${isScrolled
-                    ? "bg-background/60 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.18)] border-white/15"
-                    : "bg-white/5 backdrop-blur-lg"
+                    ? "bg-background/80 backdrop-blur-md shadow-md border-border/60 dark:border-white/15"
+                    : "bg-background/50 dark:bg-white/5 backdrop-blur-xs"
                   }
                 `}
               >
-                {NAV_ITEMS.map((item, i) => {
+                {NAV_ITEMS.map((item) => {
                   const isActive = activeSection === item.sectionId
                   return (
                     <button
                       key={item.sectionId}
                       onClick={() => navigateTo(item.sectionId)}
-                      className="relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200"
+                      className="relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 touch-manipulation select-none"
                     >
-                      {/* Shared sliding pill + glow */}
-                      {isActive && <TubelightIndicator activeIndex={i} />}
-
+                      {isActive && <TubelightIndicator />}
                       <span
                         className={`relative z-10 transition-colors duration-200 ${
                           isActive
-                            ? "text-foreground"
-                            : "text-muted-foreground hover:text-foreground/80"
+                            ? "text-foreground font-semibold"
+                            : "text-muted-foreground md:hover:text-foreground"
                         }`}
                       >
                         {item.label}
@@ -175,58 +161,34 @@ export function Header() {
                   )
                 })}
               </div>
-            </motion.nav>
+            </nav>
 
-            {/* ── Right actions ─────────────────────────────────────────── */}
-            <motion.div
-              className="pointer-events-auto flex items-center gap-2"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            >
+            {/* Right Actions */}
+            <div className="pointer-events-auto flex items-center gap-2">
               <LanguageToggle />
               <ThemeToggle />
-
-              {/* Resume CTA */}
-              <motion.button
+              <button
                 onClick={() => window.open("/cv.pdf", "_blank")}
-                className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-all duration-300 hover:bg-foreground/85"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                className="relative flex items-center gap-2 overflow-hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-transform duration-200 active:scale-95 md:hover:bg-foreground/85 touch-manipulation select-none"
               >
-                {/* Sweep shimmer on hover */}
-                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-linear-to-r from-transparent via-white/15 to-transparent" />
-                <Download className="relative h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-110" />
+                <Download className="relative h-3.5 w-3.5" />
                 <span className="relative">{t.header.resume}</span>
-                <ArrowUpRight className="relative h-3 w-3 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </motion.button>
-            </motion.div>
+                <ArrowUpRight className="relative h-3 w-3 opacity-60" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          MOBILE — top bar + bottom dock
-      ═══════════════════════════════════════════════════════════════════ */}
-
-      {/* Top bar (logo + toggle + hamburger) */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 z-50 flex md:hidden items-center justify-between px-5 h-16"
-        style={{
-          background: isScrolled ? "hsl(var(--background)/0.75)" : "transparent",
-          backdropFilter: isScrolled ? "blur(20px)" : "none",
-          borderBottom: isScrolled ? "1px solid hsl(var(--border)/0.4)" : "none",
-          transition: "all 0.4s ease",
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+      {/* MOBILE — Top Bar & Bottom Dock */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-50 flex md:hidden items-center justify-between px-5 h-16 transition-colors duration-300 ${
+          isScrolled
+            ? "bg-background/90 border-b border-border/40 backdrop-blur-sm"
+            : "bg-transparent"
+        }`}
       >
-        <button
-          onClick={() => navigateTo("hero")}
-          className="flex items-center gap-2"
-        >
+        <button onClick={() => navigateTo("hero")} className="flex items-center gap-2 touch-manipulation">
           <span className="font-mono text-sm font-semibold tracking-tight">Alex Bodnia</span>
         </button>
 
@@ -235,20 +197,19 @@ export function Header() {
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(v => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/50 transition-colors hover:bg-muted"
-            aria-label="Menu"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/80 active:scale-95 touch-manipulation"
+            aria-label="Toggle menu"
           >
             <AnimatePresence mode="wait" initial={false}>
               {isMobileMenuOpen ? (
                 <motion.span
                   key="close"
-                  initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
-                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  exit={{ opacity: 0, rotate: 45, scale: 0.7 }}
-                  transition={{ duration: 0.18 }}
+                  initial={{ opacity: 0, rotate: -45 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 45 }}
+                  transition={{ duration: 0.15 }}
                   className="flex items-center justify-center"
                 >
-                  {/* Clean X made of two spans */}
                   <span className="relative flex h-4 w-4">
                     <span className="absolute inset-0 flex items-center justify-center">
                       <span className="block h-px w-full bg-foreground rounded-full rotate-45" />
@@ -261,10 +222,10 @@ export function Header() {
               ) : (
                 <motion.span
                   key="open"
-                  initial={{ opacity: 0, rotate: 45, scale: 0.7 }}
-                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  exit={{ opacity: 0, rotate: -45, scale: 0.7 }}
-                  transition={{ duration: 0.18 }}
+                  initial={{ opacity: 0, rotate: 45 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: -45 }}
+                  transition={{ duration: 0.15 }}
                   className="flex flex-col gap-1.25 w-4.5"
                 >
                   <span className="block h-px w-full bg-foreground rounded-full" />
@@ -275,16 +236,11 @@ export function Header() {
             </AnimatePresence>
           </button>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Bottom dock nav — always visible on mobile */}
-      <motion.div
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex md:hidden"
-        initial={{ opacity: 0, y: 32 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="flex items-center gap-0 rounded-full border border-white/12 bg-background/70 backdrop-blur-2xl p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
+      {/* Bottom Dock Nav */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex md:hidden pointer-events-auto">
+        <div className="flex items-center gap-0.5 rounded-full border border-border/60 dark:border-white/15 bg-background/90 backdrop-blur-md p-1.5 shadow-lg">
           {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.sectionId
             const Icon = item.icon
@@ -292,120 +248,78 @@ export function Header() {
               <button
                 key={item.sectionId}
                 onClick={() => navigateTo(item.sectionId)}
-                className="relative flex flex-col items-center gap-1 px-3 py-2 rounded-full"
+                className={`relative flex flex-col items-center gap-1 px-3 py-1.5 rounded-full transition-colors duration-150 touch-manipulation select-none ${
+                  isActive
+                    ? "bg-foreground/10 dark:bg-white/10 text-foreground font-semibold"
+                    : "text-muted-foreground"
+                }`}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="mobile-dock-pill"
-                    className="absolute inset-0 rounded-full bg-white/10 border border-white/20"
-                    transition={{ type: "spring", stiffness: 400, damping: 34 }}
-                  >
-                    <span className="absolute inset-x-2 -bottom-1.5 h-3 rounded-full bg-white/25 blur-md" />
-                  </motion.span>
-                )}
-                <Icon
-                  className={`relative z-10 h-4.5 w-4.5 transition-colors duration-200 ${
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  }`}
-                />
-                <span
-                  className={`relative z-10 text-[10px] font-medium leading-none transition-colors duration-200 ${
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  }`}
-                >
+                <Icon className="h-4.5 w-4.5" />
+                <span className="text-[10px] font-medium leading-none">
                   {item.label}
                 </span>
               </button>
             )
           })}
         </div>
-      </motion.div>
+      </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          MOBILE FULLSCREEN MENU OVERLAY
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* Fullscreen Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-40 flex flex-col md:hidden bg-background"
-            initial={{ opacity: 0, clipPath: "circle(0% at calc(100% - 44px) 32px)" }}
-            animate={{ opacity: 1, clipPath: "circle(170% at calc(100% - 44px) 32px)" }}
-            exit={{ opacity: 0, clipPath: "circle(0% at calc(100% - 44px) 32px)" }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-40 flex flex-col md:hidden bg-background px-8 pt-20 pb-12"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
-            {/* Decorative radial blur blob */}
-            <div className="absolute top-1/4 right-0 h-64 w-64 rounded-full bg-foreground/3 blur-3xl pointer-events-none" />
-            <div className="absolute bottom-1/3 left-0 h-48 w-48 rounded-full bg-foreground/2 blur-3xl pointer-events-none" />
-
-            <div className="flex-1 flex flex-col justify-center px-8 pb-20">
-              {/* Big nav links */}
+            <div className="flex-1 flex flex-col justify-center">
               <nav className="flex flex-col">
-                {NAV_ITEMS.map((item, i) => {
+                {NAV_ITEMS.map((item) => {
                   const Icon = item.icon
                   const isActive = activeSection === item.sectionId
                   return (
-                    <motion.button
+                    <button
                       key={item.sectionId}
                       onClick={() => navigateTo(item.sectionId)}
-                      className="group flex items-center justify-between border-b border-border/20 py-5 text-left"
-                      initial={{ opacity: 0, x: -28 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.08 + i * 0.065, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      className="flex items-center justify-between border-b border-border/20 py-4 text-left active:opacity-70 touch-manipulation"
                     >
                       <div className="flex items-center gap-4">
                         <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/40 bg-muted/40">
                           <Icon className="h-4 w-4 text-muted-foreground" />
                         </span>
                         <span
-                          className={`text-[2.5rem] font-semibold tracking-tight leading-none transition-colors duration-150 ${
-                            isActive ? "text-foreground" : "text-foreground/50 group-hover:text-foreground/80"
+                          className={`text-3xl font-semibold tracking-tight ${
+                            isActive ? "text-foreground" : "text-foreground/50"
                           }`}
                         >
                           {item.label}
                         </span>
                       </div>
                       <ArrowUpRight
-                        className={`h-5 w-5 transition-all duration-200 ${
-                          isActive
-                            ? "text-foreground opacity-100"
-                            : "text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-60 group-hover:translate-x-0"
+                        className={`h-5 w-5 ${
+                          isActive ? "text-foreground opacity-100" : "text-muted-foreground opacity-30"
                         }`}
                       />
-                    </motion.button>
+                    </button>
                   )
                 })}
               </nav>
 
-              {/* Bottom actions */}
-              <motion.div
-                className="mt-10 flex flex-col gap-3"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.42, duration: 0.45 }}
-              >
-                
-
+              <div className="mt-8 flex flex-col gap-3">
                 <button
                   onClick={() => {
                     window.open("/cv.pdf", "_blank")
-                    setTimeout(() => setIsMobileMenuOpen(false), 100)
+                    setIsMobileMenuOpen(false)
                   }}
-                  className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl border border-border bg-muted/40 px-6 py-4 text-base font-medium transition-colors hover:bg-muted"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-muted/40 px-6 py-3.5 text-base font-medium active:scale-98 touch-manipulation"
                 >
-                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-linear-to-r from-transparent via-white/5 to-transparent" />
                   <Download className="h-4 w-4" />
                   {t.header.downloadResume}
-                  <ArrowUpRight className="h-3.5 w-3.5 opacity-40 group-hover:opacity-80 transition-opacity" />
+                  <ArrowUpRight className="h-3.5 w-3.5 opacity-50" />
                 </button>
-
-                <div className="flex items-center justify-center gap-1.5">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="text-xs text-muted-foreground">{t.header.openToFreelance}</span>
-                </div>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         )}

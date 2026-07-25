@@ -37,8 +37,35 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement
+
+    // ⚡ ОПТИМІЗАЦІЯ INP: Тимчасово вимикаємо всі CSS transition,
+    // щоб браузер не намагався анімувати кольори всього сайту одночасно
+    const css = document.createElement("style")
+    css.type = "text/css"
+    css.appendChild(
+      document.createTextNode(
+        `* {
+           -webkit-transition: none !important;
+           -moz-transition: none !important;
+           -o-transition: none !important;
+           -ms-transition: none !important;
+           transition: none !important;
+         }`
+      )
+    )
+    document.head.appendChild(css)
+
+    // Змінюємо тему
     root.classList.remove("light", "dark")
     root.classList.add(theme)
+
+    // Примусово застосовуємо нові стилі без анімації (force reflow)
+    const _ = window.getComputedStyle(document.body).opacity
+
+    // Повертаємо CSS-переходи у наступному кадрі
+    requestAnimationFrame(() => {
+      document.head.removeChild(css)
+    })
   }, [theme])
 
   const value = {
@@ -59,7 +86,8 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
 
-  if (context === undefined) throw new Error("useTheme must be used within a ThemeProvider")
+  if (context === undefined)
+    throw new Error("useTheme must be used within a ThemeProvider")
 
   return context
 }

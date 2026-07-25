@@ -2,10 +2,10 @@
   "personal": {
     "name": "Alex",
     "title": "UX/UI Designer & Developer",
-    "subtitle": "Creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
-    "quote": "When you think something is impossible my work is to take off the 'im' and make your idea possible.",
-    "about": "Hello there, I'm Alex, creative UX/UI designer and developer with 4+ years of experience making truly stand-out things.",
-    "contact": "Feel free to share your ideas with me and we'll see how idea turns into result.",
+    "subtitle": "UX/UI designer and frontend developer with 4+ years of experience turning ideas into interfaces people actually enjoy using.",
+    "quote": "My job is simple: take whatever feels impossible and design a way to make it possible.",
+    "about": "Hi, I'm Alex — a UX/UI designer and frontend developer with 4+ years of experience designing and building digital products, from mobile apps to full web platforms.",
+    "contact": "Have an idea you'd like to bring to life? Let's talk about it and figure out how to turn it into something real.",
     "contact_uk": "Поділись своєю ідеєю — і подивимось, як вона перетвориться на результат.",    "email": "bodniaalex2911@gmail.com",
     "github": "https://github.com/AlexBodniaDev",
     "linkedin": "https://www.linkedin.com/in/oleksandr-bodnia-13489920b/"
@@ -21,13 +21,13 @@
       "period": "2018-2022",
       "title": "Voronin Design Studio",
       "title_uk": "Voronin Design Studio",
-      "description": "Worked as intern  on various design projects and developed creative solutions",
+      "description": "Worked as an intern on various design projects, developing creative solutions",
       "description_uk": "Працював стажером над різними дизайн-проєктами, розвивав креативні рішення"    },
     {
       "period": "2018-2022",
       "title": "IT Step University",
       "title_uk": "IT Step University",
-      "description": "achieved a Bachelor's degree in Computer Science and gained practical skills through internships",
+      "description": "Achieved a Bachelor's degree in Computer Science and gained practical skills through internships",
       "description_uk": "здобув ступінь бакалавра з комп'ютерних наук та практичні навички під час стажувань"
     }
   ],
@@ -81,7 +81,7 @@
     {
       "id": "tennis-courts-3d",
       "title": "Tennis Courts 3D",
-      "description": "Interactive 3D visualization of tennis court designs with realistic lighting and materials",
+      "description": "Interactive 3D visualization of tennis court designs, modeled in Blender with realistic lighting and materials",
       "image": "/3dcourtsprv.jpg",
       "tags": ["3D Design", "Blender", "3D from sketch"],
       "year": "2022"
@@ -89,7 +89,7 @@
     {
       "id": "dnipro-redesign",
       "title": "Dnipro.net Redesign",
-      "description": "Complete redesign of the Dnipro.net website with improved UX and modern interface",
+      "description": "Full redesign of the Dnipro.net website, focused on clearer navigation and a modern, more usable interface",
       "image": "/Dnepronetprv.jpg",
       "tags": ["Web Design", "UX/UI", "Redesign"],
       "year": "2023"
@@ -97,7 +97,7 @@
     {
       "id": "ketotox-package",
       "title": "Ketotox Plus Medical Package",
-      "description": "Medical packaging design with hand-drawn illustrations",
+      "description": "Medical packaging design that balances clear, easy-to-read layout with hand-drawn illustrations",
       "image": "/Ketoprv.jpg",
       "tags": ["Package Design", "Medical", "Branding"],
       "year": "2023"
@@ -105,7 +105,7 @@
     {
       "id": "mobile-app-todo",
       "title": "Responsive Mobile App",
-      "description": "Cross-platform mobile application with intuitive user interface",
+      "description": "Cross-platform to-do app with a clean, intuitive interface designed for quick, daily task management",
       "image": "/Todoprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "ToDo App"],
       "year": "2022"
@@ -113,7 +113,7 @@
     {
       "id": "mobile-app-cyclesense",
       "title": "CycleSense period tracker app",
-      "description": "Cross-platform mobile application with intuitive user interface",
+      "description": "Mobile period tracker designed with a calm, approachable interface to make tracking cycles and symptoms feel effortless",
       "image": "/Cyclesenseprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "Period tracker App", "Woman health"],
       "year": "2025"
@@ -121,7 +121,7 @@
     {
       "id": "mobile-app-cryptoxapp",
       "title": "Modern minimalistic trading app - 'CryptoX'",
-      "description": "Cross-platform mobile application with intuitive user interface",
+      "description": "Minimalist crypto trading app focused on fast, distraction-free navigation for tracking and managing a portfolio",
       "image": "/Cryptoxprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "Trading App", "Crypto App"],
       "year": "2025"

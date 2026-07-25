@@ -56,7 +56,7 @@ function SocialIconButton({ link }: { link: SocialLink }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={link.name}
-      className="group relative w-12 h-12 md:w-14 md:h-14 rounded-full border border-border bg-card/60 backdrop-blur-sm flex items-center justify-center text-foreground/70 transition-all duration-300 hover:text-primary-foreground hover:bg-primary hover:border-primary hover:shadow-[0_18px_45px_-12px_hsl(var(--primary)/0.55)]"
+      className="group relative w-12 h-12 md:w-14 md:h-14 rounded-full border border-border/60 bg-card/60 backdrop-blur-sm flex items-center justify-center text-foreground/70 transition-all duration-300 hover:text-primary-foreground hover:bg-primary hover:border-primary hover:shadow-[0_18px_45px_-12px_color-mix(in_oklch,var(--primary)_55%,transparent)] touch-manipulation"
     >
       <link.icon className="h-5 w-5" />
       <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-md bg-foreground text-background text-[10px] font-semibold whitespace-nowrap opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
@@ -100,14 +100,15 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden py-24 md:py-32 bg-background border-t border-border/50"
+      className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32 bg-background border-0"
     >
+      {/* ── Fixed: Centered ambient glow to prevent overflow-clipping horizontal lines ── */}
       <motion.div
         aria-hidden="true"
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-160 h-160 rounded-full bg-primary/10 blur-[140px] pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 md:w-xl h-96 md:h-144 rounded-full bg-primary/8 blur-[120px] pointer-events-none z-0"
         animate={{
           scale: [1, 1.08, 1],
-          opacity: [0.6, 0.9, 0.6],
+          opacity: [0.5, 0.8, 0.5],
         }}
         transition={{
           duration: 8,
@@ -169,7 +170,7 @@ export function ContactSection() {
               damping: 34,
             }}
             href={`mailto:${data.personal.email}`}
-            className="group inline-flex items-center gap-3 px-7 md:px-10 py-4 md:py-5 rounded-full bg-primary text-primary-foreground font-semibold text-base md:text-lg shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.5)] transition-shadow duration-500 hover:shadow-[0_25px_70px_-12px_hsl(var(--primary)/0.65)]"
+            className="group inline-flex items-center gap-3 px-7 md:px-10 py-4 md:py-5 rounded-full bg-primary text-primary-foreground font-semibold text-base md:text-lg shadow-[0_20px_60px_-15px_color-mix(in_oklch,var(--primary)_50%,transparent)] transition-shadow duration-500 hover:shadow-[0_25px_70px_-12px_color-mix(in_oklch,var(--primary)_65%,transparent)] touch-manipulation"
           >
             <Mail className="h-5 w-5" />
 
@@ -188,12 +189,8 @@ export function ContactSection() {
           </motion.div>
         </motion.div>
 
-        <footer className="mt-32 pt-12 relative flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-          <span
-            aria-hidden="true"
-            className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-border to-transparent"
-          />
-
+        {/* Footer */}
+        <footer className="mt-28 md:mt-36 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
           <p className="text-muted-foreground text-sm font-medium">
             {t.contact.rightsReserved}
           </p>
