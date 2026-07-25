@@ -14,7 +14,7 @@ interface NavItem {
   icon: React.ElementType
 }
 
-// ── Fixed: Pure CSS transition indicator (0 FLIP layout overhead) ────────────
+// ── CSS Tubelight Indicator ─────────────────────────────────────────────────
 const TubelightIndicator = memo(function TubelightIndicator() {
   return (
     <motion.span
@@ -49,7 +49,7 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection,    setActiveSection]    = useState("hero")
 
-  // ── Scroll handler with requestAnimationFrame ─────────────────────────────
+  // ── Scroll handler ────────────────────────────────────────────────────────
   useEffect(() => {
     if (pathname !== "/") {
       setActiveSection("works")
@@ -88,7 +88,7 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [pathname])
 
-  // ── Navigation action wrapped in startTransition ──────────────────────────
+  // ── Navigation action ─────────────────────────────────────────────────────
   const navigateTo = useCallback((sectionId: string) => {
     startTransition(() => {
       setActiveSection(sectionId)
@@ -104,33 +104,35 @@ export function Header() {
 
   return (
     <>
-      {/* DESKTOP HEADER */}
+      {/* DESKTOP HEADER (Restored to md: / 768px+) */}
       <div className="fixed top-0 left-0 right-0 z-50 hidden md:block pointer-events-none">
-        <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <div className="flex h-18 items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="flex h-20 items-center justify-between gap-2 md:gap-4">
 
-            {/* Logo */}
-            <button
-              onClick={() => navigateTo("hero")}
-              className="pointer-events-auto flex items-center gap-3 touch-manipulation select-none"
-            >
-              <span className="font-mono text-sm font-semibold tracking-tight md:hover:opacity-75 transition-opacity duration-200">
-                Alex Bodnia
-              </span>
-              <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-medium text-emerald-500 leading-none">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {/* Left Zone: Logo & Status Badge */}
+            <div className="pointer-events-auto flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => navigateTo("hero")}
+                className="flex items-center gap-2.5 touch-manipulation select-none"
+              >
+                <span className="font-mono text-sm font-semibold tracking-tight md:hover:opacity-75 transition-opacity duration-200 whitespace-nowrap">
+                  Alex Bodnia
                 </span>
-                {t.header.available}
-              </span>
-            </button>
+                <span className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-medium text-emerald-500 leading-none">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  </span>
+                  {t.header.available}
+                </span>
+              </button>
+            </div>
 
-            {/* Floating Nav */}
-            <nav className="pointer-events-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
-              <div
+            {/* Center Zone: Central Nav Pill (In-Flow, Zero Overlap) */}
+            <div className="pointer-events-auto flex items-center shrink-0">
+              <nav
                 className={`
-                  relative flex items-center gap-0.5 rounded-full p-1.5
+                  relative flex items-center gap-0.5 rounded-full p-1 lg:p-1.5
                   border border-border/40 dark:border-white/10
                   transition-colors duration-300
                   ${isScrolled
@@ -145,7 +147,7 @@ export function Header() {
                     <button
                       key={item.sectionId}
                       onClick={() => navigateTo(item.sectionId)}
-                      className="relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 touch-manipulation select-none"
+                      className="relative flex items-center px-2 md:px-2.5 lg:px-3.5 py-1 md:py-1.5 rounded-full text-xs md:text-xs lg:text-sm font-medium transition-colors duration-200 touch-manipulation select-none whitespace-nowrap"
                     >
                       {isActive && <TubelightIndicator />}
                       <span
@@ -160,31 +162,32 @@ export function Header() {
                     </button>
                   )
                 })}
-              </div>
-            </nav>
+              </nav>
+            </div>
 
-            {/* Right Actions */}
-            <div className="pointer-events-auto flex items-center gap-2">
+            {/* Right Zone: Controls & Full Resume Button */}
+            <div className="pointer-events-auto flex items-center gap-1.5 md:gap-2 shrink-0">
               <LanguageToggle />
               <ThemeToggle />
               <button
                 onClick={() => window.open("/cv.pdf", "_blank")}
-                className="relative flex items-center gap-2 overflow-hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-transform duration-200 active:scale-95 md:hover:bg-foreground/85 touch-manipulation select-none"
+                className="relative flex items-center gap-1.5 rounded-full bg-foreground px-3 md:px-3.5 lg:px-4 py-1.5 md:py-2 text-xs md:text-xs lg:text-sm font-medium text-background transition-transform duration-200 active:scale-95 md:hover:bg-foreground/85 touch-manipulation select-none whitespace-nowrap shrink-0"
               >
                 <Download className="relative h-3.5 w-3.5" />
                 <span className="relative">{t.header.resume}</span>
                 <ArrowUpRight className="relative h-3 w-3 opacity-60" />
               </button>
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* MOBILE — Top Bar & Bottom Dock */}
+      {/* MOBILE — Top Bar (< 768px) */}
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex md:hidden items-center justify-between px-5 h-16 transition-colors duration-300 ${
           isScrolled
-            ? "bg-background/90 border-b border-border/40 backdrop-blur-sm"
+            ? "bg-background/80 backdrop-blur-md border-b border-border/20"
             : "bg-transparent"
         }`}
       >
@@ -238,9 +241,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* Bottom Dock Nav */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex md:hidden pointer-events-auto">
-        <div className="flex items-center gap-0.5 rounded-full border border-border/60 dark:border-white/15 bg-background/90 backdrop-blur-md p-1.5 shadow-lg">
+      {/* MOBILE — Bottom Dock (< 768px) */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex md:hidden pointer-events-auto max-w-[calc(100vw-2rem)]">
+        <div className="flex items-center gap-0.5 rounded-full border border-border/60 dark:border-white/15 bg-background/90 backdrop-blur-md p-1.5 shadow-lg overflow-x-auto no-scrollbar">
           {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.sectionId
             const Icon = item.icon
@@ -248,14 +251,14 @@ export function Header() {
               <button
                 key={item.sectionId}
                 onClick={() => navigateTo(item.sectionId)}
-                className={`relative flex flex-col items-center gap-1 px-3 py-1.5 rounded-full transition-colors duration-150 touch-manipulation select-none ${
+                className={`relative flex flex-col items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full transition-colors duration-150 touch-manipulation select-none shrink-0 ${
                   isActive
                     ? "bg-foreground/10 dark:bg-white/10 text-foreground font-semibold"
                     : "text-muted-foreground"
                 }`}
               >
-                <Icon className="h-4.5 w-4.5" />
-                <span className="text-[10px] font-medium leading-none">
+                <Icon className="h-4 w-4" />
+                <span className="text-[9px] sm:text-[10px] font-medium leading-none whitespace-nowrap">
                   {item.label}
                 </span>
               </button>
@@ -264,7 +267,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Fullscreen Mobile Menu Overlay */}
+      {/* MOBILE — Overlay Drawer (< 768px) */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -290,7 +293,7 @@ export function Header() {
                           <Icon className="h-4 w-4 text-muted-foreground" />
                         </span>
                         <span
-                          className={`text-3xl font-semibold tracking-tight ${
+                          className={`text-2xl sm:text-3xl font-semibold tracking-tight ${
                             isActive ? "text-foreground" : "text-foreground/50"
                           }`}
                         >
