@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@keyframes ab-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ab-marquee-track:hover {
+  animation-play-state: paused;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -143,12 +151,24 @@
 }
 
 @layer base {
+  /* NOTE: previously this block put
+       transition-property: color, background-color, border-color, ...
+     on the universal `*` selector. That means every one of the page's
+     DOM nodes carried an animatable-style computation, so ANY class or
+     DOM change anywhere on the page (theme toggle, language toggle, the
+     about-section photo interval, a tap on a project tag) forced the
+     browser to recompute transitions for the *entire* tree instead of
+     just the element that changed. On weaker Android CPUs that is a
+     multi-hundred-millisecond main-thread task by itself, which is what
+     was showing up as the 800-1200ms INP entries. Elements that actually
+     want a color transition already opt in individually via Tailwind's
+     `transition-colors` utility (used throughout header, about, works,
+     testimonials, hero), so this blanket rule was redundant on top of
+     being the expensive part. Theme-provider also already disables
+     transitions site-wide during its own toggle for the same reason. */
   * {
     border-color: var(--border);
     outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: var(--theme-transition-duration);
   }
   
   body {

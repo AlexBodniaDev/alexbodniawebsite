@@ -103,29 +103,85 @@ const toolsWithIcons = [
 // Double for seamless loop
 const marqueeItems = [...toolsWithIcons, ...toolsWithIcons]
 
-export function AboutSection() {
-  const { t, locale } = useLanguage()
-  const [activeImage, setActiveImage] = useState(0)
-  const sectionRef = useRef<HTMLDivElement>(null)
+const PROFILE_IMAGES = [
+  "/photo-of-me-one.jpg",
+  "/photo-of-me-second.jpg",
+  "/photo-of-me-third.jpg",
+]
 
-  const profileImages = [
-    "/photo-of-me-one.jpg",
-    "/photo-of-me-second.jpg",
-    "/photo-of-me-third.jpg",
-  ]
+// Isolated on purpose: this is the only part of the section that changes
+// every 4 seconds. Keeping its state (and the setInterval driving it) out
+// of AboutSection means that tick no longer forces a re-render of the
+// stats grid, the experience timeline, or the tech-stack marquee below.
+const ProfileCarousel = () => {
+  const [activeImage, setActiveImage] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(
-      () => setActiveImage(p => (p + 1) % profileImages.length),
+    const id = setInterval(
+      () => setActiveImage(p => (p + 1) % PROFILE_IMAGES.length),
       4000
     )
-    return () => clearInterval(t)
+    return () => clearInterval(id)
   }, [])
 
   const prev = () =>
-    setActiveImage(p => (p - 1 + profileImages.length) % profileImages.length)
+    setActiveImage(p => (p - 1 + PROFILE_IMAGES.length) % PROFILE_IMAGES.length)
   const next = () =>
-    setActiveImage(p => (p + 1) % profileImages.length)
+    setActiveImage(p => (p + 1) % PROFILE_IMAGES.length)
+
+  return (
+    <div className="relative aspect-4/5 rounded-2xl overflow-hidden bg-muted">
+      {PROFILE_IMAGES.map((src, i) => (
+        <img
+          key={i}
+          src={src || "/placeholder.svg"}
+          alt="Alex Bodnia"
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
+            i === activeImage
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-[1.04]"
+          }`}
+        />
+      ))}
+      <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-transparent" />
+
+      {/* Controls */}
+      <div className="absolute bottom-5 inset-x-5 flex items-center justify-between">
+        <div className="flex gap-1.5">
+          {PROFILE_IMAGES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveImage(i)}
+              className={`h-0.75 rounded-full transition-all duration-500 ${
+                i === activeImage
+                  ? "bg-white w-7"
+                  : "bg-white/30 w-2.5"
+              }`}
+            />
+          ))}
+        </div>
+        <div className="flex gap-1.5">
+          <button
+            onClick={prev}
+            className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/22 transition-colors flex items-center justify-center"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={next}
+            className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/22 transition-colors flex items-center justify-center"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function AboutSection() {
+  const { t, locale } = useLanguage()
+  const sectionRef = useRef<HTMLDivElement>(null)
 
   return (
     <section
@@ -155,52 +211,7 @@ export function AboutSection() {
 
           {/* ── Photo ── */}
           <div className="lg:sticky lg:top-24 space-y-4">
-            <div className="relative aspect-4/5 rounded-2xl overflow-hidden bg-muted">
-              {profileImages.map((src, i) => (
-                <img
-                  key={i}
-                  src={src || "/placeholder.svg"}
-                  alt="Alex Bodnia"
-                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
-                    i === activeImage
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-[1.04]"
-                  }`}
-                />
-              ))}
-              <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-transparent" />
-
-              {/* Controls */}
-              <div className="absolute bottom-5 inset-x-5 flex items-center justify-between">
-                <div className="flex gap-1.5">
-                  {profileImages.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveImage(i)}
-                      className={`h-0.75 rounded-full transition-all duration-500 ${
-                        i === activeImage
-                          ? "bg-white w-7"
-                          : "bg-white/30 w-2.5"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="flex gap-1.5">
-                  <button
-                    onClick={prev}
-                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/22 transition-colors flex items-center justify-center"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={next}
-                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/22 transition-colors flex items-center justify-center"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ProfileCarousel />
 
             {/* Name plate */}
             <div>
@@ -434,16 +445,6 @@ export function AboutSection() {
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes ab-marquee {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        .ab-marquee-track:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   )
 }

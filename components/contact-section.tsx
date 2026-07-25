@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import {
   Github,
@@ -68,6 +69,38 @@ function SocialIconButton({ link }: { link: SocialLink }) {
 
 export function ContactSection() {
   const { t, locale } = useLanguage()
+  const glowRef = useRef<HTMLDivElement>(null)
+
+  // The glow's animation-play-state is only ever "running" while this
+  // section is actually in the viewport and the tab is foregrounded —
+  // otherwise it just sits there paused, costing nothing.
+  useEffect(() => {
+    const el = glowRef.current
+    if (!el) return
+
+    let isIntersecting = false
+
+    const applyPlayState = () => {
+      el.style.animationPlayState =
+        isIntersecting && !document.hidden ? "running" : "paused"
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting
+        applyPlayState()
+      },
+      { threshold: 0 }
+    )
+    io.observe(el)
+
+    document.addEventListener("visibilitychange", applyPlayState)
+
+    return () => {
+      io.disconnect()
+      document.removeEventListener("visibilitychange", applyPlayState)
+    }
+  }, [])
 
   const contactBlurb =
     locale === "uk" && (data.personal as any).contact_uk
@@ -119,7 +152,9 @@ export function ContactSection() {
         below md removes a persistent cost for no visible loss on phones.
       */}
       <div
+        ref={glowRef}
         aria-hidden="true"
+        style={{ animationPlayState: "paused" }}
         className="ab-contact-glow hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-140 md:w-200 h-140 md:h-200 rounded-full bg-primary/10 blur-[140px] pointer-events-none z-0"
       />
 

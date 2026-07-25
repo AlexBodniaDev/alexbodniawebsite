@@ -86,10 +86,37 @@ export function HeroSection() {
       cachedDark = dark
     }
 
-    const resize = () => {
+    // Mobile browsers fire `resize` repeatedly while the address bar
+    // collapses/expands during scroll (viewport height changes, width
+    // doesn't). Setting canvas.width/height clears the canvas immediately,
+    // so doing that on every one of those events is what produced the
+    // "blinks constantly on scroll" bug. We ignore resize events that are
+    // just a small height wobble with the same width, and coalesce any
+    // real resize (rotation, actual layout change) onto a single rAF so
+    // fast-firing events don't each trigger a clear+rebuild.
+    const URL_BAR_SLOP = 150
+
+    // Immediate resize — used for the very first sizing call and for the
+    // (already rAF-debounced) window "resize" listener once it decides a
+    // real resize happened.
+    const doResize = () => {
       W = canvas.width  = canvas.offsetWidth
       H = canvas.height = canvas.offsetHeight
       if (cachedDark !== null) buildGradients(cachedDark)
+    }
+
+    let resizeRafId = 0
+    const onResize = () => {
+      if (resizeRafId) return
+      resizeRafId = requestAnimationFrame(() => {
+        resizeRafId = 0
+        const newW = canvas.offsetWidth
+        const newH = canvas.offsetHeight
+        const sameWidth = newW === W
+        const smallHeightWobble = sameWidth && Math.abs(newH - H) < URL_BAR_SLOP
+        if (sameWidth && smallHeightWobble) return
+        doResize()
+      })
     }
 
     const onMove = (e: MouseEvent) => {
@@ -110,8 +137,8 @@ export function HeroSection() {
       window.addEventListener("mousemove", onMove, { passive: true })
       window.addEventListener("mouseleave", onLeave)
     }
-    window.addEventListener("resize", resize)
-    resize()
+    window.addEventListener("resize", onResize)
+    doResize()
 
     const getY = (w: typeof WAVES[0], x: number) => {
       let y = H * w.yFrac + Math.sin(x * w.freq + tick * w.speed + w.phase) * w.baseAmp
@@ -234,7 +261,7 @@ export function HeroSection() {
         window.removeEventListener("mousemove", onMove)
         window.removeEventListener("mouseleave", onLeave)
       }
-      window.removeEventListener("resize", resize)
+      window.removeEventListener("resize", onResize)
     }
   }, [])
 
