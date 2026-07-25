@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 import { ArrowUpRight, Eye, X } from "lucide-react"
 import Link from "next/link"
 import data from "@/lib/data.json"
@@ -16,17 +16,34 @@ export function WorksSection() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
 
   const sectionRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef<number>(0)
+  const pendingPos = useRef<{ x: number; y: number } | null>(null)
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  // ── INP FIX ───────────────────────────────────────────────────────────
+  // onMouseMove previously called setState directly, which means a React
+  // re-render was scheduled on every single mousemove event fired while
+  // hovering the section (dozens per second). Batching it through a single
+  // requestAnimationFrame means at most one state update — and one
+  // re-render — per frame, regardless of how many mousemove events fire.
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const rect = sectionRef.current?.getBoundingClientRect()
+    if (!rect) return
 
-    if (rect) {
-      setCursorPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+    pendingPos.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(() => {
+        if (pendingPos.current) setCursorPos(pendingPos.current)
+        rafRef.current = 0
       })
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
 
   const activeProjectData = activeProject
     ? data.projects.find((p) => p.id === activeProject)

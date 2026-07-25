@@ -3,7 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
 :root {
   /* LIGHT MODE: Optimized for MAXIMUM Text Readability */
 
@@ -145,21 +144,17 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-    /* FIX: Only transition color-related props here — theme switching needs this.
-       transform/opacity/box-shadow/filter/backdrop-filter are intentionally
-       excluded: those are driven by Framer Motion / component-level Tailwind
-       transition utilities, and having BOTH this global CSS transition and
-       Framer Motion animate transform on the same element every frame caused
-       visible stutter/jumping across pill nav, cards, carousels, etc. */
+    border-color: var(--border);
+    outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: var(--theme-transition-duration);
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
-    /* FIX 2: Explicitly ensure body background and text color transition */
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
     transition-property: background-color, color; 
     transition-duration: var(--theme-transition-duration);
     
@@ -178,7 +173,7 @@
   h4,
   h5,
   h6 {
-    @apply font-serif;
+    font-family: var(--font-serif);
     font-feature-settings: "dlig", "liga", "lnum", "kern";
     letter-spacing: -0.025em;
   }
@@ -217,15 +212,29 @@
   }
 }
 
+@keyframes ab-contact-glow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 0.8;
+  }
+}
+
+.ab-contact-glow {
+  animation: ab-contact-glow 8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
 .animate-float {
-  /* FIXES FOR MOBILE ANIMATION COMPATIBILITY */
   animation: float 3s ease-in-out infinite;
   will-change: transform; 
   -webkit-animation: float 3s ease-in-out infinite; 
 }
 
 .animate-glow {
-  /* FIXES FOR MOBILE ANIMATION COMPATIBILITY */
   animation: glow 2s ease-in-out infinite;
   will-change: opacity; 
   -webkit-animation: glow 2s ease-in-out infinite; 

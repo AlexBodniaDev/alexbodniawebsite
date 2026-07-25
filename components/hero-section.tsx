@@ -17,64 +17,94 @@ const ALPHAS = [0.05, 0.07, 0.08, 0.045, 0.04]
 export function HeroSection() {
   const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const mouseRef  = useRef({ x: -1, y: -1, active: false })
-  const rafRef    = useRef<number>(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (prefersReducedMotion) return
+
+    const isMobile = window.matchMedia("(max-width: 767px)").matches
+
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    let W = 0, H = 0, t = 0, mAmp = 0, targetMamp = 0
+    let W = 0, H = 0, tick = 0, mAmp = 0, targetMamp = 0
     let isVisible = true
+    let rafId = 0
+    let lastFrameTime = 0
+
+    // Mobile Optimizations: Lower FPS target (~18fps) & wider sampling step to reduce CPU work
+    const FRAME_INTERVAL = isMobile ? 1000 / 18 : 1000 / 30
+    const STEP = isMobile ? 8 : 4
+
+    const mouse = { x: -1, y: -1, active: false }
 
     const resize = () => {
       W = canvas.width  = canvas.offsetWidth
       H = canvas.height = canvas.offsetHeight
     }
+
     const onMove = (e: MouseEvent) => {
+      if (isMobile) return // Skip mouse interaction calculations on touch devices
       const r = canvas.getBoundingClientRect()
-      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top, active: true }
+      mouse.x = e.clientX - r.left
+      mouse.y = e.clientY - r.top
+      mouse.active = true
       targetMamp = 1
     }
-    const onLeave = () => { mouseRef.current.active = false; targetMamp = 0 }
 
-    window.addEventListener("mousemove", onMove)
-    window.addEventListener("mouseleave", onLeave)
+    const onLeave = () => {
+      mouse.active = false
+      targetMamp = 0
+    }
+
+    if (!isMobile) {
+      window.addEventListener("mousemove", onMove, { passive: true })
+      window.addEventListener("mouseleave", onLeave)
+    }
     window.addEventListener("resize", resize)
     resize()
 
     const getY = (w: typeof WAVES[0], x: number) => {
-      let y = H * w.yFrac + Math.sin(x * w.freq + t * w.speed + w.phase) * w.baseAmp
-      const { x: mx, y: my, active } = mouseRef.current
-      if (active && mAmp > 0.005) {
-        const hInf = Math.max(0, 1 - Math.abs(x - mx) / 200)
-        const vInf = Math.max(0, 1 - Math.abs(H * w.yFrac - my) / 160)
+      let y = H * w.yFrac + Math.sin(x * w.freq + tick * w.speed + w.phase) * w.baseAmp
+      if (!isMobile && mouse.active && mAmp > 0.005) {
+        const hInf = Math.max(0, 1 - Math.abs(x - mouse.x) / 200)
+        const vInf = Math.max(0, 1 - Math.abs(H * w.yFrac - mouse.y) / 160)
         y -= hInf * vInf * mAmp * 48
       }
       return y
     }
 
-    const draw = () => {
+    const draw = (now: number) => {
+      rafId = requestAnimationFrame(draw)
+
+      // Throttle rendering to target frame interval
+      if (now - lastFrameTime < FRAME_INTERVAL) return
+      lastFrameTime = now
+
       ctx.clearRect(0, 0, W, H)
-      mAmp += (targetMamp - mAmp) * 0.05
+      if (!isMobile) {
+        mAmp += (targetMamp - mAmp) * 0.05
+      }
+
       const dark = document.documentElement.classList.contains("dark")
 
       const colors = dark
         ? [
-            [59, 130, 246],  // Blue 500
-            [37, 99, 235],   // Blue 600
-            [96, 165, 250],  // Blue 400
-            [29, 78, 216],   // Blue 700
-            [147, 197, 253], // Blue 300
+            [59, 130, 246],
+            [37, 99, 235],
+            [96, 165, 250],
+            [29, 78, 216],
+            [147, 197, 253],
           ]
         : [
-            [29, 78, 216],   // Blue 700
-            [37, 99, 235],   // Blue 600
-            [30, 64, 175],   // Blue 800
-            [2, 132, 199],   // Sky 600
-            [79, 70, 229],   // Indigo 600
+            [29, 78, 216],
+            [37, 99, 235],
+            [30, 64, 175],
+            [2, 132, 199],
+            [79, 70, 229],
           ]
 
       const alphaMult = dark ? 1.0 : 2.2
@@ -84,11 +114,16 @@ export function HeroSection() {
         const a = ALPHAS[i] * alphaMult
         const baseY = H * w.yFrac
 
-        ctx.beginPath()
-        for (let x = 0; x <= W; x += 3) {
-          const y = getY(w, x)
-          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        const points: Array<[number, number]> = []
+        for (let x = 0; x <= W; x += STEP) {
+          points.push([x, getY(w, x)])
         }
+        if (points.length === 0 || points[points.length - 1][0] !== W) {
+          points.push([W, getY(w, W)])
+        }
+
+        ctx.beginPath()
+        points.forEach(([x, y], idx) => (idx === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
         ctx.lineTo(W, H)
         ctx.lineTo(0, H)
         ctx.closePath()
@@ -103,10 +138,7 @@ export function HeroSection() {
         ctx.fill()
 
         ctx.beginPath()
-        for (let x = 0; x <= W; x += 3) {
-          const y = getY(w, x)
-          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
-        }
+        points.forEach(([x, y], idx) => (idx === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
         ctx.strokeStyle = dark
           ? `rgba(${c}, ${a * 1.5})`
           : `rgba(${c}, ${a * 1.8})`
@@ -114,16 +146,15 @@ export function HeroSection() {
         ctx.stroke()
       })
 
-      t++
-      rafRef.current = requestAnimationFrame(draw)
+      tick++
     }
 
     const startLoop = () => {
-      if (!rafRef.current) draw()
+      if (!rafId) rafId = requestAnimationFrame(draw)
     }
     const stopLoop = () => {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = 0
+      cancelAnimationFrame(rafId)
+      rafId = 0
     }
 
     const io = new IntersectionObserver(
@@ -144,8 +175,10 @@ export function HeroSection() {
       stopLoop()
       io.disconnect()
       document.removeEventListener("visibilitychange", onVisibilityChange)
-      window.removeEventListener("mousemove", onMove)
-      window.removeEventListener("mouseleave", onLeave)
+      if (!isMobile) {
+        window.removeEventListener("mousemove", onMove)
+        window.removeEventListener("mouseleave", onLeave)
+      }
       window.removeEventListener("resize", resize)
     }
   }, [])
@@ -169,7 +202,7 @@ export function HeroSection() {
         {/* Availability badge */}
         <div className="flex items-center justify-center gap-2.5 mb-4">
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald=500 opacity-60" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
           <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground/70">
@@ -230,7 +263,7 @@ export function HeroSection() {
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1.5 transition-transform" />
           </button>
 
-          {/* Secondary CTA (ПОВНІСТЮ БЕЗ БРУДНОЇ СІРОЇ ТІНІ) */}
+          {/* Secondary CTA */}
           <button
             onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
             className="inline-flex items-center gap-3 px-9 py-4 border-2 border-border/80 rounded-2xl font-bold text-lg text-foreground bg-background/80 backdrop-blur-xl hover:bg-accent/60 hover:border-primary/50 hover:scale-[1.01] active:scale-95 transition-all shadow-none cursor-pointer"

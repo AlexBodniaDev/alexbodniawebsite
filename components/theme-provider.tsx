@@ -1,5 +1,5 @@
 "use client"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import type React from "react"
 
 type Theme = "light" | "dark"
@@ -38,10 +38,9 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement
 
-    // ⚡ ОПТИМІЗАЦІЯ INP: Тимчасово вимикаємо всі CSS transition,
-    // щоб браузер не намагався анімувати кольори всього сайту одночасно
+    // Briefly disable transitions so the theme swap doesn't animate every
+    // element's colors at once.
     const css = document.createElement("style")
-    css.type = "text/css"
     css.appendChild(
       document.createTextNode(
         `* {
@@ -55,26 +54,35 @@ export function ThemeProvider({
     )
     document.head.appendChild(css)
 
-    // Змінюємо тему
     root.classList.remove("light", "dark")
     root.classList.add(theme)
 
-    // Примусово застосовуємо нові стилі без анімації (force reflow)
-    const _ = window.getComputedStyle(document.body).opacity
-
-    // Повертаємо CSS-переходи у наступному кадрі
+    // ── INP FIX ───────────────────────────────────────────────────────────
+    // The previous version called `window.getComputedStyle(document.body).opacity`
+    // here to "force a reflow". That's a synchronous layout read/recalculation
+    // on the main thread, deliberately triggered on every single theme-toggle
+    // click — exactly the kind of long task that shows up as poor INP. Adding
+    // the class is already synchronous and the style tag above is already
+    // applied before the next paint, so the forced read added cost without
+    // adding any visual benefit. Just let the next frame clean up the
+    // transition-disabling style tag.
     requestAnimationFrame(() => {
       document.head.removeChild(css)
     })
   }, [theme])
 
-  const value = {
-    theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
-    },
-  }
+  // Memoize so consumers of useTheme() don't re-render on every parent
+  // render — only when theme actually changes.
+  const value = useMemo<ThemeProviderState>(
+    () => ({
+      theme,
+      setTheme: (next: Theme) => {
+        localStorage.setItem(storageKey, next)
+        setTheme(next)
+      },
+    }),
+    [theme, storageKey]
+  )
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>

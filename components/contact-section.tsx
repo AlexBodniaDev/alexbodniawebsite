@@ -100,24 +100,21 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32 bg-background border-0"
+      className="relative pt-24 pb-24 md:pt-36 md:pb-32 bg-background border-0"
     >
-      {/* ── Fixed: Centered ambient glow to prevent overflow-clipping horizontal lines ── */}
-      <motion.div
-        aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 md:w-xl h-96 md:h-144 rounded-full bg-primary/8 blur-[120px] pointer-events-none z-0"
-        animate={{
-          scale: [1, 1.08, 1],
-          opacity: [0.5, 0.8, 0.5],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+      {/* Top seamless blend gradient overlay to feather the top edge smoothly */}
+      <div 
+        aria-hidden="true" 
+        className="absolute top-0 left-0 right-0 h-32 md:h-48 bg-linear-to-b from-background via-background/80 to-transparent pointer-events-none z-10" 
       />
 
-      <div className="container mx-auto px-6 relative z-10">
+      {/* Background glow positioned relative to section center without clipping bounds */}
+      <div
+        aria-hidden="true"
+        className="ab-contact-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-140 md:w-200 h-140 md:h-200 rounded-full bg-primary/10 blur-[140px] pointer-events-none z-0"
+      />
+
+      <div className="container mx-auto px-6 relative z-20">
         <motion.div
           className="text-center mb-12 md:mb-16"
           variants={container}

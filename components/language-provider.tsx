@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import type React from "react"
 import { translations, type Locale } from "@/lib/translations"
 
@@ -41,22 +41,30 @@ export function LanguageProvider({
     if (stored && stored !== locale) {
       setLocaleState(stored)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     document.documentElement.lang = locale
   }, [locale])
 
-  const setLocale = (next: Locale) => {
-    localStorage.setItem(storageKey, next)
-    setLocaleState(next)
-  }
-
-  const value: LanguageProviderState = {
-    locale,
-    setLocale,
-    t: translations[locale] as TranslationShape,
-  }
+  // ── INP FIX ─────────────────────────────────────────────────────────────
+  // This provider wraps the entire app (Header, every section). Before, a
+  // brand-new `value` object literal was created on every render, which
+  // forces every component calling useLanguage() to re-render even when
+  // locale hasn't changed. Memoizing it means consumers only re-render when
+  // locale actually changes.
+  const value = useMemo<LanguageProviderState>(
+    () => ({
+      locale,
+      setLocale: (next: Locale) => {
+        localStorage.setItem(storageKey, next)
+        setLocaleState(next)
+      },
+      t: translations[locale] as TranslationShape,
+    }),
+    [locale, storageKey]
+  )
 
   return (
     <LanguageProviderContext.Provider {...props} value={value}>
