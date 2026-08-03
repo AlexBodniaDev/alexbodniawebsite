@@ -81,67 +81,49 @@
     {
       "id": "tennis-courts-3d",
       "title": "Tennis Courts 3D",
-      "title_uk": "Тенісні корти у 3D",
       "description": "Interactive 3D visualization of tennis court designs, modeled in Blender with realistic lighting and materials",
-      "description_uk": "Інтерактивна 3D-візуалізація тенісних кортів, змодельована в Blender з реалістичним освітленням і матеріалами",
       "image": "/3dcourtsprv.jpg",
       "tags": ["3D Design", "Blender", "3D from sketch"],
-      "tags_uk": ["3D-дизайн", "Blender", "3D зі скетчу"],
       "year": "2022"
     },
     {
       "id": "dnipro-redesign",
       "title": "Dnipro.net Redesign",
-      "title_uk": "Редизайн Dnipro.net",
       "description": "Full redesign of the Dnipro.net website, focused on clearer navigation and a modern, more usable interface",
-      "description_uk": "Повний редизайн сайту Dnipro.net із фокусом на зрозумілішу навігацію та сучасний, зручніший інтерфейс",
       "image": "/Dnepronetprv.jpg",
       "tags": ["Web Design", "UX/UI", "Redesign"],
-      "tags_uk": ["Веб-дизайн", "UX/UI", "Редизайн"],
       "year": "2023"
     },
     {
       "id": "ketotox-package",
       "title": "Ketotox Plus Medical Package",
-      "title_uk": "Медична упаковка Ketotox Plus",
       "description": "Medical packaging design that balances clear, easy-to-read layout with hand-drawn illustrations",
-      "description_uk": "Дизайн медичної упаковки, що поєднує зрозумілу структуру макета з ілюстраціями, намальованими вручну",
       "image": "/Ketoprv.jpg",
       "tags": ["Package Design", "Medical", "Branding"],
-      "tags_uk": ["Дизайн упаковки", "Медицина", "Брендинг"],
       "year": "2023"
     },
     {
       "id": "mobile-app-todo",
       "title": "Responsive Mobile App",
-      "title_uk": "Адаптивний мобільний застосунок",
       "description": "Cross-platform to-do app with a clean, intuitive interface designed for quick, daily task management",
-      "description_uk": "Кросплатформний застосунок для завдань із чистим, інтуїтивним інтерфейсом для швидкого щоденного планування",
       "image": "/Todoprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "ToDo App"],
-      "tags_uk": ["Мобільний дизайн", "Дизайн застосунків", "Застосунок для завдань"],
       "year": "2022"
     },
     {
       "id": "mobile-app-cyclesense",
       "title": "CycleSense period tracker app",
-      "title_uk": "CycleSense — трекер циклу",
       "description": "Mobile period tracker designed with a calm, approachable interface to make tracking cycles and symptoms feel effortless",
-      "description_uk": "Мобільний трекер циклу зі спокійним, доброзичливим інтерфейсом, що робить відстеження циклу й симптомів простим",
       "image": "/Cyclesenseprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "Period tracker App", "Woman health"],
-      "tags_uk": ["Мобільний дизайн", "Дизайн застосунків", "Трекер циклу", "Жіноче здоров'я"],
       "year": "2025"
     },
     {
       "id": "mobile-app-cryptoxapp",
       "title": "Modern minimalistic trading app - 'CryptoX'",
-      "title_uk": "Сучасний мінімалістичний трейдинг-застосунок — «CryptoX»",
       "description": "Minimalist crypto trading app focused on fast, distraction-free navigation for tracking and managing a portfolio",
-      "description_uk": "Мінімалістичний застосунок для крипто-трейдингу з швидкою навігацією без зайвого для керування портфелем",
       "image": "/Cryptoxprv.jpg",
       "tags": ["Mobile Design", "Mobile App Design", "Trading App", "Crypto App"],
-      "tags_uk": ["Мобільний дизайн", "Дизайн застосунків", "Трейдинг-застосунок", "Крипто-застосунок"],
       "year": "2025"
     }
   ]

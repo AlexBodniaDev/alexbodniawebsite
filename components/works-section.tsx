@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback, useEffect } from "react"
+import { useState, useRef } from "react"
 import { ArrowUpRight, Eye, X } from "lucide-react"
 import Link from "next/link"
 import data from "@/lib/data.json"
@@ -9,45 +9,24 @@ import { useLanguage } from "@/components/language-provider"
 type Project = typeof data.projects[0]
 
 export function WorksSection() {
-  const { t, locale } = useLanguage()
-
-  const getTitle = (p: Project) => (locale === "uk" ? (p as any).title_uk ?? p.title : p.title)
-  const getDescription = (p: Project) => (locale === "uk" ? (p as any).description_uk ?? p.description : p.description)
-  const getTags = (p: Project) => (locale === "uk" ? (p as any).tags_uk ?? p.tags : p.tags)
+  const { t } = useLanguage()
 
   const [activeProject, setActiveProject] = useState<string | null>(null)
   const [previewProject, setPreviewProject] = useState<Project | null>(null)
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
 
   const sectionRef = useRef<HTMLDivElement>(null)
-  const rafRef = useRef<number>(0)
-  const pendingPos = useRef<{ x: number; y: number } | null>(null)
 
-  // ── INP FIX ───────────────────────────────────────────────────────────
-  // onMouseMove previously called setState directly, which means a React
-  // re-render was scheduled on every single mousemove event fired while
-  // hovering the section (dozens per second). Batching it through a single
-  // requestAnimationFrame means at most one state update — and one
-  // re-render — per frame, regardless of how many mousemove events fire.
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
     const rect = sectionRef.current?.getBoundingClientRect()
-    if (!rect) return
 
-    pendingPos.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
-
-    if (!rafRef.current) {
-      rafRef.current = requestAnimationFrame(() => {
-        if (pendingPos.current) setCursorPos(pendingPos.current)
-        rafRef.current = 0
+    if (rect) {
+      setCursorPos({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
       })
     }
-  }, [])
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
-  }, [])
+  }
 
   const activeProjectData = activeProject
     ? data.projects.find((p) => p.id === activeProject)
@@ -74,7 +53,7 @@ export function WorksSection() {
           <div className="w-56 h-36 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border animate-in fade-in zoom-in-95 duration-150">
             <img
               src={activeProjectData.image || "/placeholder.svg"}
-              alt={getTitle(activeProjectData)}
+              alt={activeProjectData.title}
               className="w-full h-full object-cover"
             />
           </div>
@@ -139,7 +118,7 @@ export function WorksSection() {
 
             <img
               src={previewProject.image || "/placeholder.svg"}
-              alt={getTitle(previewProject)}
+              alt={previewProject.title}
               className="
                 w-full
                 aspect-video
@@ -151,17 +130,17 @@ export function WorksSection() {
             <div className="p-5">
 
               <h3 className="text-xl font-bold">
-                {getTitle(previewProject)}
+                {previewProject.title}
               </h3>
 
 
               <p className="mt-2 text-sm text-muted-foreground">
-                {getDescription(previewProject)}
+                {previewProject.description}
               </p>
 
 
               <div className="flex flex-wrap gap-2 mt-4">
-                {getTags(previewProject).map((tag: string) => (
+                {previewProject.tags.map((tag) => (
                   <span
                     key={tag}
                     className="
@@ -192,7 +171,7 @@ export function WorksSection() {
                   font-bold
                 "
               >
-                {t.works.viewProject}
+                View Project
               </Link>
 
             </div>
@@ -280,12 +259,12 @@ export function WorksSection() {
                     truncate
                     mb-2
                   ">
-                    {getTitle(project)}
+                    {project.title}
                   </h3>
 
 
                   <div className="flex flex-wrap gap-1.5">
-                    {getTags(project).slice(0, 3).map((tag: string) => (
+                    {project.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
                         className="
@@ -314,7 +293,7 @@ export function WorksSection() {
                   text-sm
                   text-muted-foreground
                 ">
-                  {getDescription(project)}
+                  {project.description}
                 </p>
 
 

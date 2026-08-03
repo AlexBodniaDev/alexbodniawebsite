@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, useCallback, useMemo, memo } from "react"
+import { useEffect, useRef, useState, useCallback, memo } from "react"
 import { motion, type Variants } from "framer-motion"
 import { Quote, Sparkles, Star, ChevronLeft, ChevronRight } from "lucide-react"
 import data from "@/lib/data.json"
@@ -96,26 +96,15 @@ export function TestimonialsSection() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [count, setCount] = useState(0)
 
-  const sectionRef = useRef<HTMLElement>(null)
   const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const isHovering = useRef(false)
-  const isInteracting = useRef(false)
-  const isVisible = useRef(true)
 
-  // Every autoplay tick updates selectedIndex, which re-renders this
-  // component. Without memoizing, that also re-created this array (and a
-  // brand-new object per testimonial) on every single tick for no reason,
-  // since it only actually needs to change when locale changes.
-  const localized = useMemo(
-    () =>
-      data.testimonials.map((tm: any) => ({
-        ...tm,
-        name: locale === "uk" && tm.name_uk ? tm.name_uk : tm.name,
-        role: locale === "uk" && tm.role_uk ? tm.role_uk : tm.role,
-        quote: locale === "uk" && tm.quote_uk ? tm.quote_uk : tm.quote,
-      })),
-    [locale]
-  )
+  const localized = data.testimonials.map((tm: any) => ({
+    ...tm,
+    name: locale === "uk" && tm.name_uk ? tm.name_uk : tm.name,
+    role: locale === "uk" && tm.role_uk ? tm.role_uk : tm.role,
+    quote: locale === "uk" && tm.quote_uk ? tm.quote_uk : tm.quote,
+  }))
 
   useEffect(() => {
     if (!api) return
@@ -133,55 +122,11 @@ export function TestimonialsSection() {
     }
   }, [api])
 
-  // ── Swipe/scroll stutter fix ────────────────────────────────────────────
-  // `isHovering` (mouse enter/leave on the section) never fires on touch
-  // devices, so the old autoplay could call api.scrollNext() every 5s while
-  // a finger was still mid-drag on the carousel — a programmatic scroll
-  // fighting a live touch drag is exactly what produced the stutter when
-  // swiping. Embla's own pointerDown/pointerUp events fire reliably for
-  // both mouse and touch, so we use those to know when real interaction is
-  // happening, and gate autoplay on that instead.
-  useEffect(() => {
-    if (!api) return
-
-    const onPointerDown = () => {
-      isInteracting.current = true
-    }
-    const onPointerUp = () => {
-      isInteracting.current = false
-    }
-
-    api.on("pointerDown", onPointerDown)
-    api.on("pointerUp", onPointerUp)
-
-    return () => {
-      api.off("pointerDown", onPointerDown)
-      api.off("pointerUp", onPointerUp)
-    }
-  }, [api])
-
-  // Also stop autoplay from doing any work while the section is scrolled
-  // out of view, so scrolling the page past it isn't competing with
-  // Embla's scroll/transform work for no visible benefit.
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        isVisible.current = entry.isIntersecting
-      },
-      { threshold: 0.1 }
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
   useEffect(() => {
     if (!api) return
 
     autoplayRef.current = setInterval(() => {
-      if (isHovering.current || isInteracting.current || !isVisible.current) return
+      if (isHovering.current) return
 
       if (api.canScrollNext()) {
         api.scrollNext()
@@ -202,7 +147,6 @@ export function TestimonialsSection() {
   return (
     <section
       id="testimonials"
-      ref={sectionRef}
       className="relative pt-20 pb-12 md:pt-32 md:pb-16 bg-background overflow-hidden z-10 border-none"
       onMouseEnter={() => (isHovering.current = true)}
       onMouseLeave={() => (isHovering.current = false)}

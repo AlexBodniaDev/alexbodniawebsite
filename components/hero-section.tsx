@@ -12,199 +12,101 @@ const WAVES = [
   { baseAmp: 14, freq: 0.0095, speed: 0.018, phase: 3.2, yFrac: 0.82 },
 ]
 
-// Bumped up from [0.05, 0.07, 0.08, 0.045, 0.04] — the previous values were
-// tuned on a display with more contrast than typical Android phone screens
-// and were effectively invisible there.
-const ALPHAS = [0.11, 0.15, 0.17, 0.09, 0.08]
+const ALPHAS = [0.05, 0.07, 0.08, 0.045, 0.04]
 
 export function HeroSection() {
   const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef  = useRef({ x: -1, y: -1, active: false })
+  const rafRef    = useRef<number>(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-    const isMobile = window.matchMedia("(max-width: 767px)").matches
-
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    let W = 0, H = 0, tick = 0, mAmp = 0, targetMamp = 0
+    let W = 0, H = 0, t = 0, mAmp = 0, targetMamp = 0
     let isVisible = true
-    let rafId = 0
-    let lastFrameTime = 0
 
-    // Mobile Optimizations: Lower FPS target (~18fps) & wider sampling step to reduce CPU work
-    const FRAME_INTERVAL = isMobile ? 1000 / 18 : 1000 / 30
-    const STEP = isMobile ? 8 : 4
-
-    const mouse = { x: -1, y: -1, active: false }
-
-    // ── Gradient cache ──────────────────────────────────────────────────
-    // createLinearGradient()/addColorStop() were previously called for
-    // every wave on every single animation frame (18-30x/sec), even though
-    // the gradient geometry only depends on canvas size + theme, neither
-    // of which change frame-to-frame. Rebuilding 5 gradients that often is
-    // pure wasted CPU work, and on Android's weaker canvas/GPU pipeline
-    // that adds up fast. Now we only rebuild when size or theme changes.
-    let waveGradients: CanvasGradient[] = []
-    let cachedDark: boolean | null = null
-
-    const buildGradients = (dark: boolean) => {
-      const colors = dark
-        ? [
-            [59, 130, 246],
-            [37, 99, 235],
-            [96, 165, 250],
-            [29, 78, 216],
-            [147, 197, 253],
-          ]
-        : [
-            [29, 78, 216],
-            [37, 99, 235],
-            [30, 64, 175],
-            [2, 132, 199],
-            [79, 70, 229],
-          ]
-      const alphaMult = dark ? 1.0 : 2.2
-
-      waveGradients = WAVES.map((w, i) => {
-        const c = colors[i].join(",")
-        const a = ALPHAS[i] * alphaMult
-        const baseY = H * w.yFrac
-        const grad = ctx.createLinearGradient(0, baseY - w.baseAmp - 20, 0, H)
-        grad.addColorStop(0,   `rgba(${c},0)`)
-        grad.addColorStop(0.1, `rgba(${c},${a * 1.2})`)
-        grad.addColorStop(0.4, `rgba(${c},${a * 0.8})`)
-        grad.addColorStop(0.8, `rgba(${c},${a * 0.25})`)
-        grad.addColorStop(1,   `rgba(${c},0)`)
-        return grad
-      })
-      cachedDark = dark
-    }
-
-    // Mobile browsers fire `resize` repeatedly while the address bar
-    // collapses/expands during scroll (viewport height changes, width
-    // doesn't). Setting canvas.width/height clears the canvas immediately,
-    // so doing that on every one of those events is what produced the
-    // "blinks constantly on scroll" bug. We ignore resize events that are
-    // just a small height wobble with the same width, and coalesce any
-    // real resize (rotation, actual layout change) onto a single rAF so
-    // fast-firing events don't each trigger a clear+rebuild.
-    const URL_BAR_SLOP = 150
-
-    // Immediate resize — used for the very first sizing call and for the
-    // (already rAF-debounced) window "resize" listener once it decides a
-    // real resize happened.
-    const doResize = () => {
+    const resize = () => {
       W = canvas.width  = canvas.offsetWidth
       H = canvas.height = canvas.offsetHeight
-      if (cachedDark !== null) buildGradients(cachedDark)
     }
-
-    let resizeRafId = 0
-    const onResize = () => {
-      if (resizeRafId) return
-      resizeRafId = requestAnimationFrame(() => {
-        resizeRafId = 0
-        const newW = canvas.offsetWidth
-        const newH = canvas.offsetHeight
-        const sameWidth = newW === W
-        const smallHeightWobble = sameWidth && Math.abs(newH - H) < URL_BAR_SLOP
-        if (sameWidth && smallHeightWobble) return
-        doResize()
-      })
-    }
-
     const onMove = (e: MouseEvent) => {
-      if (isMobile) return // Skip mouse interaction calculations on touch devices
       const r = canvas.getBoundingClientRect()
-      mouse.x = e.clientX - r.left
-      mouse.y = e.clientY - r.top
-      mouse.active = true
+      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top, active: true }
       targetMamp = 1
     }
+    const onLeave = () => { mouseRef.current.active = false; targetMamp = 0 }
 
-    const onLeave = () => {
-      mouse.active = false
-      targetMamp = 0
-    }
-
-    if (!isMobile) {
-      window.addEventListener("mousemove", onMove, { passive: true })
-      window.addEventListener("mouseleave", onLeave)
-    }
-    window.addEventListener("resize", onResize)
-    doResize()
+    window.addEventListener("mousemove", onMove)
+    window.addEventListener("mouseleave", onLeave)
+    window.addEventListener("resize", resize)
+    resize()
 
     const getY = (w: typeof WAVES[0], x: number) => {
-      let y = H * w.yFrac + Math.sin(x * w.freq + tick * w.speed + w.phase) * w.baseAmp
-      if (!isMobile && mouse.active && mAmp > 0.005) {
-        const hInf = Math.max(0, 1 - Math.abs(x - mouse.x) / 200)
-        const vInf = Math.max(0, 1 - Math.abs(H * w.yFrac - mouse.y) / 160)
+      let y = H * w.yFrac + Math.sin(x * w.freq + t * w.speed + w.phase) * w.baseAmp
+      const { x: mx, y: my, active } = mouseRef.current
+      if (active && mAmp > 0.005) {
+        const hInf = Math.max(0, 1 - Math.abs(x - mx) / 200)
+        const vInf = Math.max(0, 1 - Math.abs(H * w.yFrac - my) / 160)
         y -= hInf * vInf * mAmp * 48
       }
       return y
     }
 
-    const draw = (now: number) => {
-      rafId = requestAnimationFrame(draw)
-
-      // Throttle rendering to target frame interval
-      if (now - lastFrameTime < FRAME_INTERVAL) return
-      lastFrameTime = now
-
+    const draw = () => {
       ctx.clearRect(0, 0, W, H)
-      if (!isMobile) {
-        mAmp += (targetMamp - mAmp) * 0.05
-      }
-
+      mAmp += (targetMamp - mAmp) * 0.05
       const dark = document.documentElement.classList.contains("dark")
-      if (dark !== cachedDark) buildGradients(dark)
 
-      const alphaMult = dark ? 1.0 : 2.2
-      const strokeColors = dark
+      const colors = dark
         ? [
-            [59, 130, 246],
-            [37, 99, 235],
-            [96, 165, 250],
-            [29, 78, 216],
-            [147, 197, 253],
+            [59, 130, 246],  // Blue 500
+            [37, 99, 235],   // Blue 600
+            [96, 165, 250],  // Blue 400
+            [29, 78, 216],   // Blue 700
+            [147, 197, 253], // Blue 300
           ]
         : [
-            [29, 78, 216],
-            [37, 99, 235],
-            [30, 64, 175],
-            [2, 132, 199],
-            [79, 70, 229],
+            [29, 78, 216],   // Blue 700
+            [37, 99, 235],   // Blue 600
+            [30, 64, 175],   // Blue 800
+            [2, 132, 199],   // Sky 600
+            [79, 70, 229],   // Indigo 600
           ]
 
-      WAVES.forEach((w, i) => {
-        const c = strokeColors[i].join(",")
-        const a = ALPHAS[i] * alphaMult
+      const alphaMult = dark ? 1.0 : 2.2
 
-        const points: Array<[number, number]> = []
-        for (let x = 0; x <= W; x += STEP) {
-          points.push([x, getY(w, x)])
-        }
-        if (points.length === 0 || points[points.length - 1][0] !== W) {
-          points.push([W, getY(w, W)])
-        }
+      WAVES.forEach((w, i) => {
+        const c = colors[i].join(",")
+        const a = ALPHAS[i] * alphaMult
+        const baseY = H * w.yFrac
 
         ctx.beginPath()
-        points.forEach(([x, y], idx) => (idx === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
+        for (let x = 0; x <= W; x += 3) {
+          const y = getY(w, x)
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        }
         ctx.lineTo(W, H)
         ctx.lineTo(0, H)
         ctx.closePath()
 
-        ctx.fillStyle = waveGradients[i]
+        const grad = ctx.createLinearGradient(0, baseY - w.baseAmp - 20, 0, H)
+        grad.addColorStop(0,    `rgba(${c},0)`)
+        grad.addColorStop(0.1,  `rgba(${c},${a * 1.2})`)
+        grad.addColorStop(0.4,  `rgba(${c},${a * 0.8})`)
+        grad.addColorStop(0.8,  `rgba(${c},${a * 0.25})`)
+        grad.addColorStop(1,    `rgba(${c},0)`)
+        ctx.fillStyle = grad
         ctx.fill()
 
         ctx.beginPath()
-        points.forEach(([x, y], idx) => (idx === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
+        for (let x = 0; x <= W; x += 3) {
+          const y = getY(w, x)
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        }
         ctx.strokeStyle = dark
           ? `rgba(${c}, ${a * 1.5})`
           : `rgba(${c}, ${a * 1.8})`
@@ -212,31 +114,16 @@ export function HeroSection() {
         ctx.stroke()
       })
 
-      tick++
+      t++
+      rafRef.current = requestAnimationFrame(draw)
     }
 
     const startLoop = () => {
-      if (!rafId) rafId = requestAnimationFrame(draw)
+      if (!rafRef.current) draw()
     }
     const stopLoop = () => {
-      cancelAnimationFrame(rafId)
-      rafId = 0
-    }
-
-    // Some Android devices/OEM skins (e.g. Samsung's "Remove animations",
-    // certain battery-saver modes) set prefers-reduced-motion at the OS
-    // level even though the user never touched an a11y toggle for this
-    // page specifically. The previous code returned immediately in that
-    // case, so the canvas never painted anything — the line was gone, not
-    // just static. Instead, draw one still frame so the effect is always
-    // visible; just skip the animation loop and mouse interaction.
-    if (prefersReducedMotion) {
-      const redrawStatic = () => draw(0)
-      draw(0)
-      cancelAnimationFrame(rafId) // draw() schedules a follow-up frame; cancel it
-      rafId = 0
-      window.addEventListener("resize", redrawStatic)
-      return () => window.removeEventListener("resize", redrawStatic)
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = 0
     }
 
     const io = new IntersectionObserver(
@@ -257,11 +144,9 @@ export function HeroSection() {
       stopLoop()
       io.disconnect()
       document.removeEventListener("visibilitychange", onVisibilityChange)
-      if (!isMobile) {
-        window.removeEventListener("mousemove", onMove)
-        window.removeEventListener("mouseleave", onLeave)
-      }
-      window.removeEventListener("resize", onResize)
+      window.removeEventListener("mousemove", onMove)
+      window.removeEventListener("mouseleave", onLeave)
+      window.removeEventListener("resize", resize)
     }
   }, [])
 
@@ -284,7 +169,7 @@ export function HeroSection() {
         {/* Availability badge */}
         <div className="flex items-center justify-center gap-2.5 mb-4">
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald=500 opacity-60" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
           <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground/70">
@@ -345,7 +230,7 @@ export function HeroSection() {
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1.5 transition-transform" />
           </button>
 
-          {/* Secondary CTA */}
+          {/* Secondary CTA (ПОВНІСТЮ БЕЗ БРУДНОЇ СІРОЇ ТІНІ) */}
           <button
             onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
             className="inline-flex items-center gap-3 px-9 py-4 border-2 border-border/80 rounded-2xl font-bold text-lg text-foreground bg-background/80 backdrop-blur-xl hover:bg-accent/60 hover:border-primary/50 hover:scale-[1.01] active:scale-95 transition-all shadow-none cursor-pointer"

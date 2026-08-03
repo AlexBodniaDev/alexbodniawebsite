@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import {
   Github,
@@ -69,38 +68,6 @@ function SocialIconButton({ link }: { link: SocialLink }) {
 
 export function ContactSection() {
   const { t, locale } = useLanguage()
-  const glowRef = useRef<HTMLDivElement>(null)
-
-  // The glow's animation-play-state is only ever "running" while this
-  // section is actually in the viewport and the tab is foregrounded —
-  // otherwise it just sits there paused, costing nothing.
-  useEffect(() => {
-    const el = glowRef.current
-    if (!el) return
-
-    let isIntersecting = false
-
-    const applyPlayState = () => {
-      el.style.animationPlayState =
-        isIntersecting && !document.hidden ? "running" : "paused"
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        isIntersecting = entry.isIntersecting
-        applyPlayState()
-      },
-      { threshold: 0 }
-    )
-    io.observe(el)
-
-    document.addEventListener("visibilitychange", applyPlayState)
-
-    return () => {
-      io.disconnect()
-      document.removeEventListener("visibilitychange", applyPlayState)
-    }
-  }, [])
 
   const contactBlurb =
     locale === "uk" && (data.personal as any).contact_uk
@@ -133,32 +100,24 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative pt-24 pb-24 md:pt-36 md:pb-32 bg-background border-0"
+      className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32 bg-background border-0"
     >
-      {/* Top seamless blend gradient overlay to feather the top edge smoothly */}
-      <div 
-        aria-hidden="true" 
-        className="absolute top-0 left-0 right-0 h-32 md:h-48 bg-linear-to-b from-background via-background/80 to-transparent pointer-events-none z-10" 
-      />
-
-      {/* Background glow positioned relative to section center without clipping bounds */}
-      {/*
-        Desktop-only, matching the same glow in testimonials-section.tsx.
-        This div animates scale+opacity on an 8s infinite loop over a
-        140px-blurred area up to 800px wide. Rendering that on mobile meant
-        Android phones were continuously re-rasterizing a huge blurred,
-        animating layer for as long as the tab was open — not just while
-        the contact section was in view. Purely decorative, so hiding it
-        below md removes a persistent cost for no visible loss on phones.
-      */}
-      <div
-        ref={glowRef}
+      {/* ── Fixed: Centered ambient glow to prevent overflow-clipping horizontal lines ── */}
+      <motion.div
         aria-hidden="true"
-        style={{ animationPlayState: "paused" }}
-        className="ab-contact-glow hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-140 md:w-200 h-140 md:h-200 rounded-full bg-primary/10 blur-[140px] pointer-events-none z-0"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 md:w-xl h-96 md:h-144 rounded-full bg-primary/8 blur-[120px] pointer-events-none z-0"
+        animate={{
+          scale: [1, 1.08, 1],
+          opacity: [0.5, 0.8, 0.5],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       />
 
-      <div className="container mx-auto px-6 relative z-20">
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           className="text-center mb-12 md:mb-16"
           variants={container}

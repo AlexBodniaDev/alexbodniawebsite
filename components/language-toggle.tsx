@@ -13,6 +13,9 @@ const LOCALES: { code: Locale; label: string }[] = [
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLanguage()
   const [mounted, setMounted] = React.useState(false)
+  
+  // Генеруємо унікальний ідентифікатор для кожного екземпляра компонента
+  const uniqueId = React.useId()
 
   React.useEffect(() => setMounted(true), [])
 
@@ -43,7 +46,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
           >
             {isActive && (
               <motion.span
-                layoutId="language-pill"
+                layoutId={`language-pill-${uniqueId}`}
                 className="absolute inset-0 rounded-full bg-foreground"
                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
               />
