@@ -1,0 +1,308 @@
+{
+  "personal": {
+    "name": "Alex",
+    "title": "UX/UI Designer & Developer",
+    "subtitle": "UX/UI designer and front-end developer with 5+ years of experience turning ideas into interfaces people enjoy using.",
+    "quote": "My job is simple: take whatever feels impossible and design a way to make it possible.",
+    "about": "I'm Alex, a UX/UI designer and front-end developer designing and building digital products, from mobile apps to full web platforms.",
+    "contact": "Have a project or a role in mind? Tell me about it and we'll work out how to bring it to life.",
+    "contact_uk": "Маєте проєкт або роль на прикметі? Розкажіть про це, і разом вирішимо, як втілити це в життя.",
+    "email": "bodniaalex2911@gmail.com",
+    "github": "https://github.com/AlexBodniaDev",
+    "linkedin": "https://www.linkedin.com/in/oleksandr-bodnia-13489920b/"
+  },
+  "experience": [
+    {
+      "period": "2022 – Present",
+      "period_uk": "2022 – зараз",
+      "title": "Independent UX/UI & Product Designer",
+      "title_uk": "UX/UI та Product Designer (самостійна практика)",
+      "description": "Designing websites, mobile apps, packaging and 3D visualizations for clients, from research and wireframes to Figma prototypes and front-end builds in React, Next.js and Framer.",
+      "description_uk": "Проєктую вебсайти, мобільні застосунки, упаковку та 3D-візуалізації для клієнтів: від дослідження й вайрфреймів до прототипів у Figma та front-end збірки на React, Next.js і Framer."
+    },
+    {
+      "period": "2021 – 2022",
+      "period_uk": "2021 – 2022",
+      "title": "Voronin Design Studio",
+      "title_uk": "Voronin Design Studio",
+      "description": "Design intern. Worked on client website projects, improving UX and visual design and preparing mobile layouts within a studio workflow.",
+      "description_uk": "Стажер-дизайнер. Працював над клієнтськими вебпроєктами: покращував UX і візуальний дизайн та готував мобільні макети в студійному робочому процесі."
+    },
+    {
+      "period": "2018 – 2022",
+      "period_uk": "2018 – 2022",
+      "title": "IT Step University",
+      "title_uk": "IT Step University",
+      "description": "Studied computer science and completed internships that built practical skills in design and front-end development.",
+      "description_uk": "Вивчав комп’ютерні науки та проходив стажування, які дали практичні навички в дизайні й front-end розробці."
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "t1",
+      "name": "Dnipro.net",
+      "name_uk": "Dnipro.net",
+      "role": "Website redesign",
+      "role_uk": "Редизайн сайту",
+      "rating": 5,
+      "quote": "The old site had grown messy and people struggled to find basic information. Alex rebuilt the navigation and cleaned up the visual hierarchy, and the new version is much easier to move around in.",
+      "quote_uk": "Старий сайт розрісся і став заплутаним, людям було складно знайти базову інформацію. Алекс перебудував навігацію та впорядкував візуальну ієрархію - нова версія набагато зручніша."
+    },
+    {
+      "id": "t2",
+      "name": "Nasha Khata",
+      "name_uk": "Наша Хата",
+      "role": "Fences & gates · UX/UI and mobile",
+      "role_uk": "Паркани та ворота · UX/UI і мобільна версія",
+      "rating": 5,
+      "quote": "Alex took our catalogue-heavy site and made the mobile version feel simple. Every page got its own phone layout, and the whole thing stayed consistent with the desktop design.",
+      "quote_uk": "Алекс узяв наш сайт із великим каталогом і зробив мобільну версію простою. Кожна сторінка отримала власний макет для телефону, і все залишилось узгодженим з десктопним дизайном."
+    },
+    {
+      "id": "t3",
+      "name": "Tvoe - Emotion Factory",
+      "name_uk": "Твоє - Фабрика емоцій",
+      "role": "Gifts · UX/UI and mobile",
+      "role_uk": "Подарунки · UX/UI і мобільна версія",
+      "rating": 5,
+      "quote": "The interface had to work on screens of every size and keep one style. Alex handled the mobile layouts on his own and delivered them clean and ready for development.",
+      "quote_uk": "Інтерфейс мав однаково працювати на екранах будь-якого розміру та зберігати єдиний стиль. Алекс самостійно підготував мобільні макети - чисті й готові до розробки."
+    },
+    {
+      "id": "t4",
+      "name": "Medis",
+      "name_uk": "Медіс",
+      "role": "Healthcare · UX/UI and mobile",
+      "role_uk": "Медицина · UX/UI і мобільна версія",
+      "rating": 5,
+      "quote": "People come to a medical site for specific answers, often from a phone. Alex made the mobile version as clear as the desktop one: prices, booking and contacts are easy to find.",
+      "quote_uk": "На медичний сайт приходять за конкретними відповідями, часто з телефону. Алекс зробив мобільну версію такою ж зрозумілою, як десктопну: ціни, запис і контакти легко знайти."
+    },
+    {
+      "id": "t5",
+      "name": "Vespera Funeral Home",
+      "name_uk": "Vespera Funeral Home",
+      "role": "Bilingual website · Figma + Framer",
+      "role_uk": "Двомовний сайт · Figma + Framer",
+      "rating": 5,
+      "quote": "We had a lot of services, countries and pages to fit into one structure. Alex organised it clearly, designed it in Figma and built it in Framer with a CMS, so our team can update content without a developer.",
+      "quote_uk": "Нам потрібно було вмістити багато послуг, країн і сторінок в одну структуру. Алекс чітко її організував, спроєктував у Figma та зібрав у Framer з CMS, тож команда оновлює контент без розробника."
+    },
+    {
+      "id": "t6",
+      "name": "Ketotox Plus",
+      "name_uk": "Ketotox Plus",
+      "role": "Medical packaging",
+      "role_uk": "Медична упаковка",
+      "rating": 5,
+      "quote": "We needed packaging that felt medically credible without looking cold. Alex went through a few rounds of illustration styles with us before landing on the right tone.",
+      "quote_uk": "Нам потрібна була упаковка, яка виглядає медично надійно, але не холодно. Алекс пройшов із нами кілька раундів ілюстративних стилів, поки ми не знайшли правильний тон."
+    },
+    {
+      "id": "t7",
+      "name": "Tennis complex, Lviv",
+      "name_uk": "Тенісний комплекс, Львів",
+      "role": "3D visualisation",
+      "role_uk": "3D-візуалізація",
+      "rating": 5,
+      "quote": "From a technical drawing Alex built a full 3D model with materials and renders. It helped us show the place before it existed, and the project won the tender.",
+      "quote_uk": "З технічного креслення Алекс побудував повну 3D-модель з матеріалами та рендерами. Це допомогло показати місце ще до його появи, і проєкт виграв тендер."
+    }
+  ],
+  "tools": [
+    "Figma",
+    "Photoshop",
+    "Illustrator",
+    "Adobe XD",
+    "React",
+    "Next.js",
+    "Adobe XD",
+    "After Effects"
+  ],
+  "projects": [
+    {
+      "id": "medis-healthcare",
+      "title": "МЕДІС",
+      "description": "Created a user-friendly digital experience for a healthcare-related product, focusing on trust, accessibility, and intuitive navigation",
+      "image": "/previews/Medisprv.webp",
+      "tags": [
+        "Web Design",
+        "Healthcare Platform",
+        "UX/UI"
+      ],
+      "title_uk": "МЕДІС",
+      "description_uk": "Зручний цифровий досвід для медичного продукту з фокусом на довіру, доступність і зрозумілу навігацію",
+      "tags_uk": [
+        "Вебдизайн",
+        "Медична платформа",
+        "UX/UI"
+      ]
+    },
+    {
+      "id": "nasha-hata-real-estate",
+      "title": "НАША ХАТА",
+      "description": "Improved the UX and visuals and designed the full mobile version of a website for a manufacturer of fences, gates and doors",
+      "image": "/previews/Nashakhataprv.webp",
+      "tags": [
+        "Web Design",
+        "Fences & Gates",
+        "UX/UI"
+      ],
+      "title_uk": "НАША ХАТА",
+      "description_uk": "Покращення UX і візуалу та повна мобільна версія сайту виробника парканів, воріт і дверей",
+      "tags_uk": [
+        "Вебдизайн",
+        "Паркани та ворота",
+        "UX/UI"
+      ]
+    },
+    {
+      "id": "tvoe-web-design",
+      "title": "ТВОЄ",
+      "description": "Designed a modern digital experience focused on usability, clear information structure, and improving user interaction",
+      "image": "/previews/Tvoieprv.webp",
+      "tags": [
+        "Web Design",
+        "Digital Product",
+        "UX/UI"
+      ],
+      "title_uk": "ТВОЄ",
+      "description_uk": "Сучасний цифровий досвід із фокусом на зручність, зрозумілу структуру інформації та кращу взаємодію з користувачем",
+      "tags_uk": [
+        "Вебдизайн",
+        "Цифровий продукт",
+        "UX/UI"
+      ]
+    },
+    {
+      "id": "vespera-funeral-home",
+      "title": "Vespera Funeral Home",
+      "description": "Designed an elegant and respectful digital experience focused on clarity, emotional communication, and easy access to important information",
+      "image": "/previews/Vesperaprv.webp",
+      "tags": [
+        "Web Design",
+        "Brand Experience",
+        "Service Website"
+      ],
+      "title_uk": "Vespera Funeral Home",
+      "description_uk": "Елегантний і делікатний цифровий досвід із фокусом на зрозумілість, емоційну комунікацію та швидкий доступ до важливої інформації",
+      "tags_uk": [
+        "Вебдизайн",
+        "Бренд-досвід",
+        "Сервісний вебсайт"
+      ]
+    },
+    {
+      "id": "dnipro-redesign",
+      "title": "Dnipro.net Redesign",
+      "description": "Full redesign of the Dnipro.net website, focused on clearer navigation and a modern, more usable interface",
+      "image": "/previews/Dnepronetprv.webp",
+      "tags": [
+        "Web Design",
+        "UX/UI",
+        "Redesign"
+      ],
+      "title_uk": "Редизайн Dnipro.net",
+      "description_uk": "Повний редизайн сайту Dnipro.net із фокусом на зрозумілішу навігацію та сучасний, зручніший інтерфейс",
+      "tags_uk": [
+        "Вебдизайн",
+        "UX/UI",
+        "Редизайн"
+      ]
+    },
+    {
+      "id": "tennis-courts-3d",
+      "title": "Tennis Courts 3D",
+      "description": "Interactive 3D visualization of tennis court designs, modeled in Blender with realistic lighting and materials",
+      "image": "/previews/3dtenniscourtsprv.webp",
+      "tags": [
+        "3D Design",
+        "Blender",
+        "3D from sketch"
+      ],
+      "title_uk": "Тенісні корти 3D",
+      "description_uk": "Інтерактивна 3D-візуалізація дизайну тенісних кортів, змодельована в Blender із реалістичним освітленням і матеріалами",
+      "tags_uk": [
+        "3D-дизайн",
+        "Blender",
+        "3D зі скетчу"
+      ]
+    },
+    {
+      "id": "mobile-app-cyclesense",
+      "title": "CycleSense period tracker app",
+      "description": "Mobile period tracker designed with a calm, approachable interface to make tracking cycles and symptoms feel effortless",
+      "image": "/previews/Cyclesenseprv.webp",
+      "tags": [
+        "Mobile Design",
+        "Mobile App Design",
+        "Period tracker App",
+        "Woman health"
+      ],
+      "title_uk": "Застосунок CycleSense для відстеження циклу",
+      "description_uk": "Мобільний трекер циклу зі спокійним і зрозумілим інтерфейсом, що робить відстеження циклу та симптомів простим",
+      "tags_uk": [
+        "Мобільний дизайн",
+        "Дизайн мобільних застосунків",
+        "Трекер циклу",
+        "Жіноче здоровʼя"
+      ]
+    },
+    {
+      "id": "mobile-app-cryptoxapp",
+      "title": "Modern minimalistic trading app - 'CryptoX'",
+      "description": "Minimalist crypto trading app focused on fast, distraction-free navigation for tracking and managing a portfolio",
+      "image": "/previews/Cryptoxprv.webp",
+      "tags": [
+        "Mobile Design",
+        "Mobile App Design",
+        "Trading App",
+        "Crypto App"
+      ],
+      "title_uk": "Сучасний мінімалістичний трейдинговий застосунок - «CryptoX»",
+      "description_uk": "Мінімалістичний криптотрейдинговий застосунок для швидкої навігації без зайвих відволікань, відстеження та керування портфелем",
+      "tags_uk": [
+        "Мобільний дизайн",
+        "Дизайн мобільних застосунків",
+        "Трейдинговий застосунок",
+        "Криптозастосунок"
+      ]
+    },
+    {
+      "id": "mobile-app-todo",
+      "title": "Responsive Mobile App",
+      "description": "Cross-platform to-do app with a clean, intuitive interface designed for quick, daily task management",
+      "image": "/previews/Todoprv.webp",
+      "tags": [
+        "Mobile Design",
+        "Mobile App Design",
+        "ToDo App"
+      ],
+      "title_uk": "Адаптивний мобільний застосунок",
+      "description_uk": "Кросплатформний застосунок для списку справ із чистим, інтуїтивним інтерфейсом для швидкого щоденного керування завданнями",
+      "tags_uk": [
+        "Мобільний дизайн",
+        "Дизайн мобільних застосунків",
+        "ToDo-застосунок"
+      ]
+    },
+    {
+      "id": "ketotox-package",
+      "title": "Ketotox Plus Medical Package",
+      "description": "Medical packaging design that balances clear, easy-to-read layout with hand-drawn illustrations",
+      "image": "/previews/Ketotoxprv.webp",
+      "tags": [
+        "Package Design",
+        "Medical",
+        "Branding"
+      ],
+      "title_uk": "Медична упаковка Ketotox Plus",
+      "description_uk": "Дизайн медичної упаковки, що поєднує чітку, легку для читання структуру з намальованими від руки ілюстраціями",
+      "tags_uk": [
+        "Дизайн упаковки",
+        "Медицина",
+        "Брендинг"
+      ]
+    }
+  ]
+}
