@@ -166,12 +166,12 @@ export function ContactSection() {
           whileInView="show"
           viewport={VIEWPORT}
         >
-          <motion.h2 variants={item} className="h-mega mb-8 text-foreground md:mb-12">
+          <h2 className="h-mega mb-8 text-foreground md:mb-12">
             <MaskReveal>{t.contact.heading1}{" "}
             <span className="accent">
               {t.contact.heading2}
             </span></MaskReveal>
-          </motion.h2>
+          </h2>
 
           <motion.p
             variants={item}
@@ -321,7 +321,7 @@ export function ContactSection() {
         {/* Footer */}
         <footer className="mt-32 md:mt-48">
           <div className="flex flex-col gap-6 border-t border-border pt-8 md:flex-row md:items-center md:justify-between md:gap-10">
-            <div className="flex flex-col gap-2 text-sm text-muted-foreground md:flex-row md:items-center md:gap-8">
+            <div className="flex flex-col gap-2 text-sm font-medium text-foreground [text-shadow:0_0_10px_var(--background),0_0_3px_var(--background)] md:flex-row md:items-center md:gap-8">
               <p>{t.contact.rightsReserved}</p>
               <p>{t.contact.builtWith}</p>
             </div>

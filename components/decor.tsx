@@ -465,7 +465,13 @@ export function Decor({ shapes, className = "" }: { shapes: ShapeSpec[]; classNa
     })
     io.observe(root)
     measure()
-    const ro = new ResizeObserver(measure) // page grows when images load → positions in % move
+    // page grows when images load → positions in % move. Debounced: while a FAQ card animates its height the
+    // observer fires every frame, and measuring (getComputedStyle + offsets) each time made the whole page stutter.
+    let roTimer = 0
+    const ro = new ResizeObserver(() => {
+      window.clearTimeout(roTimer)
+      roTimer = window.setTimeout(measure, 140)
+    })
     ro.observe(root)
     window.addEventListener("resize", measure)
     document.fonts?.ready.then(measure)
@@ -476,6 +482,7 @@ export function Decor({ shapes, className = "" }: { shapes: ShapeSpec[]; classNa
     return () => {
       io.disconnect()
       ro.disconnect()
+      window.clearTimeout(roTimer)
       window.removeEventListener("resize", measure)
       window.removeEventListener("pointermove", onMove)
       window.removeEventListener("scroll", schedule)
